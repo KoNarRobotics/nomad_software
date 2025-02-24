@@ -1,0 +1,3 @@
+[submodule "nomad_hardware/can_device/can_constants"]
+	path = nomad_hardware/can_device/can_constants
+	url = git@github.com:KoNarRobotics/can_constants.git
