@@ -15,7 +15,7 @@ find_package(geometry_msgs REQUIRED)
 add_subdirectory(can_constants)
 
 add_library(${PROJECT_NAME} 
-  src/can_device_node.cpp
+  src/can_node.cpp
   )
 
 target_include_directories(
@@ -29,15 +29,25 @@ target_link_libraries(
   can_constants
 )
 
+ament_target_dependencies(
+  ${PROJECT_NAME}
+  rclcpp
+)
+
 install(TARGETS 
-  ${PROJECT_NAME} can_constants
+  ${PROJECT_NAME} 
   DESTINATION lib/${PROJECT_NAME}
 )
 
 install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
+  DIRECTORY include/
+  DESTINATION include
 )
+
+# install(
+#   DIRECTORY launch
+#   DESTINATION share/${PROJECT_NAME}
+# )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -1,3 +1,8 @@
 [submodule "nomad_hardware/can_device/can_constants"]
 	path = nomad_hardware/can_device/can_constants
 	url = git@github.com:KoNarRobotics/can_constants.git
+
+
+[submodule "nomad_core/Pilot_6_axis"]
+	path = nomad_core/Pilot_6_axis
+	url = git@github.com:X-Lemon-X/Pilot_6_axis.git
