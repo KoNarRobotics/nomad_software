@@ -3,7 +3,6 @@ from rclpy.duration import Duration
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 
-from can_device import CanHat
 import can
 import cantools
 import time
