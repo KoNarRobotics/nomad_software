@@ -31,3 +31,6 @@ COLCON_IGNORE
 AMENT_IGNORE
 
 old
+
+
+.venv
