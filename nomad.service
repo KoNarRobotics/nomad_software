@@ -1,11 +1,12 @@
 # filepath: /etc/systemd/system/nomad.service
 [Unit]
 Description=Nomad Software Startup Script
-After=multi-user.target
+After=can_init.service
+Requires=can_init.service
 
 [Service]
 Type=simple
-User=root
+User=orangepi
 ExecStart=/home/orangepi/it/nomad_software/start.sh
 Restart=on-failure
 
