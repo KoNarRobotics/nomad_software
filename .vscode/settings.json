@@ -1,5 +1,6 @@
 {
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
-  "ros.distro": "humble"
+  "ros.distro": "humble",
+  "cmake.sourceDirectory": "/home/orangepi/it/nomad_software/nomad_hardware/can_device"
   
 }
