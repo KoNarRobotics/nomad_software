@@ -25,7 +25,7 @@ class SimpleDriver(Node):
     
     self.db = cantools.database.load_file(can_db)
     self.frame_to_msg = { msg.frame_id: msg for msg in self.db.messages} 
-    
+    self.buttons_previous = [0,0,0,0,0,0,0,0,0,0]
     self.sub_joint_states = self.create_subscription(
         Joy,
         '/joy',
@@ -64,9 +64,16 @@ class SimpleDriver(Node):
   def can_receive(self):
     recived_frame = self.can_bus.recv(0.1)
     data,name = self.decode_msg(recived_frame)
-    # if data is not None:
-    #   print(f"{name} {data}")
+    if data is not None:
+      print(f"{name} {data}")
   
+  def check_if_button_pressed(self, buttons, index):
+    pressed = False
+    if buttons[index] != self.buttons_previous[index] and buttons[index] == 1:
+      pressed = True
+    self.buttons_previous[index] = buttons[index]
+    return pressed
+
   def joy_callback(self, msg: Joy):
     x = msg.axes[0]
     y = msg.axes[1]
@@ -75,6 +82,10 @@ class SimpleDriver(Node):
       length = 1
     turn_radius = self.get_parameter("turn_radius").value
     y = y * turn_radius
+
+    # we chage so when we turn by moving joysin dwon it reverse in sma direction as front 
+    if x < 0:
+      y= -y
 
     if y > 0:
       correction_L = 1
@@ -89,7 +100,14 @@ class SimpleDriver(Node):
     dc_FL = velocity * correction_L
     dc_RL = velocity * correction_L
 
-    a = self.get_parameter("kaganiec_predkosci").value * 100000
+    a = self.get_parameter("kaganiec_predkosci").value 
+    
+    if msg.buttons[8] == 1:
+      a = 1
+      self.get_logger().warning("TURBO Activated")
+      
+    # scale to 0-100000
+    a = a * 100000
     dc_FR = int(dc_FR * a) 
     dc_FL = int(dc_FL * a)
     dc_RR = int(dc_RR * a)

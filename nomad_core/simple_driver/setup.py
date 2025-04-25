@@ -19,7 +19,9 @@ setup(
     license='MIT',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [ 'sd_node = simple_driver.simple_driver:main' 
+        'console_scripts': [ 
+          'sd_node = simple_driver.simple_driver:main',
+          'rc_switch = simple_driver.rc_switch:main', 
         ],
     },
 )
