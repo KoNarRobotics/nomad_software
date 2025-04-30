@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<robot name="NomadT_model" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find NomadT_model_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find NomadT_model_description)/urdf/NomadT_model.trans" />
+<xacro:include filename="$(find NomadT_model_description)/urdf/NomadT_model.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.32920890774345984 0.17733538635778068 0.013316507964551381" rpy="0 0 0"/>
+    <mass value="157.70571797100908"/>
+    <inertia ixx="11.421598" iyy="13.78338" izz="21.492722" ixy="0.036256" iyz="0.072065" ixz="-0.143263"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis6_1">
+  <inertial>
+    <origin xyz="0.007225961258415681 4.1853158938565116e-08 4.800782289482441e-07" rpy="0 0 0"/>
+    <mass value="0.10979080097486774"/>
+    <inertia ixx="3.1e-05" iyy="1.7e-05" izz="1.7e-05" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.801114 -0.16755 -0.823572" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis6_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.801114 -0.16755 -0.823572" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis6_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis5_1">
+  <inertial>
+    <origin xyz="0.0084444847889934 0.03526950290938413 -2.0042607595804895e-05" rpy="0 0 0"/>
+    <mass value="0.7380382010921881"/>
+    <inertia ixx="0.000565" iyy="0.000349" izz="0.000655" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.772714 -0.132328 -0.823572" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis5_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.772714 -0.132328 -0.823572" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis5_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis4_1">
+  <inertial>
+    <origin xyz="0.08099752063356713 0.0029647500644616465 0.0005687278180661615" rpy="0 0 0"/>
+    <mass value="1.4547009987350654"/>
+    <inertia ixx="0.003899" iyy="0.003373" izz="0.006431" ixy="-0.000284" iyz="7e-06" ixz="1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.647714 -0.1675 -0.823483" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.647714 -0.1675 -0.823483" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis3_1">
+  <inertial>
+    <origin xyz="0.027675608114228645 -0.03759732188944928 5.637328832364119e-05" rpy="0 0 0"/>
+    <mass value="8.317405539202603"/>
+    <inertia ixx="0.015468" iyy="0.106206" izz="0.100956" ixy="-0.006113" iyz="-1.2e-05" ixz="8e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.397714 -0.1955 -0.823483" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.397714 -0.1955 -0.823483" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis2_1">
+  <inertial>
+    <origin xyz="0.002099428351328536 0.009311520113809951 0.22505833743411396" rpy="0 0 0"/>
+    <mass value="8.991055834875237"/>
+    <inertia ixx="0.174381" iyy="0.171312" izz="0.013743" ixy="-0.000107" iyz="-0.004764" ixz="-0.001591"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.394121 -0.2115 -0.4485" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.394121 -0.2115 -0.4485" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis1_1">
+  <inertial>
+    <origin xyz="-0.03578592758364613 -0.051104310523229474 0.06645264752756658" rpy="0 0 0"/>
+    <mass value="6.591344841076199"/>
+    <inertia ixx="0.02725" iyy="0.017968" izz="0.037284" ixy="-0.013039" iyz="0.000524" ixz="0.000361"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.394121 -0.1795 -0.3805" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.394121 -0.1795 -0.3805" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find NomadT_model_description)/meshes/axis1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Revolute 1" type="continuous">
+  <origin xyz="0.0284 0.035222 0.0" rpy="0 0 0"/>
+  <parent link="axis5_1"/>
+  <child link="axis6_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 2" type="continuous">
+  <origin xyz="0.125 -0.035172 8.9e-05" rpy="0 0 0"/>
+  <parent link="axis4_1"/>
+  <child link="axis5_1"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="Revolute 3" type="continuous">
+  <origin xyz="0.25 -0.028 0.0" rpy="0 0 0"/>
+  <parent link="axis3_1"/>
+  <child link="axis4_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 4" type="continuous">
+  <origin xyz="0.003593 -0.016 0.374983" rpy="0 0 0"/>
+  <parent link="axis2_1"/>
+  <child link="axis3_1"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="Revolute 5" type="continuous">
+  <origin xyz="0.0 0.032 0.068" rpy="0 0 0"/>
+  <parent link="axis1_1"/>
+  <child link="axis2_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="Revolute 6" type="continuous">
+  <origin xyz="0.394121 0.1795 0.3805" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="axis1_1"/>
+  <axis xyz="-0.0 0.0 -1.0"/>
+</joint>
+
+</robot>
