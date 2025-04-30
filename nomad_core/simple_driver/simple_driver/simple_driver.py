@@ -14,7 +14,7 @@ class SimpleDriver(Node):
 
 
     self.declare_parameter("kaganiec_predkosci", 0.2)
-    self.declare_parameter("turn_radius", 1)
+    self.declare_parameter("turn_radius", 0.8)
 
     self.declare_parameter("can_db", "/home/lemonx/it/nomad_software/nomad_hardware/can_device/can_constants/can_messages/output/can.dbc")
     can_db  = self.get_parameter("can_db").value  
@@ -77,10 +77,15 @@ class SimpleDriver(Node):
   def joy_callback(self, msg: Joy):
     x = msg.axes[0]
     y = msg.axes[1]
+    z = msg.axes[2]
     length = (x**2 + y**2)**0.5
     if length > 1:
       length = 1
-    turn_radius = self.get_parameter("turn_radius").value
+
+    # this will make so at max different speed we will have different turn response from the robot
+    # tra = self.get_parameter("turn_radius").value
+    # turn_radius = 1.0 - x*tra  
+    turn_radius = 1.0
     y = y * turn_radius
 
     # we chage so when we turn by moving joysin dwon it reverse in sma direction as front 
@@ -93,6 +98,7 @@ class SimpleDriver(Node):
     else:
       correction_L = 1 + y*2
       correction_R = 1
+
     velocity = length * x
 
     dc_FR = velocity * correction_R
@@ -114,7 +120,6 @@ class SimpleDriver(Node):
     dc_RL = int(dc_RL * a)
     self.get_logger().info(f"dc_FL: {dc_FL} dc_FR: {dc_FR}  dc_RL: {dc_RL} dc_RR: {dc_RR}")
     self.set_duty_cycle(dc_FR,dc_FL,dc_RR,dc_RL)
-    pass
 
 def main(args=None):
   rclpy.init(args=args)

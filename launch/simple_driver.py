@@ -22,7 +22,7 @@ def generate_launch_description():
             parameters=[
                 {
                   "can_db" : resolve_relative_path("../nomad_hardware/can_device/can_constants/can_messages/output/can.dbc") ,
-                  "kaganiec_predkosci" : 0.2
+                  "kaganiec_predkosci" : 0.3
                 }
             ],
             remappings=[
