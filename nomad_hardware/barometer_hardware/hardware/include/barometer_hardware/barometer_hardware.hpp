@@ -39,8 +39,8 @@ public:
   // hardware_interface::return_type write(const rclcpp::Time &time, const rclcpp::Duration &period) override;
 
 private:
-  void can_callback_status(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_data(CanDriver &can_driver, const CanFrame &frame, void *args);
+  void can_callback_status(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_data(CanDriver &can, const CanFrame &frame, void *args);
 
 
   float barometer_pressure;

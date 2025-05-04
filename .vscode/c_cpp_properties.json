@@ -20,7 +20,8 @@
         "${workspaceFolder}/build/compile_commands.json",
         "${workspaceFolder}/build/barometer_hardware/compile_commands.json",
         "${workspaceFolder}/build/can_device/compile_commands.json",
-        "${workspaceFolder}/build/shared_types_nomad/compile_commands.json"
+        "${workspaceFolder}/build/shared_types_nomad/compile_commands.json",
+        "${workspaceFolder}/build/vesc_hardware/compile_commands.json"
       ]
     }
   ],

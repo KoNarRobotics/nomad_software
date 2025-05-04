@@ -39,12 +39,12 @@ public:
   hardware_interface::return_type write(const rclcpp::Time &time, const rclcpp::Duration &period) override;
 
 private:
-  void can_callback_status_1(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_status_2(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_status_3(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_status_4(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_status_5(CanDriver &can_driver, const CanFrame &frame, void *args);
-  void can_callback_status_6(CanDriver &can_driver, const CanFrame &frame, void *args);
+  void can_callback_status_1(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_status_2(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_status_3(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_status_4(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_status_5(CanDriver &can, const CanFrame &frame, void *args);
+  void can_callback_status_6(CanDriver &can, const CanFrame &frame, void *args);
 
   enum integration_level_t : std::uint8_t { POSITION = 1, VELOCITY = 2, CURRENT = 3 };
 

@@ -107,8 +107,8 @@ hardware_interface::return_type MCBarometerHardware::read(const rclcpp::Time &ti
   return hardware_interface::return_type::OK;
 }
 
-void MCBarometerHardware::can_callback_status(CanDriver &can_driver, const CanFrame &frame, void *args) {
-  (void)can_driver;
+void MCBarometerHardware::can_callback_status(CanDriver &can, const CanFrame &frame, void *args) {
+  (void)can;
   (void)args;
 
   can_barometer_status_t status;
@@ -119,8 +119,8 @@ void MCBarometerHardware::can_callback_status(CanDriver &can_driver, const CanFr
   barometer_status = status.status;
 }
 
-void MCBarometerHardware::can_callback_data(CanDriver &can_driver, const CanFrame &frame, void *args) {
-  (void)can_driver;
+void MCBarometerHardware::can_callback_data(CanDriver &can, const CanFrame &frame, void *args) {
+  (void)can;
   (void)args;
 
   can_barometer_data_t data;
