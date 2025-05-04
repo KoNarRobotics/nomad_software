@@ -6,3 +6,6 @@
 [submodule "nomad_core/Pilot_6_axis"]
 	path = nomad_core/Pilot_6_axis
 	url = git@github.com:X-Lemon-X/Pilot_6_axis.git
+[submodule "nomad_hardware/ros2_control_cmake"]
+	path = nomad_hardware/ros2_control_cmake
+	url = git@github.com:ros-controls/ros2_control_cmake.git

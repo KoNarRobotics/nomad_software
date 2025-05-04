@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="vesc_ros2_control" params="name">
+
+    <ros2_control name="GazeboSystem" type="system">
+      <hardware>
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        <param name="can_interface">can0</param>
+      </hardware>
+
+      <joint name="left_joint">
+        <command_interface name="velocity">
+          <param name="min">-9000</param>
+          <param name="max">9000</param>
+        </command_interface>
+        <command_interface name="current">
+          <param name="min">-60</param>
+          <param name="max">60</param>
+        </command_interface>
+        <!-- <command_interface name="break_current">
+          <param name="min">-60</param>
+          <param name="max">60</param>
+        </command_interface> -->
+
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="current"/>
+      </joint>
+
+      <joint name="right_joint">
+        <command_interface name="velocity">
+          <param name="min">-9000</param>
+          <param name="max">9000</param>
+        </command_interface>
+        <command_interface name="current">
+          <param name="min">-60</param>
+          <param name="max">60</param>
+        </command_interface>
+        <!-- <command_interface name="break_current">
+          <param name="min">-60</param>
+          <param name="max">60</param>
+        </command_interface> -->
+
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="current"/>
+      </joint>
+
+    </ros2_control>
+
+    <gazebo>
+      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so"/>
+      <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

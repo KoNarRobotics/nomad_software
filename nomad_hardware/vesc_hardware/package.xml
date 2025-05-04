@@ -4,14 +4,16 @@
   <name>vesc_hardware</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="dudzinski.patryk.02@gmail.com">lemonx</maintainer>
-  <license>MIT</license>
+  <maintainer email="dodpat02@gmail.com">lemonx</maintainer>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>rclcpp</depend>
-  <depend>std_msgs</depend>
+  <depend>backward_ros</depend>
   <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
   <depend>can_device</depend>
 
   <test_depend>ament_lint_auto</test_depend>

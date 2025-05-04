@@ -1,0 +1,340 @@
+#include "hardware_interface/actuator_interface.hpp"
+#include "hardware_interface/handle.hpp"
+#include "hardware_interface/hardware_info.hpp"
+#include "hardware_interface/system_interface.hpp"
+#include "hardware_interface/types/hardware_interface_return_values.hpp"
+#include "rclcpp/macros.hpp"
+#include "can_device/can_device.hpp"
+#include "can_device/can_messages.h"
+
+#include "vesc_hardware/vesc_hardware.hpp"
+
+
+using namespace nomad_hardware;
+using namespace nomad_core;
+
+namespace {
+constexpr const char *nameHardwareInterface = "MCVescHardware";
+}
+
+#define VESC_ID_BASE_START 0x14
+
+hardware_interface::CallbackReturn MCVescHardware::on_init(const hardware_interface::HardwareInfo &info) {
+  if(hardware_interface::SystemInterface::on_init(info) != hardware_interface::CallbackReturn::SUCCESS) {
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
+  auto can_interface_name = info_.hardware_parameters["can_interface"];
+
+  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name, true, 100000, 32),
+                                   nameHardwareInterface, "Failed to create CAN driver");
+
+  RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "CAN driver created on interface %s",
+               can_interface_name.c_str());
+
+  if(info_.joints.size() != 2) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC hardware should have 2 joints");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
+  for(const hardware_interface::ComponentInfo &joint : info_.joints) {
+    if(joint.command_interfaces.size() != 2) {
+      RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC joint should have 3 command interfaces");
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+    if(joint.state_interfaces.size() != 3) {
+      RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC joint should have 3 state interfaces");
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+
+    if(!(joint.command_interfaces[0].name == hardware_interface::HW_IF_VELOCITY ||
+         joint.command_interfaces[0].name == hardware_interface::HW_IF_CURRENT)) {
+      RCLCPP_FATAL(get_logger(), "Joint '%s' has %s command interface. Expected %s or %s", joint.name.c_str(),
+                   joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY,
+                   hardware_interface::HW_IF_CURRENT);
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+
+    if(joint.state_interfaces.size() != 3) {
+      RCLCPP_FATAL(get_logger(), "Joint '%s'has %zu state interfaces. 3 expected.", joint.name.c_str(),
+                   joint.command_interfaces.size());
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+
+    if(!(joint.state_interfaces[0].name == hardware_interface::HW_IF_POSITION ||
+         joint.state_interfaces[0].name == hardware_interface::HW_IF_VELOCITY ||
+         joint.state_interfaces[0].name == hardware_interface::HW_IF_CURRENT)) {
+      RCLCPP_FATAL(get_logger(), "Joint '%s' has %s state interface. Expected %s, %s, or %s.",
+                   joint.name.c_str(), joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION,
+                   hardware_interface::HW_IF_VELOCITY, hardware_interface::HW_IF_CURRENT);
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+  }
+
+  joints.resize(4);
+  return hardware_interface::CallbackReturn::SUCCESS;
+}
+
+hardware_interface::CallbackReturn MCVescHardware::on_configure(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
+
+  for(const auto &[name, descr] : joint_state_interfaces_) {
+    set_state(name, 0.0);
+  }
+  for(const auto &[name, descr] : joint_command_interfaces_) {
+    set_command(name, 0.0);
+  }
+
+  for(size_t i = 0; i < 4; i++) {
+    // thiss will genrate the frame ids for the 4 motors statring with 4 ending at 7
+    uint32_t st1_id = (CAN_VESC_FLEFT_STATUS_1_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+    uint32_t st2_id = (CAN_VESC_FLEFT_STATUS_2_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+    uint32_t st3_id = (CAN_VESC_FLEFT_STATUS_3_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+    uint32_t st4_id = (CAN_VESC_FLEFT_STATUS_4_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+    uint32_t st5_id = (CAN_VESC_FLEFT_STATUS_5_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+    uint32_t st6_id = (CAN_VESC_FLEFT_STATUS_6_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st1_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_1,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st2_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_2,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st3_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_3,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st4_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_4,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st5_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_5,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+
+    NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(st6_id,
+                                                          std::bind(&MCVescHardware::can_callback_status_6,
+                                                                    this, std::placeholders::_1,
+                                                                    std::placeholders::_2, std::placeholders::_3),
+                                                          &joints[i]),
+                                 nameHardwareInterface);
+  }
+
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Successfully configured!");
+  return hardware_interface::CallbackReturn::SUCCESS;
+}
+
+hardware_interface::CallbackReturn MCVescHardware::on_activate(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
+  // NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
+
+  for(size_t i = 0; i < joints.size(); i++) {
+    joints[i]                   = {};
+    joints[i].integration_level = integration_level_t::VELOCITY;
+  }
+
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "System successfully activated!");
+  return hardware_interface::CallbackReturn::SUCCESS;
+}
+
+hardware_interface::CallbackReturn MCVescHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
+  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->close_can(), nameHardwareInterface);
+
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "System successfully deactivated!");
+  return hardware_interface::CallbackReturn::SUCCESS;
+}
+
+hardware_interface::return_type MCVescHardware::read(const rclcpp::Time &time, const rclcpp::Duration &period) {
+  // nothing to do here sinc vesc sends the data at random intervals
+  // joint are in order
+  // FLEFT  front left
+  // FRIGHT front right
+  // RLEFT  rear left
+  // RRIGHT rear right
+  (void)time;
+  (void)period;
+  set_state("left_joint/position", joints[0].position);
+  set_state("left_joint/velocity", joints[0].velocity);
+  set_state("left_joint/current", joints[0].current);
+  set_state("right_joint/position", joints[1].position);
+  set_state("right_joint/velocity", joints[1].velocity);
+  set_state("right_joint/current", joints[1].current);
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Read lv: %f  rv: %f", joints[0].velocity, joints[1].velocity);
+  return hardware_interface::return_type::OK;
+}
+
+hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, const rclcpp::Duration &period) {
+  (void)time;
+  (void)period;
+  // joint are in order
+  // FLEFT  front left
+  // FRIGHT front right
+  // RLEFT  rear left
+  // RRIGHT rear right
+
+  auto left_velocity            = get_command<double>("left_joint/velocity");
+  auto left_current             = get_command<double>("left_joint/current");
+  auto right_velocity           = get_command<double>("right_joint/velocity");
+  auto right_current            = get_command<double>("right_joint/current");
+  std::vector<double> joint_cur = { left_current, right_current, left_current, right_current };
+  std::vector<double> joint_vel = { left_velocity, right_velocity, left_velocity, right_velocity };
+  std::vector<double> joint_pos = { 0.0, 0.0, 0.0, 0.0 };
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Write lv: %f  rv: %f", left_velocity, right_velocity);
+
+  // for testing <remove later>
+  joints[0].velocity = left_velocity;
+  joints[0].current  = left_current;
+  joints[1].velocity = right_velocity;
+  joints[1].current  = right_current;
+  joints[2].velocity = left_velocity;
+  joints[2].current  = left_current;
+  joints[3].velocity = right_velocity;
+  joints[3].current  = right_current;
+  // </remove later>
+
+  for(size_t i = 0; i < 4; i++) {
+    joint_t &joint = joints[i];
+    CanFrame frame;
+    switch(joint.integration_level) {
+    case integration_level_t::CURRENT: {
+      can_vesc_fleft_set_current_t str;
+      str.current = joint_cur[i];
+      frame.id    = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+      frame.size  = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
+      break;
+    }
+    case integration_level_t::VELOCITY: {
+      can_vesc_fleft_set_rpm_t str;
+      str.rpm    = joint_vel[i];
+      frame.id   = (CAN_VESC_FLEFT_SET_RPM_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+      frame.size = CAN_VESC_FLEFT_SET_RPM_LENGTH;
+      can_vesc_fleft_set_rpm_pack(frame.data, &str, frame.size);
+      break;
+    }
+    case integration_level_t::POSITION: {
+      can_vesc_fleft_set_pos_t str;
+      str.position = joint_pos[i];
+      frame.id     = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | (i + VESC_ID_BASE_START);
+      frame.size   = CAN_VESC_FLEFT_SET_POS_LENGTH;
+      can_vesc_fleft_set_pos_pack(frame.data, &str, frame.size);
+      break;
+    }
+    default:
+      RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Unknown integration level %d",
+                   static_cast<int>(joint.integration_level));
+      return hardware_interface::return_type::ERROR;
+    }
+    // send the frame to the can bus
+    can_driver->send(frame);
+  }
+
+
+  for(const auto &[name, descr] : sensor_state_interfaces_) {
+    RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Sensor: %s  Desc %s", name.c_str(),
+                descr.interface_name.c_str());
+  }
+
+  return hardware_interface::return_type::OK;
+}
+
+void MCVescHardware::can_callback_status_1(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+
+  can_vesc_fleft_status_1_t status;
+  if(can_vesc_fleft_status_1_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 1");
+    return;
+  }
+
+  joint->current    = status.current;
+  joint->duty_cycle = status.duty;
+  joint->erpm       = status.erpm;
+}
+
+void MCVescHardware::can_callback_status_2(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+  can_vesc_fleft_status_2_t status;
+  if(can_vesc_fleft_status_2_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 2");
+    return;
+  }
+  joint->amd_hours         = status.amp_hours;
+  joint->amd_hours_charged = status.amp_hours_chg;
+}
+
+void MCVescHardware::can_callback_status_3(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+  can_vesc_fleft_status_3_t status;
+  if(can_vesc_fleft_status_3_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 3");
+    return;
+  }
+  joint->watt_hours         = status.wat_hours;
+  joint->watt_hours_charged = status.wat_hours_chg;
+}
+
+void MCVescHardware::can_callback_status_4(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+  can_vesc_fleft_status_4_t status;
+  if(can_vesc_fleft_status_4_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 4");
+    return;
+  }
+  joint->current_in         = status.current_in;
+  joint->pid_pos            = status.pid_pos;
+  joint->temperature_mosfet = status.temp_mosfet;
+  joint->temperature_motor  = status.temp_motor;
+}
+
+void MCVescHardware::can_callback_status_5(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+  can_vesc_fleft_status_5_t status;
+  if(can_vesc_fleft_status_5_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 5");
+    return;
+  }
+  joint->tachometer = status.tachometer;
+  joint->voltage    = status.volts_in;
+}
+
+void MCVescHardware::can_callback_status_6(CanDriver &can_driver, const CanFrame &frame, void *args) {
+  (void)can_driver;
+  joint_t *joint = static_cast<joint_t *>(args);
+  can_vesc_fleft_status_6_t status;
+  if(can_vesc_fleft_status_6_unpack(&status, frame.data, frame.size)) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 6");
+    return;
+  }
+  joint->adc1 = status.adc1;
+  joint->adc2 = status.adc2;
+  joint->adc3 = status.adc3;
+  joint->ppm  = status.ppm;
+}
+
+
+#include "pluginlib/class_list_macros.hpp"
+PLUGINLIB_EXPORT_CLASS(nomad_hardware::MCVescHardware, hardware_interface::SystemInterface)

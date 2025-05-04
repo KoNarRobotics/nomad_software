@@ -1,19 +1,29 @@
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "cStandard": "c17",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-x64",
-            "compilerPath": "/usr/bin/g++",
-            "compileCommands": [
-                "${workspaceFolder}/build/compile_commands.json"
-            ]
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/opt/ros/jazzy/include/**",
+        "/usr/include/**",
+        "{workspaceFolder}/install/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "compileCommands": [
+        "${workspaceFolder}/build/compile_commands.json",
+        "${workspaceFolder}/build/barometer_hardware/compile_commands.json",
+        "${workspaceFolder}/build/can_device/compile_commands.json",
+        "${workspaceFolder}/build/shared_types_nomad/compile_commands.json"
+      ]
+    }
+  ],
+  "compileCommands": "${workspaceFolder}/build/**/compile_commands.json",
+  "version": 4
 }

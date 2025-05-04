@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="ros_control_barometer" params="name use_sim">
+
+    <xacro:unless value="${use_sim}">
+
+      <ros2_control name="${name}_barometer" type="sensor">
+
+        <hardware>
+          <plugin>barometer_hardware/MCBarometerHardware</plugin>
+          <param name="can_interface">can0</param>
+        </hardware>
+
+        <sensor name="barometer">
+          <state_interface name="temperature"/>
+          <state_interface name="pressure"/>
+        </sensor>
+
+      </ros2_control>
+
+    </xacro:unless>
+
+  </xacro:macro>
+
+</robot>
