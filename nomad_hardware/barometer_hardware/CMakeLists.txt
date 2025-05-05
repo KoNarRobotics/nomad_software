@@ -43,10 +43,10 @@ if(NOT controller_manager_FOUND)
   "Are you using the correct branch of the ros2_control_demos repository?")
 endif()
 
-add_executable(barometer_node hardware/barometer_node.cpp)
-ament_target_dependencies(barometer_node rclcpp hardware_interface)
-target_link_libraries(barometer_node barometer_hardware)
-install(TARGETS barometer_node DESTINATION lib/${PROJECT_NAME})
+# add_executable(barometer_node hardware/barometer_node.cpp)
+# ament_target_dependencies(barometer_node rclcpp hardware_interface)
+# target_link_libraries(barometer_node barometer_hardware)
+# install(TARGETS barometer_node DESTINATION lib/${PROJECT_NAME})
 
 
 add_library(${PROJECT_NAME} 

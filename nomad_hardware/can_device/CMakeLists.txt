@@ -37,6 +37,8 @@ add_library(${PROJECT_NAME}
   can_constants/can_messages/output/can_messages.c
 )
 
+
+
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
@@ -102,6 +104,14 @@ install(
 # ament_export_include_directories(include)
 # ament_export_libraries(${PROJECT_NAME})
 # ament_export_dependencies(rclcpp)
+
+
+add_executable(can_device_node   src/can_node.cpp)
+target_include_directories(can_device_node PUBLIC can_constants/can_messages/output)
+ament_target_dependencies(can_device_node rclcpp )
+target_link_libraries(can_device_node can_device)
+install(TARGETS can_device_node DESTINATION lib/${PROJECT_NAME})
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
