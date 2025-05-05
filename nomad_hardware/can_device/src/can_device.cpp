@@ -43,9 +43,9 @@ using namespace nomad_core;
 using namespace nomad_hardware;
 
 
-CanDriver::CanDriver(const std::string &can_interface, bool _threaded, uint32_t _timeout_us, int _queue_size)
+CanDriver::CanDriver(const std::string &can_interface, bool _threaded, uint32_t _timeout_us, size_t _queue_size, size_t _buffer_size)
 : can_interface_name(can_interface), threaded(_threaded), queue_size(_queue_size), socket_fd(-1),
-  is_open(false), timeout_us(_timeout_us), addr({}), ifr({}) {
+  buffer_size(_buffer_size), is_open(false), timeout_us(_timeout_us), addr({}), ifr({}) {
 }
 
 CanDriver::~CanDriver() {
@@ -53,20 +53,24 @@ CanDriver::~CanDriver() {
 }
 
 Result<std::shared_ptr<CanDriver>>
-CanDriver::Make(const std::string &can_interface, bool threaded, uint32_t timeout_us, int _queue_size) {
+CanDriver::Make(const std::string &can_interface, bool threaded, uint32_t timeout_us, size_t _queue_size, size_t _buffer_size) {
   if(can_interface.empty()) {
     return Status::Invalid("CAN interface is empty");
+  }
+  if(timeout_us <= 0) {
+    return Status::Invalid("Invalid timeout value");
   }
 
   if(_queue_size <= 0) {
     return Status::Invalid("Invalid queue size");
   }
 
-  if(timeout_us <= 0) {
-    return Status::Invalid("Invalid timeout value");
+  if(_buffer_size <= CANFD_MAX_DLEN) {
+    return Status::Invalid("Invalid buffer size");
   }
 
-  auto driver = std::shared_ptr<CanDriver>(new CanDriver(can_interface, threaded, timeout_us, _queue_size));
+  auto driver =
+  std::shared_ptr<CanDriver>(new CanDriver(can_interface, threaded, timeout_us, _queue_size, _buffer_size));
   return Result<std::shared_ptr<CanDriver>>::OK(driver);
 }
 
@@ -75,9 +79,9 @@ Status CanDriver::open_can() {
     return Status::Invalid("CAN socket is already open");
   }
 
-  // cehck if we have registered callbacks
+  // check if we have registered callbacks
   if(callbacks_.empty() && threaded) {
-    return Status::Invalid("No callbacks registered");
+    return Status::Invalid("No can callbacks registered");
   }
 
   // Open the CAN socket
@@ -98,7 +102,7 @@ Status CanDriver::open_can() {
   for(auto &callback : callbacks_) {
     can_filter filter;
     filter.can_id   = callback.first;
-    filter.can_mask = callback.first & CAN_EFF_MASK;
+    filter.can_mask = callback.first | CAN_RTR_FLAG;
     filters.push_back(filter);
   }
 
@@ -169,7 +173,6 @@ Status CanDriver::close_can() {
 }
 
 Status CanDriver::send_to_queue(const CanFrame &frame) {
-  std::lock_guard<std::mutex> lock(queue_mutex);
   if(!is_open) {
     return Status::Invalid("CAN socket is not open");
   }
@@ -182,6 +185,7 @@ Status CanDriver::send_to_queue(const CanFrame &frame) {
     return Status::Invalid("CAN frame ID is invalid");
   }
 
+  std::lock_guard<std::mutex> lock(queue_mutex);
   send_queue.push(frame);
 
   RCLCPP_DEBUG(rclcpp::get_logger("CanDriver"), "Sending CAN frame with ID %u", frame.id);
@@ -224,7 +228,7 @@ Status CanDriver::write_can_frame(const CanFrame &canframe) {
   }
   auto frame = canframe.to_can_frame<can_frame>();
 
-  std::lock_guard<std::mutex> lock(queue_mutex);
+  // std::lock_guard<std::mutex> lock(can_mutex);
   ssize_t bytes_written = write(socket_fd, &frame, sizeof(frame));
   if(bytes_written < 0) {
     return Status::IOError("CanDriver: Failed to write CAN frame");
@@ -236,8 +240,7 @@ Result<CanFrame> CanDriver::read_can_frame() {
   if(!is_open) {
     return Status::Invalid("CAN socket is not open");
   }
-  std::lock_guard<std::mutex> lock(queue_mutex);
-
+  // std::lock_guard<std::mutex> lock(can_mutex);
   can_frame frame;
   ssize_t bytes_read = read(socket_fd, &frame, sizeof(frame));
   if(bytes_read < 0) {
@@ -249,7 +252,8 @@ Result<CanFrame> CanDriver::read_can_frame() {
 Result<CanFrame> CanDriver::read_and_handle_frame() {
   // std::lock_guard<std::mutex> lock(queue_mutex);
   NOMAD_ASSING_OR_RETURN(frame, read_can_frame());
-  auto it = callbacks_.find(frame.id);
+  uint32_t id = frame.id | (frame.is_remote_request ? CAN_RTR_FLAG : 0);
+  auto it     = callbacks_.find(id);
   if(it != callbacks_.end()) {
     auto callback = it->second.first;
     auto args     = it->second.second;

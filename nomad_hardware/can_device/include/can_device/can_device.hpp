@@ -102,8 +102,11 @@ public:
   /// @param queue_size Size of the queue for sending CAN frames.
   /// @return A shared pointer to the CanDriver instance.
   /// @note The queue size should be big enough to handle the number of frames that will be sent.
-  static Result<std::shared_ptr<CanDriver>>
-  Make(const std::string &can_interface, bool threaded = true, uint32_t timeout_us = 10000, int queue_size = 32);
+  static Result<std::shared_ptr<CanDriver>> Make(const std::string &can_interface,
+                                                 bool threaded       = true,
+                                                 uint32_t timeout_us = 10000,
+                                                 size_t queue_size   = 32,
+                                                 size_t buffer_size  = 512);
 
   /// @brief Send a CAN frame to the CAN bus.
   /// @param frame The CAN frame to send.
@@ -120,7 +123,7 @@ public:
   Result<CanFrame> receive();
 
   /// @brief Add a callback for a specific CAN ID.
-  /// @param id The CAN ID to listen for.
+  /// @param id The CAN ID to listen for, if you want to receive callback for a remote request you have to set "id = SOME_CAN_ID | CAN_RTR_FLAG".
   /// @param callback The callback function to call when a frame with the specified ID is received.
   /// @param args Optional arguments to pass to the callback function.
   /// @return Status of the operation.
@@ -148,7 +151,7 @@ public:
   Status close_can();
 
 private:
-  CanDriver(const std::string &can_interface, bool threaded, uint32_t timeout_us, int queue_size = 32);
+  CanDriver(const std::string &can_interface, bool threaded, uint32_t timeout_us, size_t queue_size = 32, size_t buffer_size = 512);
 
   /// @brief Handle CAN transmission in a separate thread.
   void handle_can_transmission();
@@ -172,6 +175,7 @@ private:
   std::queue<CanFrame> receive_queue;
   std::condition_variable queue_condition;
   std::mutex queue_mutex;
+  std::mutex can_mutex;
   std::unordered_map<uint32_t, std::pair<can_callback_type, void *>> callbacks_;
 
   std::thread can_read_thread;
@@ -181,10 +185,10 @@ private:
 
   std::string can_interface_name;
   bool threaded;
-  int queue_size;
+  size_t queue_size;
   int socket_fd;
-  int buffer_size = 32;
-  bool is_open    = false;
+  size_t buffer_size;
+  bool is_open = false;
 
   const uint32_t timeout_us;
   sockaddr_can addr;

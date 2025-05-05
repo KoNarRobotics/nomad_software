@@ -5,7 +5,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-
+find_program(CCACHE_PROGRAM ccache)
+if(NOT CCACHE_PROGRAM)
+    message(STATUS "ccache not found")
+else()
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
+endif()
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
