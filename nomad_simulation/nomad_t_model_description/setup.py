@@ -19,10 +19,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='author',
-    maintainer_email='todo@todo.com',
+    maintainer='authorPatryk Dudziński',
+    maintainer_email='dudzinski.patryk.02@gmail.com',
     description='The ' + package_name + ' package',
-    license='TODO: License declaration',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

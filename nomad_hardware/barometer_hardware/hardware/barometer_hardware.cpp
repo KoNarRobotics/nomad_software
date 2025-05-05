@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2025 Patryk Dudziński
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/*
+ * Authors: Patryk Dudziński
+ */
+
 #include "hardware_interface/actuator_interface.hpp"
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
@@ -41,12 +67,13 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_init(const hardware_i
 
   NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 2, nameHardwareInterface,
                                "Barometer should have 2 state interfaces");
-  auto sensor_index = std::distance(info_.sensors.begin(), sensor_it);
+  // auto sensor_index = std::distance(info_.sensors.begin(), sensor_it);
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_configure(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
   NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_BAROMETER_STATUS_FRAME_ID,
                                                         std::bind(&MCBarometerHardware::can_callback_status,
                                                                   this, std::placeholders::_1,
@@ -69,34 +96,38 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_configure(const rclcp
 }
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_activate(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_activate");
   NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
+  (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_deactivate");
   NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->close_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::return_type MCBarometerHardware::read(const rclcpp::Time &time, const rclcpp::Duration &period) {
-  // CanFrame frame;
-  // frame.id                = CAN_MESSAGES_BAROMETER_STATUS_FRAME_ID;
-  // frame.size              = 0;
-  // frame.is_remote_request = true;
-  // frame.is_extended       = CAN_MESSAGES_BAROMETER_DATA_IS_EXTENDED;
-  // can_driver->send(frame);
-  // if(!can_driver->receive().ok())
-  //   return hardware_interface::return_type::ERROR;
-  // frame.id                = CAN_MESSAGES_BAROMETER_DATA_FRAME_ID;
-  // frame.size              = 0;
-  // frame.is_remote_request = true;
-  // frame.is_extended       = CAN_MESSAGES_BAROMETER_DATA_IS_EXTENDED;
-  // can_driver->send(frame);
-  // can_driver->receive();
-  // if(!can_driver->receive().ok())
-  //   return hardware_interface::return_type::ERROR;
+  (void)time;
+  (void)period;
+  CanFrame frame;
+  frame.id                = CAN_BAROMETER_STATUS_FRAME_ID;
+  frame.size              = 0;
+  frame.is_remote_request = true;
+  frame.is_extended       = CAN_BAROMETER_DATA_IS_EXTENDED;
+  can_driver->send(frame);
+  if(!can_driver->receive().ok())
+    return hardware_interface::return_type::ERROR;
+  frame.id                = CAN_BAROMETER_DATA_FRAME_ID;
+  frame.size              = 0;
+  frame.is_remote_request = true;
+  frame.is_extended       = CAN_BAROMETER_DATA_IS_EXTENDED;
+  can_driver->send(frame);
+  can_driver->receive();
+  if(!can_driver->receive().ok())
+    return hardware_interface::return_type::ERROR;
 
   for(const auto &[name, descr] : sensor_state_interfaces_) {
     RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Sensor: %s  Desc %s", name.c_str(),
