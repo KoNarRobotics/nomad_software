@@ -51,6 +51,7 @@ hardware_interface::CallbackReturn MCVescHardware::on_init(const hardware_interf
   }
 
   auto can_interface_name = info_.hardware_parameters["can_interface"];
+  prefix                  = info_.hardware_parameters["prefix"];
 
   NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name, true, 100000, 32),
                                    nameHardwareInterface, "Failed to create CAN driver");
@@ -197,12 +198,12 @@ hardware_interface::return_type MCVescHardware::read(const rclcpp::Time &time, c
   // RRIGHT rear right
   (void)time;
   (void)period;
-  set_state("left_joint/position", joints[0].position);
-  set_state("left_joint/velocity", joints[0].velocity);
-  set_state("left_joint/current", joints[0].current);
-  set_state("right_joint/position", joints[1].position);
-  set_state("right_joint/velocity", joints[1].velocity);
-  set_state("right_joint/current", joints[1].current);
+  set_state(prefix + "left_wheel_joint/position", joints[0].position);
+  set_state(prefix + "left_wheel_joint/velocity", joints[0].velocity);
+  set_state(prefix + "left_wheel_joint/current", joints[0].current);
+  set_state(prefix + "right_wheel_joint/position", joints[1].position);
+  set_state(prefix + "right_wheel_joint/velocity", joints[1].velocity);
+  set_state(prefix + "right_wheel_joint/current", joints[1].current);
   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Read lv: %f  rv: %f", joints[0].velocity, joints[1].velocity);
   return hardware_interface::return_type::OK;
 }
@@ -216,10 +217,10 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
   // RLEFT  rear left
   // RRIGHT rear right
 
-  auto left_velocity            = get_command<double>("left_joint/velocity");
-  auto left_current             = get_command<double>("left_joint/current");
-  auto right_velocity           = get_command<double>("right_joint/velocity");
-  auto right_current            = get_command<double>("right_joint/current");
+  auto left_velocity            = get_command<double>(prefix + "left_wheel_joint/velocity");
+  auto left_current             = get_command<double>(prefix + "left_wheel_joint/current");
+  auto right_velocity           = get_command<double>(prefix + "right_wheel_joint/velocity");
+  auto right_current            = get_command<double>(prefix + "right_wheel_joint/current");
   std::vector<double> joint_cur = { left_current, right_current, left_current, right_current };
   std::vector<double> joint_vel = { left_velocity, right_velocity, left_velocity, right_velocity };
   std::vector<double> joint_pos = { 0.0, 0.0, 0.0, 0.0 };
@@ -258,7 +259,7 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
     }
     case integration_level_t::POSITION: {
       can_vesc_fleft_set_pos_t str;
-      str.position = (uint32_t)joint_pos[i] * 1000; 
+      str.position = (uint32_t)joint_pos[i] * 1000;
       frame.id     = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
       frame.size   = CAN_VESC_FLEFT_SET_POS_LENGTH;
       can_vesc_fleft_set_pos_pack(frame.data, &str, frame.size);

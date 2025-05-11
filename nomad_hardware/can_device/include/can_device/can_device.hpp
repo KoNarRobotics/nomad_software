@@ -193,6 +193,8 @@ private:
   const uint32_t timeout_us;
   sockaddr_can addr;
   ifreq ifr;
+
+  static std::vector<std::shared_ptr<CanDriver>> global_can_driver;
 };
 
 

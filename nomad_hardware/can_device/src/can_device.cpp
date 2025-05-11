@@ -42,6 +42,8 @@ SOFTWARE.
 using namespace nomad_core;
 using namespace nomad_hardware;
 
+std::vector<std::shared_ptr<CanDriver>> CanDriver::global_can_driver;
+
 
 CanDriver::CanDriver(const std::string &can_interface, bool _threaded, uint32_t _timeout_us, size_t _queue_size, size_t _buffer_size)
 : can_interface_name(can_interface), threaded(_threaded), queue_size(_queue_size), socket_fd(-1),

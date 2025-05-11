@@ -102,7 +102,7 @@ private:
 
   std::vector<joint_t> joints;
 
-
+  std::string prefix;
   // Parameters for the RRBot simulation
   std::shared_ptr<CanDriver> can_driver;
 };
