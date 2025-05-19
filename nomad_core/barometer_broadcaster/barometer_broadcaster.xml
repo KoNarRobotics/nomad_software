@@ -1,5 +1,5 @@
 <library path="barometer_broadcaster">
-  <class name="barometer_broadcaster/RangeSensorBroadcaster" type="barometer_broadcaster::RangeSensorBroadcaster" base_class_type="controller_interface::ControllerInterface">
+  <class name="barometer_broadcaster/BarometerBroadcaster" type="nomad_core::BarometerBroadcaster" base_class_type="controller_interface::ControllerInterface">
     <description>
 	  This controller publishes the readings of an Barometer sensor as sensor_msgs/Pressure message.
     </description>

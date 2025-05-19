@@ -1,5 +1,5 @@
 <library path="barometer_hardware">
-  <class name="barometer_hardware/MCBarometerHardware" type="barometer_hardware::MCBarometerHardware" base_class_type="hardware_interface::SensorInterface">
+  <class name="barometer_hardware/MCBarometerHardware" type="nomad_hardware::MCBarometerHardware" base_class_type="hardware_interface::SensorInterface">
     <description>
       The ros2_control barometer interface system hardware interface-type.
     </description>

@@ -81,7 +81,7 @@ target_link_libraries(
     ${PARAMETERS_LIB_NAME}
 )
 
-pluginlib_export_plugin_description_file(hardware_interface ${PROJECT_NAME}.xml)
+pluginlib_export_plugin_description_file(controller_interface ${PROJECT_NAME}.xml)
 
 
 # INSTALL

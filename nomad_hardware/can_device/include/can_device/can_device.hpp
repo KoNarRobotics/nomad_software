@@ -97,7 +97,7 @@ public:
 
   /// @brief Create a new CanDriver instance.
   /// @param can_interface Name of the CAN interface to use (e.g. "can0").
-  /// @param threaded If true, the driver should creat a thread to run callback and handel can comunicatin separately.
+  /// @param threaded If true, the driver creates two thread to run callback and handel can communication.
   /// @param timeout_us Timeout for the CAN socket in microseconds should be big if thread is used.
   /// @param queue_size Size of the queue for sending CAN frames.
   /// @return A shared pointer to the CanDriver instance.

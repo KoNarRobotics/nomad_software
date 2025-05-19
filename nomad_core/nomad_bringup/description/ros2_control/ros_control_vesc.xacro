@@ -3,13 +3,20 @@
 
   <xacro:macro name="vesc_ros2_control" params="name">
 
-    <ros2_control name="GazeboSystem" type="system">
-      <hardware>
+    <ros2_control name="VescSystem" type="system">
+      <!-- <hardware>
         <plugin>gazebo_ros2_control/GazeboSystem</plugin>
         <param name="can_interface">can0</param>
+      </hardware> -->
+
+      <hardware>
+        <plugin>vesc_hardware/MCVescHardware</plugin>
+        <param name="can_interface">can0</param>
+        <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
       </hardware>
 
-      <joint name="left_joint">
+
+      <joint name="left_wheel_joint">
         <command_interface name="velocity">
           <param name="min">-9000</param>
           <param name="max">9000</param>
@@ -28,7 +35,7 @@
         <state_interface name="current"/>
       </joint>
 
-      <joint name="right_joint">
+      <joint name="right_wheel_joint">
         <command_interface name="velocity">
           <param name="min">-9000</param>
           <param name="max">9000</param>
@@ -49,10 +56,10 @@
 
     </ros2_control>
 
-    <gazebo>
+    <!-- <gazebo>
       <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so"/>
       <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
-    </gazebo>
+    </gazebo> -->
 
   </xacro:macro>
 

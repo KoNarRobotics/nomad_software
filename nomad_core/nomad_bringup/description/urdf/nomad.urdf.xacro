@@ -8,7 +8,12 @@ https://github.com/ros-simulation/gazebo_ros_demos/blob/kinetic-devel/rrbot_desc
   <xacro:arg name="nomad" default="" />
 
   <!-- Import Nomad vesc ros ros2_control description -->
-  <xacro:include filename="$(find vesc_hardware)/ros2_control/ros_control_vesc.xacro" />
+  <!-- <xacro:include filename="$(find vesc_hardware)/ros2_control/ros_control_vesc.xacro" /> -->
+
+  <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_vesc.xacro" />
+
+  <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_barometer.xacro" />
+
 
   <!-- Import Rviz colors  PROBALY NOT NEEDED since nomad_t_model have ewerthing -->
   <!-- <xacro:include filename="$(find nomad_t_model_description)/nomad_t_model_description/urdf/materials.xacro" /> -->
@@ -26,6 +31,10 @@ https://github.com/ros-simulation/gazebo_ros_demos/blob/kinetic-devel/rrbot_desc
 
   <xacro:vesc_ros2_control name="nomad" />
 
+
+  <xacro:ros_control_barometer name="nomad" />
+
+  <!-- <xacro:ros_control_barometer name="nomad" use_sim="${use_sim}" /> -->
 
 
 

@@ -53,8 +53,8 @@ hardware_interface::CallbackReturn MCVescHardware::on_init(const hardware_interf
   auto can_interface_name = info_.hardware_parameters["can_interface"];
   prefix                  = info_.hardware_parameters["prefix"];
 
-  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name, true, 100000, 32),
-                                   nameHardwareInterface, "Failed to create CAN driver");
+  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name), nameHardwareInterface,
+                                   "Failed to create CAN driver");
 
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "CAN driver created on interface %s",
                can_interface_name.c_str());

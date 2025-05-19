@@ -97,6 +97,12 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster"],
     )
 
+    barometer_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["barometer_state_broadcaster"],
+    )
+
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -132,6 +138,7 @@ def generate_launch_description():
         robot_controller_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
+        barometer_state_broadcaster_spawner
     ]
 
     return LaunchDescription(declared_arguments + nodes)

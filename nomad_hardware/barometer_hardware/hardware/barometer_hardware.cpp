@@ -48,27 +48,27 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_init(const hardware_i
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  auto it = info.hardware_parameters.find("can_interface");
+  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "MCBarometerHardware creating...");
 
-  NOMAD_RC_RETURN_ON_ERROR_MSG(it == info.hardware_parameters.end(), nameHardwareInterface, "No CAN interface specified");
+  auto mayby_can_interface = info_.hardware_parameters.find("can_interface");
+  NOMAD_RC_RETURN_ON_ERROR_MSG(mayby_can_interface != info_.hardware_parameters.end(), nameHardwareInterface,
+                               "No CAN interface specified");
 
-  auto can_interface_name = it->second;
-  NOMAD_RC_RETURN_ON_ERROR_MSG(can_interface_name.empty(), nameHardwareInterface, "CAN interface is empty");
+  auto can_interface_name = mayby_can_interface->second;
+  NOMAD_RC_RETURN_ON_ERROR_MSG(!can_interface_name.empty(), nameHardwareInterface, "CAN interface is empty");
 
-  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name, false, 1000, 32),
-                                   nameHardwareInterface, "Failed to create CAN driver");
+  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name), nameHardwareInterface,
+                                   "Failed to create CAN driver");
 
 
   auto sensor_it =
   std::find_if(info_.sensors.begin(), info_.sensors.end(),
                [](const hardware_interface::ComponentInfo &sensor) { return sensor.name == "barometer"; });
-
-  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it == info_.sensors.end(), nameHardwareInterface, "Barometer not found in hardware info");
+  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it != info_.sensors.end(), nameHardwareInterface, "Barometer not found in hardware info");
 
   NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 2, nameHardwareInterface,
                                "Barometer should have 2 state interfaces");
-  // auto sensor_index = std::distance(info_.sensors.begin(), sensor_it);
-
+  // auto sensor_index = std::distance(info_.sensors.begin(), sensor_it
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -98,6 +98,10 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_configure(const rclcp
 hardware_interface::CallbackReturn MCBarometerHardware::on_activate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_activate");
+  barometer_pressure    = std::numeric_limits<double>::quiet_NaN();
+  barometer_temperature = std::numeric_limits<double>::quiet_NaN();
+  barometer_status      = 0;
+
   NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
@@ -117,23 +121,33 @@ hardware_interface::return_type MCBarometerHardware::read(const rclcpp::Time &ti
   frame.size              = 0;
   frame.is_remote_request = true;
   frame.is_extended       = CAN_BAROMETER_DATA_IS_EXTENDED;
-  can_driver->send(frame);
-  if(!can_driver->receive().ok())
+  if(!can_driver->send(frame).ok()) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to send [Status] CAN frame");
     return hardware_interface::return_type::ERROR;
+  };
+  // if(!can_driver->receive().ok())
+  //   return hardware_interface::return_type::ERROR;
   frame.id                = CAN_BAROMETER_DATA_FRAME_ID;
   frame.size              = 0;
   frame.is_remote_request = true;
   frame.is_extended       = CAN_BAROMETER_DATA_IS_EXTENDED;
-  can_driver->send(frame);
-  can_driver->receive();
-  if(!can_driver->receive().ok())
+  if(!can_driver->send(frame).ok()) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to send [Data] CAN frame");
     return hardware_interface::return_type::ERROR;
+  };
+  // can_driver->receive();
+  // if(!can_driver->receive().ok())
+  //   return hardware_interface::return_type::ERROR;
 
-  for(const auto &[name, descr] : sensor_state_interfaces_) {
-    RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Sensor: %s  Desc %s", name.c_str(),
-                descr.interface_name.c_str());
-  }
+  // for(const auto &[name, descr] : sensor_state_interfaces_) {
+  //   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Sensor: %s  Desc %s", name.c_str(),
+  //               descr.interface_name.c_str());
+  // }
 
+  set_state("barometer/pressure", barometer_pressure);
+  set_state("barometer/temperature", barometer_temperature);
+  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Barometer read: pressure=%.2f, temperature=%.2f, status=%i",
+  //             barometer_pressure, barometer_temperature, barometer_status);
 
   return hardware_interface::return_type::OK;
 }
@@ -167,3 +181,5 @@ void MCBarometerHardware::can_callback_data(CanDriver &can, const CanFrame &fram
 //   // Write data to the barometer if needed
 //   return hardware_interface::return_type::OK;
 // }
+#include "pluginlib/class_list_macros.hpp"
+PLUGINLIB_EXPORT_CLASS(nomad_hardware::MCBarometerHardware, hardware_interface::SensorInterface)

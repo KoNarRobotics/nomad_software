@@ -32,9 +32,7 @@ controller_interface::CallbackReturn BarometerBroadcaster::on_init() {
     RCLCPP_ERROR(get_node()->get_logger(), "Exception thrown during init stage with message: %s \n", e.what());
     return CallbackReturn::ERROR;
   }
-
-  return CallbackReturn::SUCCESS;
-
+  RCLCPP_INFO(get_node()->get_logger(), "BarometerBroadcaster initialized");
   return CallbackReturn::SUCCESS;
 }
 

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="ros_control_barometer" params="name">
+
+    <!-- <xacro:unless value="${use_sim}"> -->
+
+    <ros2_control name="BarometerSensor" type="sensor">
+
+      <hardware>
+        <plugin>barometer_hardware/MCBarometerHardware</plugin>
+        <param name="can_interface">can0</param>
+        <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
+      </hardware>
+
+      <sensor name="barometer">
+        <state_interface name="temperature"/>
+        <state_interface name="pressure"/>
+      </sensor>
+
+    </ros2_control>
+
+    <!-- </xacro:unless> -->
+
+  </xacro:macro>
+
+</robot>

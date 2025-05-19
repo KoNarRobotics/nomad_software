@@ -69,10 +69,10 @@ private:
   void can_callback_data(CanDriver &can, const CanFrame &frame, void *args);
 
 
-  float barometer_pressure;
-  float barometer_temperature;
+  double barometer_pressure;
+  double barometer_temperature;
   int barometer_status;
-  std::unordered_map<std::string, float *> barometer_state_map;
+  // std::unordered_map<std::string, double *> barometer_state_map;
 
   // Parameters for the RRBot simulation
   std::shared_ptr<CanDriver> can_driver;
