@@ -105,7 +105,7 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_activate(const rclcpp
 hardware_interface::CallbackReturn MCBarometerHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_deactivate");
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->close_can(), nameHardwareInterface);
+  NOMAD_RC_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 

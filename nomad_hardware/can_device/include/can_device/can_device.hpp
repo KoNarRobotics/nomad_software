@@ -104,7 +104,7 @@ public:
   /// @note The queue size should be big enough to handle the number of frames that will be sent.
   static Result<std::shared_ptr<CanDriver>> Make(const std::string &can_interface,
                                                  bool threaded       = true,
-                                                 uint32_t timeout_us = 10000,
+                                                 uint32_t timeout_us = 100000,
                                                  size_t queue_size   = 32,
                                                  size_t buffer_size  = 512);
 
@@ -141,14 +141,16 @@ public:
 
   /// @brief Open the CAN socket.
   /// @note This function will create a new thread to handle the CAN socket.
-  /// be sure to add_callback before calling this function. since it will create filters for all the registered callbacks.
   /// @return Status of the operation.
   Status open_can();
 
-  /// @brief Close the CAN socket.
-  /// @note This function will stop the thread that handles the CAN socket.
+  /// @brief Close the CAN socket if is the last one.
+  /// @param can_driver The CanDriver instance to close.
+  /// @note This function will reset the pointer to the CanDriver instance, when its the last one then CAN will be closed.
+  /// @note This function will not close the CAN socket if there are other instances using it.
   /// @return Status of the operation.
-  Status close_can();
+  static Status close_can(std::shared_ptr<CanDriver> &can_driver);
+
 
 private:
   CanDriver(const std::string &can_interface, bool threaded, uint32_t timeout_us, size_t queue_size = 32, size_t buffer_size = 512);
@@ -170,6 +172,7 @@ private:
 
   Result<CanFrame> read_and_handle_frame();
 
+  Status internall_close_can();
 
   std::queue<CanFrame> send_queue;
   std::queue<CanFrame> receive_queue;
@@ -193,6 +196,8 @@ private:
   const uint32_t timeout_us;
   sockaddr_can addr;
   ifreq ifr;
+
+  int close_calls = 0;
 
   static std::vector<std::shared_ptr<CanDriver>> global_can_driver;
 };

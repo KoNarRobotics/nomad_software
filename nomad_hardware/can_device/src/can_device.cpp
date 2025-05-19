@@ -51,7 +51,8 @@ CanDriver::CanDriver(const std::string &can_interface, bool _threaded, uint32_t 
 }
 
 CanDriver::~CanDriver() {
-  close_can();
+  // close_can();
+  internall_close_can();
 }
 
 Result<std::shared_ptr<CanDriver>>
@@ -71,6 +72,15 @@ CanDriver::Make(const std::string &can_interface, bool threaded, uint32_t timeou
     return Status::Invalid("Invalid buffer size");
   }
 
+  auto mayby_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
+                                [can_interface](const std::shared_ptr<CanDriver> &driver) {
+                                  return driver->can_interface_name == can_interface;
+                                });
+  // if we have already created a driver for this interface, return it
+  if(mayby_can != global_can_driver.end()) {
+    return Result<std::shared_ptr<CanDriver>>::OK(*mayby_can);
+  }
+  // if the driver is not found, create a new one
   auto driver =
   std::shared_ptr<CanDriver>(new CanDriver(can_interface, threaded, timeout_us, _queue_size, _buffer_size));
   return Result<std::shared_ptr<CanDriver>>::OK(driver);
@@ -122,7 +132,7 @@ Status CanDriver::open_can() {
   timeout.tv_sec  = 0;
   timeout.tv_usec = timeout_us;
   if(setsockopt(socket_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))) {
-    close_can();
+    internall_close_can();
     return Status::ExecutionError("CanDriver: Set CAN socket option 'SO_RCVTIMEO' failed !");
   }
 
@@ -140,12 +150,12 @@ Status CanDriver::open_can() {
     can_perform_tasks_thread = std::thread(&CanDriver::handle_can_tasks, this);
 
     if(!can_read_thread.joinable()) {
-      close_can();
+      internall_close_can();
       return Status::ExecutionError("CanDriver: Failed to create CAN thread");
     }
 
     if(!can_perform_tasks_thread.joinable()) {
-      close_can();
+      internall_close_can();
       return Status::ExecutionError("CanDriver: Failed to create CAN thread");
     }
   }
@@ -154,7 +164,42 @@ Status CanDriver::open_can() {
   return Status::OK();
 }
 
-Status CanDriver::close_can() {
+Status CanDriver::close_can(std::shared_ptr<CanDriver> &can_driver) {
+  if(!can_driver) {
+    return Status::Invalid("CAN driver is null");
+  }
+
+  auto maybe_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
+                                [can_driver](const std::shared_ptr<CanDriver> &driver) {
+                                  return driver->can_interface_name == can_driver->can_interface_name;
+                                });
+  if(maybe_can == global_can_driver.end()) {
+    return Status::Invalid("CAN driver not found");
+  }
+
+  // we reset the pointer to the driver, so it will remove it references.
+  if(can_driver) {
+    can_driver.reset();
+  }
+  // we check if the driver is used by other instances
+  if(maybe_can->use_count() > 1) {
+    return Status::OK();
+  }
+
+
+  // if the driver is not used by other instances, we close it
+  // mayby_can->get()->internall_close_can();
+
+  // remove the driver from the global list
+  global_can_driver.erase(maybe_can);
+  // this will drop the last reference to the driver,
+  // so it will trigger the destructor
+  // and close the socket
+
+  return Status::OK();
+}
+
+Status CanDriver::internall_close_can() {
   run_thread = false;
 
   if(can_read_thread.joinable()) {
@@ -195,8 +240,10 @@ Status CanDriver::send_to_queue(const CanFrame &frame) {
 }
 
 Status CanDriver::add_callback(uint32_t id, can_callback_type callback, void *args) {
+  bool can_was_open = is_open;
   if(is_open) {
-    return Status::Invalid("Cannot add callback after opening CAN socket");
+    internall_close_can();
+    // return Status::Invalid("Cannot add callback after opening CAN socket");
   }
 
   callbacks_.find(id);
@@ -208,11 +255,17 @@ Status CanDriver::add_callback(uint32_t id, can_callback_type callback, void *ar
   }
   // Add the callback for the specified ID
   callbacks_[id] = std::make_pair(callback, args);
+
+  if(can_was_open) {
+    return open_can();
+  }
   return Status::OK();
 }
 
 Status CanDriver::remove_callback(uint32_t id) {
+  bool can_was_open = is_open;
   if(is_open) {
+    internall_close_can();
     return Status::Invalid("Cannot remove callback after opening CAN socket");
   }
 
@@ -221,6 +274,9 @@ Status CanDriver::remove_callback(uint32_t id) {
     return Status::KeyError("Callback for ID not found");
   callbacks_.erase(it);
 
+  if(can_was_open) {
+    return open_can();
+  }
   return Status::OK();
 }
 
