@@ -204,7 +204,7 @@ hardware_interface::return_type MCVescHardware::read(const rclcpp::Time &time, c
   set_state(prefix + "right_wheel_joint/position", joints[1].position);
   set_state(prefix + "right_wheel_joint/velocity", joints[1].velocity);
   set_state(prefix + "right_wheel_joint/current", joints[1].current);
-  RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Read lv: %f  rv: %f", joints[0].velocity, joints[1].velocity);
+  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Read lv: %f  rv: %f", joints[0].velocity, joints[1].velocity);
   return hardware_interface::return_type::OK;
 }
 

@@ -7,6 +7,7 @@
 
 #include "semantic_components/semantic_component_interface.hpp"
 #include "sensor_msgs/msg/fluid_pressure.hpp"
+#include "sensor_msgs/msg/temperature.hpp"
 
 namespace semantic_components {
 
@@ -36,6 +37,28 @@ public:
    */
   bool get_values_as_message(sensor_msgs::msg::FluidPressure &message) const {
     message.fluid_pressure = get_pressure();
+    message.variance       = 0.0;
+    return true;
+  }
+};
+
+class TemperatureSensor : public SemanticComponentInterface<sensor_msgs::msg::Temperature> {
+public:
+  explicit TemperatureSensor(const std::string &name)
+  : SemanticComponentInterface(name, { name + "/" + "temperature" }) {
+  }
+
+  float get_temperature() const {
+    const auto data = state_interfaces_[0].get().get_optional();
+    if(data.has_value()) {
+      return data.value();
+    }
+    return std::numeric_limits<float>::quiet_NaN();
+  }
+
+  bool get_values_as_message(sensor_msgs::msg::Temperature &message) const {
+    message.temperature = get_temperature();
+    message.variance    = 0.0;
     return true;
   }
 };

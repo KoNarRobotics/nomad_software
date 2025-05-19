@@ -34,9 +34,9 @@ SOFTWARE.
 #include "semantic_components/semantic_component_interface.hpp"
 #include "semantic_components/semantic_component_command_interface.hpp"
 #include "sensor_msgs/msg/fluid_pressure.hpp"
+#include "sensor_msgs/msg/temperature.hpp"
 
 #include "semantic_components/range_sensor.hpp"
-
 // #include "multi_interface_forward_command_controller.hpp"
 
 #include "barometer_broadcaster/barometer_broadcaster_parameters.hpp"
@@ -61,21 +61,27 @@ public:
   controller_interface::return_type update(const rclcpp::Time &time, const rclcpp::Duration &period) override;
 
 protected:
-  using ParamListener  = barometer_broadcaster::ParamListener;
-  using Params         = barometer_broadcaster::Params;
-  using PressureSensor = semantic_components::PressureSensor;
+  using ParamListener             = barometer_broadcaster::ParamListener;
+  using Params                    = barometer_broadcaster::Params;
+  using PressureSensor            = semantic_components::PressureSensor;
+  using TemperatureSensor         = semantic_components::TemperatureSensor;
+  using StatePublisherPressure    = realtime_tools::RealtimePublisher<sensor_msgs::msg::FluidPressure>;
+  using StatePublisherTemperature = realtime_tools::RealtimePublisher<sensor_msgs::msg::Temperature>;
 
   // semantic_components::RangeSensor as;
   // controller_interface::
   std::shared_ptr<ParamListener> param_listener_;
   Params params_;
-  // using sensor_type = semantic_components::SemanticComponentInterface<sensor_msgs::msg::FluidPressure>;
 
   std::unique_ptr<PressureSensor> pressure_sensor_;
+  std::unique_ptr<TemperatureSensor> temperature_sensor_;
 
-  using StatePublisher = realtime_tools::RealtimePublisher<sensor_msgs::msg::FluidPressure>;
-  rclcpp::Publisher<sensor_msgs::msg::FluidPressure>::SharedPtr sensor_state_publisher_;
-  std::unique_ptr<StatePublisher> realtime_publisher_;
+
+  rclcpp::Publisher<sensor_msgs::msg::FluidPressure>::SharedPtr barometer_sensor_state_publisher_;
+  std::unique_ptr<StatePublisherPressure> realtime_pressure_publisher_;
+
+  rclcpp::Publisher<sensor_msgs::msg::Temperature>::SharedPtr temperature_publisher_;
+  std::unique_ptr<StatePublisherTemperature> realtime_temperature_publisher_;
 };
 
 } // namespace nomad_core
