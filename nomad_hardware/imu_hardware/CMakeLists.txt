@@ -49,12 +49,6 @@ add_library(${PROJECT_NAME}
   src/imu_hardware.cpp
 )
 
-# target_include_directories(
-#   ${PROJECT_NAME}
-#   SHARED
-#   include/hardware/include
-# )
-
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 target_include_directories(${PROJECT_NAME} PUBLIC

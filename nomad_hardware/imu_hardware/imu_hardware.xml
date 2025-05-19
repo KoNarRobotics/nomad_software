@@ -1,0 +1,7 @@
+<library path="imu_hardware">
+  <class name="imu_hardware/MCImuHardware" type="nomad_hardware::MCImuHardware" base_class_type="hardware_interface::SensorInterface">
+    <description>
+      The ros2_control barometer interface system hardware interface-type.
+    </description>
+  </class>
+</library>
