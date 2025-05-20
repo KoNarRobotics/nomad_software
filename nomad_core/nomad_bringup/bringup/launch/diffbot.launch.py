@@ -103,6 +103,12 @@ def generate_launch_description():
         arguments=["barometer_state_broadcaster"],
     )
 
+    imu_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["imu_state_broadcaster"],
+    )
+
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -138,7 +144,8 @@ def generate_launch_description():
         robot_controller_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
-        barometer_state_broadcaster_spawner
+        barometer_state_broadcaster_spawner,
+        imu_state_broadcaster_spawner
     ]
 
     return LaunchDescription(declared_arguments + nodes)

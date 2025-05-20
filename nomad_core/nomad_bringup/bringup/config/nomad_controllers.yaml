@@ -11,11 +11,23 @@ controller_manager:
     barometer_state_broadcaster:
       type: barometer_broadcaster/BarometerBroadcaster
 
+    imu_state_broadcaster:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
+imu_state_broadcaster:
+  ros__parameters:
+    # The name of the sensor to be used for the IMU
+    sensor_name: "imu"
+    frame_id: "base_link"
+    static_covariance_orientation: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    static_covariance_angular_velocity: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    static_covariance_linear_acceleration: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+
 barometer_state_broadcaster:
   ros__parameters:
     # The name of the sensor to be used for the barometer
     sensor_name: "barometer"
-    # The frame id of the sensor
     frame_id: "base_link"
 
 nomad_diffdrive_base_controller:

@@ -12,7 +12,7 @@
       <hardware>
         <plugin>vesc_hardware/MCVescHardware</plugin>
         <param name="can_interface">can0</param>
-        <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
+        <!-- <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter> -->
       </hardware>
 
 

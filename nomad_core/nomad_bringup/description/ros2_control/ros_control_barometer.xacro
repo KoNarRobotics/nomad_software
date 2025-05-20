@@ -10,7 +10,7 @@
       <hardware>
         <plugin>barometer_hardware/MCBarometerHardware</plugin>
         <param name="can_interface">can0</param>
-        <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter>
+        <!-- <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter> -->
       </hardware>
 
       <sensor name="barometer">

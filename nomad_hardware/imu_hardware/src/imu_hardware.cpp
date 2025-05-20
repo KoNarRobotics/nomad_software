@@ -65,8 +65,12 @@ hardware_interface::CallbackReturn MCImuHardware::on_init(const hardware_interfa
                [](const hardware_interface::ComponentInfo &sensor) { return sensor.name == "imu"; });
   NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it != info_.sensors.end(), nameHardwareInterface, "IMU not found in hardware info");
 
-  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 10, nameHardwareInterface,
-                               "Barometer should have 10 state interfaces");
+  NOMAD_RC_RETURN_ON_ERROR_MSG(
+  sensor_it->state_interfaces.size() == 14, nameHardwareInterface,
+  "IMU should have 13 state interfaces: orientation.x, orientation.y, orientation.z, orientation.w, "
+  "angular_velocity.x, angular_velocity.y, angular_velocity.z, linear_acceleration.x, "
+  "linear_acceleration.y, linear_acceleration.z, magnetic_field.x, magnetic_field.y, magnetic_field.z, "
+  "temperature");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -230,9 +234,9 @@ hardware_interface::return_type MCImuHardware::read(const rclcpp::Time &time, co
   set_state("imu/magnetic_field.x", imu_magnetic_field_x);
   set_state("imu/magnetic_field.y", imu_magnetic_field_y);
   set_state("imu/magnetic_field.z", imu_magnetic_field_z);
-  set_state("imu/gyration.x", imu_gyration_x);
-  set_state("imu/gyration.y", imu_gyration_y);
-  set_state("imu/gyration.z", imu_gyration_z);
+  set_state("imu/angular_velocity.x", imu_gyration_x);
+  set_state("imu/angular_velocity.y", imu_gyration_y);
+  set_state("imu/angular_velocity.z", imu_gyration_z);
   set_state("imu/temperature", imu_temperature);
 
   return hardware_interface::return_type::OK;
