@@ -263,10 +263,11 @@ void MCImuHardware::can_callback_orientation(CanDriver &can, const CanFrame &fra
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu orientation");
     return;
   }
-  imu_orientation_x = orientation.x;
-  imu_orientation_y = orientation.y;
-  imu_orientation_z = orientation.z;
-  imu_orientation_w = orientation.w;
+  double scale      = (1 << 14);
+  imu_orientation_x = (double)orientation.x / scale;
+  imu_orientation_y = (double)orientation.y / scale;
+  imu_orientation_z = (double)orientation.z / scale;
+  imu_orientation_w = (double)orientation.w / scale;
 }
 
 void MCImuHardware::can_callback_linear_acceleration(CanDriver &can, const CanFrame &frame, void *args) {
@@ -278,9 +279,10 @@ void MCImuHardware::can_callback_linear_acceleration(CanDriver &can, const CanFr
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu linear acceleration");
     return;
   }
-  imu_linear_acceleration_x = linear_acceleration.x;
-  imu_linear_acceleration_y = linear_acceleration.y;
-  imu_linear_acceleration_z = linear_acceleration.z;
+  double scale              = 100;
+  imu_linear_acceleration_x = (double)linear_acceleration.x / scale;
+  imu_linear_acceleration_y = (double)linear_acceleration.y / scale;
+  imu_linear_acceleration_z = (double)linear_acceleration.z / scale;
 }
 
 void MCImuHardware::can_callback_magnetic_field(CanDriver &can, const CanFrame &frame, void *args) {
@@ -292,9 +294,10 @@ void MCImuHardware::can_callback_magnetic_field(CanDriver &can, const CanFrame &
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu magnetic field");
     return;
   }
-  imu_magnetic_field_x = magnetic_field.x;
-  imu_magnetic_field_y = magnetic_field.y;
-  imu_magnetic_field_z = magnetic_field.z;
+  double scale         = 16;
+  imu_magnetic_field_x = (double)magnetic_field.x / scale;
+  imu_magnetic_field_y = (double)magnetic_field.y / scale;
+  imu_magnetic_field_z = (double)magnetic_field.z / scale;
 }
 
 void MCImuHardware::can_callback_gyration(CanDriver &can, const CanFrame &frame, void *args) {
@@ -306,9 +309,10 @@ void MCImuHardware::can_callback_gyration(CanDriver &can, const CanFrame &frame,
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu gyration");
     return;
   }
-  imu_gyration_x = gyration.x;
-  imu_gyration_y = gyration.y;
-  imu_gyration_z = gyration.z;
+  double scale   = 100;
+  imu_gyration_x = (double)gyration.x / scale;
+  imu_gyration_y = (double)gyration.y / scale;
+  imu_gyration_z = (double)gyration.z / scale;
 }
 
 void MCImuHardware::can_callback_temperature_status(CanDriver &can, const CanFrame &frame, void *args) {
@@ -333,6 +337,7 @@ void MCImuHardware::can_callback_temperature_data(CanDriver &can, const CanFrame
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu temperature data");
     return;
   }
+  // for temp scale is 1
   imu_temperature = temperature_data.accelerometer;
 }
 
