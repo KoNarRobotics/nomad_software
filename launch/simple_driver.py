@@ -21,7 +21,7 @@ def generate_launch_description():
             name='simple_driver',
             parameters=[
                 {
-                  "can_db" : resolve_relative_path("../nomad_hardware/can_device/can_constants/can_messages/output/can.dbc") ,
+                  "can_db" : resolve_relative_path("../nomad_hardware/can_device/can_constants/can_messages/output/can_messages.dbc") ,
                   "kaganiec_predkosci" : 0.3
                 }
             ],
