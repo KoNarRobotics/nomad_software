@@ -21,14 +21,15 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+          <!-- <mesh filename="file://$(find nomad_t_model_description)/meshes/base_link.obj" scale="0.001 0.001 0.001"/> -->
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/nomad_frame_urdf.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/nomad_frame_urdf.obj" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
     </link>
@@ -42,7 +43,7 @@
       <visual>
         <origin xyz="-0.801114 -0.16755 -0.823572" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis6_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis6_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -63,7 +64,7 @@
       <visual>
         <origin xyz="-0.772714 -0.132328 -0.823572" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis5_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis5_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -84,7 +85,7 @@
       <visual>
         <origin xyz="-0.647714 -0.1675 -0.823483" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis4_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis4_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -105,7 +106,7 @@
       <visual>
         <origin xyz="-0.397714 -0.1955 -0.823483" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis3_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis3_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -126,7 +127,7 @@
       <visual>
         <origin xyz="-0.394121 -0.2115 -0.4485" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis2_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis2_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -147,7 +148,7 @@
       <visual>
         <origin xyz="-0.394121 -0.1795 -0.3805" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis1_1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/axis1_1.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="silver"/>
       </visual>
@@ -170,7 +171,28 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <cylinder length="0.08" radius="0.26"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/wheel_asspmbly_urdf_left.obj" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.05" radius="0.02"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="left_joint_link_2">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1.0"/>
+        <inertia ixx="0.01" iyy="0.01" izz="0.01" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/wheel_asspmbly_urdf_left.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="black"/>
       </visual>
@@ -191,7 +213,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <cylinder length="0.08" radius="0.26"/>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/wheel_asspmbly_urdf_right.obj" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="black"/>
       </visual>
@@ -203,42 +225,63 @@
       </collision>
     </link>
 
-    <joint name="Revolute 1" type="continuous">
+    <link name="right_joint_link_2">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1.0"/>
+        <inertia ixx="0.01" iyy="0.01" izz="0.01" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/wheel_asspmbly_urdf_right.obj" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.05" radius="0.02"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="Revolute 6" type="continuous">
       <origin xyz="0.0284 0.035222 0.0" rpy="0 0 0"/>
       <parent link="axis5_1"/>
       <child link="axis6_1"/>
       <axis xyz="-1.0 0.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 2" type="continuous">
+    <joint name="Revolute 5" type="continuous">
       <origin xyz="0.125 -0.035172 8.9e-05" rpy="0 0 0"/>
       <parent link="axis4_1"/>
       <child link="axis5_1"/>
       <axis xyz="-0.0 -1.0 -0.0"/>
     </joint>
 
-    <joint name="Revolute 3" type="continuous">
+    <joint name="Revolute 4" type="continuous">
       <origin xyz="0.25 -0.028 0.0" rpy="0 0 0"/>
       <parent link="axis3_1"/>
       <child link="axis4_1"/>
       <axis xyz="-1.0 0.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 4" type="continuous">
+    <joint name="Revolute 3" type="continuous">
       <origin xyz="0.003593 -0.016 0.374983" rpy="0 0 0"/>
       <parent link="axis2_1"/>
       <child link="axis3_1"/>
       <axis xyz="-0.0 -1.0 -0.0"/>
     </joint>
 
-    <joint name="Revolute 5" type="continuous">
+    <joint name="Revolute 2" type="continuous">
       <origin xyz="0.0 0.032 0.068" rpy="0 0 0"/>
       <parent link="axis1_1"/>
       <child link="axis2_1"/>
       <axis xyz="0.0 1.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 6" type="continuous">
+    <joint name="Revolute 1" type="continuous">
       <origin xyz="0.394121 0.1795 0.3805" rpy="0 0 0"/>
       <parent link="base_link"/>
       <child link="axis1_1"/>
@@ -247,23 +290,37 @@
 
 
     <joint name="base_joint" type="fixed">
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
       <parent link="${parent}"/>
       <child link="base_link" />
     </joint>
 
     <joint name="left_wheel_joint" type="continuous">
-      <origin xyz="1.0 0.0 0.0" rpy="${PI/2} 0 0"/>
+      <origin xyz="0.62 0.42 -0.02" rpy="-${PI/2} 0 0"/>
       <parent link="base_link"/>
       <child link="left_joint_link"/>
-      <axis xyz="-0.5 0.0 0.0"/>
+      <axis xyz="0.0 0.0 0.5"/>
+    </joint>
+
+    <joint name="left_wheel_joint_2" type="continuous">
+      <origin xyz="0.03 0.42 -0.02" rpy="-${PI/2} 0 0"/>
+      <parent link="base_link"/>
+      <child link="left_joint_link_2"/>
+      <axis xyz="0.0 0.0 0.5"/>
     </joint>
 
     <joint name="right_wheel_joint" type="continuous">
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <origin xyz="0.03 -0.14 -0.02" rpy="-${PI/2} 0 0"/>
       <parent link="base_link"/>
       <child link="right_joint_link"/>
-      <axis xyz="0.5 0.0 0.0"/>
+      <axis xyz="0.0 0.0 0.5"/>
+    </joint>
+
+    <joint name="right_wheel_joint_2" type="continuous">
+      <origin xyz="0.62 -0.14 -0.02" rpy="-${PI/2} 0 0"/>
+      <parent link="base_link"/>
+      <child link="right_joint_link_2"/>
+      <axis xyz="0.0 0.0 0.5"/>
     </joint>
 
 

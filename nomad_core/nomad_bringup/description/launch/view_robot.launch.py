@@ -79,27 +79,27 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), "nomad_t_model_description/config", "display.rviz"]
+        [FindPackageShare(description_package), "config", "display.rviz"]
     )
 
     joint_state_publisher_node = Node(
-        package="joint_state_publisher_gui",
-        executable="joint_state_publisher_gui",
-        condition=IfCondition(gui),
+      package="joint_state_publisher_gui",
+      executable="joint_state_publisher_gui",
+      condition=IfCondition(gui),
     )
     robot_state_publisher_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[robot_description],
+      package="robot_state_publisher",
+      executable="robot_state_publisher",
+      output="both",
+      parameters=[robot_description],
     )
     rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="log",
-        arguments=["-d", rviz_config_file],
-        condition=IfCondition(gui),
+      package="rviz2",
+      executable="rviz2",
+      name="rviz2",
+      output="log",
+      arguments=["-d", rviz_config_file],
+      condition=IfCondition(gui),
     )
 
     nodes = [
