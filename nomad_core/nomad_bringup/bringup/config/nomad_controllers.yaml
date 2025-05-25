@@ -18,11 +18,12 @@ imu_state_broadcaster:
   ros__parameters:
     # The name of the sensor to be used for the IMU
     sensor_name: "imu"
-    frame_id: "base_link"
+    frame_id: "imu_link"
     static_covariance_orientation: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    static_covariance_angular_velocity: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    static_covariance_linear_acceleration: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
+    static_covariance_angular_velocity:
+      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    static_covariance_linear_acceleration:
+      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 barometer_state_broadcaster:
   ros__parameters:

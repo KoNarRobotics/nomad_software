@@ -246,42 +246,67 @@
       </collision>
     </link>
 
-    <joint name="Revolute 6" type="continuous">
+
+    <link name="imu_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.03 0.02 0.01"/>
+        </geometry>
+      </collision>
+    </link>
+
+
+    <joint name="revolute_arm_6" type="continuous">
       <origin xyz="0.0284 0.035222 0.0" rpy="0 0 0"/>
       <parent link="axis5_1"/>
       <child link="axis6_1"/>
       <axis xyz="-1.0 0.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 5" type="continuous">
+    <joint name="revolute_arm_5" type="continuous">
       <origin xyz="0.125 -0.035172 8.9e-05" rpy="0 0 0"/>
       <parent link="axis4_1"/>
       <child link="axis5_1"/>
       <axis xyz="-0.0 -1.0 -0.0"/>
     </joint>
 
-    <joint name="Revolute 4" type="continuous">
+    <joint name="revolute_arm_4" type="continuous">
       <origin xyz="0.25 -0.028 0.0" rpy="0 0 0"/>
       <parent link="axis3_1"/>
       <child link="axis4_1"/>
       <axis xyz="-1.0 0.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 3" type="continuous">
+    <joint name="revolute_arm_3" type="continuous">
       <origin xyz="0.003593 -0.016 0.374983" rpy="0 0 0"/>
       <parent link="axis2_1"/>
       <child link="axis3_1"/>
       <axis xyz="-0.0 -1.0 -0.0"/>
     </joint>
 
-    <joint name="Revolute 2" type="continuous">
+    <joint name="revolute_arm_2" type="continuous">
       <origin xyz="0.0 0.032 0.068" rpy="0 0 0"/>
       <parent link="axis1_1"/>
       <child link="axis2_1"/>
       <axis xyz="0.0 1.0 0.0"/>
     </joint>
 
-    <joint name="Revolute 1" type="continuous">
+    <joint name="revolute_arm_1" type="continuous">
       <origin xyz="0.394121 0.1795 0.3805" rpy="0 0 0"/>
       <parent link="base_link"/>
       <child link="axis1_1"/>
@@ -323,6 +348,13 @@
       <axis xyz="0.0 0.0 0.5"/>
     </joint>
 
+
+    <joint name="imu_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="imu_link"/>
+      <axis xyz="0 0 1"/>
+    </joint>
 
   </xacro:macro>
 
