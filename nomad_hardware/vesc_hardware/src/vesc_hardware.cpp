@@ -204,7 +204,10 @@ hardware_interface::return_type MCVescHardware::read(const rclcpp::Time &time, c
   set_state(prefix + "right_wheel_joint/position", joints[1].position);
   set_state(prefix + "right_wheel_joint/velocity", joints[1].velocity);
   set_state(prefix + "right_wheel_joint/current", joints[1].current);
-  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Read lv: %f  rv: %f", joints[0].velocity, joints[1].velocity);
+  // for(size_t i = 0; i < joints.size(); ++i) {
+  //   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Joint %zu: position = %f, velocity = %f", i,
+  //               joints[i].position, joints[i].velocity);
+  // }
   return hardware_interface::return_type::OK;
 }
 
@@ -217,25 +220,25 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
   // RLEFT  rear left
   // RRIGHT rear right
 
-  auto left_velocity            = get_command<double>(prefix + "left_wheel_joint/velocity");
-  auto left_current             = get_command<double>(prefix + "left_wheel_joint/current");
-  auto right_velocity           = get_command<double>(prefix + "right_wheel_joint/velocity");
-  auto right_current            = get_command<double>(prefix + "right_wheel_joint/current");
+  auto left_velocity  = get_command<double>(prefix + "left_wheel_joint/velocity");
+  auto left_current   = get_command<double>(prefix + "left_wheel_joint/current");
+  auto right_velocity = get_command<double>(prefix + "right_wheel_joint/velocity");
+  auto right_current  = get_command<double>(prefix + "right_wheel_joint/current");
+
+  // Value given by ros2 are usual physical values, but the vesc expects them boring ones so.
+  // for current we get amps so we are good
+  // for position we get rad so we need to convert it to degrees but its doesn;t need postion so we ignore it
+
+  // for velocity we get rad/s so we need to convert it to rpm
+  // 1 rad/s = 60 / (2 * PI) rpm
+  double scale_for_velocity = 60.0 / (2.0 * M_PI);
+  left_velocity             = left_velocity * scale_for_velocity;
+  right_velocity            = right_velocity * scale_for_velocity;
+
   std::vector<double> joint_cur = { left_current, right_current, left_current, right_current };
   std::vector<double> joint_vel = { left_velocity, right_velocity, left_velocity, right_velocity };
   std::vector<double> joint_pos = { 0.0, 0.0, 0.0, 0.0 };
   // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Write lv: %f  rv: %f", left_velocity, right_velocity);
-
-  // for testing <remove later>
-  // joints[0].velocity = left_velocity;
-  // joints[0].current  = left_current;
-  // joints[1].velocity = right_velocity;
-  // joints[1].current  = right_current;
-  // joints[2].velocity = left_velocity;
-  // joints[2].current  = left_current;
-  // joints[3].velocity = right_velocity;
-  // joints[3].current  = right_current;
-  // </remove later>
 
   for(size_t i = 0; i < 4; i++) {
     joint_t &joint = joints[i];
@@ -243,9 +246,9 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
     switch(joint.integration_level) {
     case integration_level_t::CURRENT: {
       can_vesc_fleft_set_current_t str;
-      str.current = (uint32_t)joint_cur[i] * 1000;
-      frame.id    = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size  = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      str.current = (uint32_t)joint_cur[i] * 1000; // the value of current is in mA | so we need to multiply it by 1000
+      frame.id   = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
       can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
       break;
     }
@@ -259,9 +262,9 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
     }
     case integration_level_t::POSITION: {
       can_vesc_fleft_set_pos_t str;
-      str.position = (uint32_t)joint_pos[i] * 1000;
-      frame.id     = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size   = CAN_VESC_FLEFT_SET_POS_LENGTH;
+      str.position = (uint32_t)joint_pos[i] * 1000; // the value of position is in mDeg | so we need to multiply it by 1000
+      frame.id   = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size = CAN_VESC_FLEFT_SET_POS_LENGTH;
       can_vesc_fleft_set_pos_pack(frame.data, &str, frame.size);
       break;
     }
@@ -343,8 +346,14 @@ void MCVescHardware::can_callback_status_5(CanDriver &can, const CanFrame &frame
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 5");
     return;
   }
-  joint->tachometer = (double)status.tachometer;
-  joint->voltage    = (double)status.volts_in;
+  //  This is weard tachometer shows position the wheel have moved in degrees
+  // but for some mysterious resone it shows that value in 180 deg ber 360 deg rotation oven though
+  // the cvalue input into the vesc are correct.
+  double scale_for_tachometer = 4.0 * M_PI / 360.0; //  2 * 2 * M_PI = 360 deg
+  joint->position             = (double)status.tachometer * scale_for_tachometer;
+  joint->voltage              = (double)status.volts_in * 0.1;
+  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Tachometer: %f  Voltage: %f", joint->tachometer,
+  //             joint->voltage);
 }
 
 void MCVescHardware::can_callback_status_6(CanDriver &can, const CanFrame &frame, void *args) {

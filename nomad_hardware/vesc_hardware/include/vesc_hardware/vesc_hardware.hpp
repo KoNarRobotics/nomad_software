@@ -90,7 +90,7 @@ private:
     double temperature_motor;
     double current_in;
     double pid_pos;
-    double tachometer;
+    // double tachometer;
     double voltage;
 
     double adc1;
