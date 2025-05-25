@@ -73,7 +73,7 @@ private:
   void can_callback_status_5(CanDriver &can, const CanFrame &frame, void *args);
   void can_callback_status_6(CanDriver &can, const CanFrame &frame, void *args);
 
-  enum integration_level_t : std::uint8_t { POSITION = 1, VELOCITY = 2, CURRENT = 3 };
+  enum integration_level_t : std::uint8_t { POSITION = 1, VELOCITY = 2, CURRENT = 3, EFFORT = 4 };
 
   struct joint_t {
     double position;
@@ -99,6 +99,7 @@ private:
     double ppm;
     integration_level_t integration_level;
   };
+
 
   std::vector<joint_t> joints;
 

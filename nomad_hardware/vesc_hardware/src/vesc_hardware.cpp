@@ -41,7 +41,8 @@ using namespace nomad_core;
 
 namespace {
 constexpr const char *nameHardwareInterface = "MCVescHardware";
-}
+static const double current_to_torque       = 0.0665; // 66.5 mNm/A is the torque constant for the VESC motor
+} // namespace
 
 #define VESC_ID_BASE_START 0x14
 
@@ -59,38 +60,36 @@ hardware_interface::CallbackReturn MCVescHardware::on_init(const hardware_interf
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "CAN driver created on interface %s",
                can_interface_name.c_str());
 
-  if(info_.joints.size() != 2) {
-    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC hardware should have 2 joints");
+  if(info_.joints.size() != 4) {
+    RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC hardware should have 4 joints");
     return hardware_interface::CallbackReturn::ERROR;
   }
 
   for(const hardware_interface::ComponentInfo &joint : info_.joints) {
-    if(joint.command_interfaces.size() != 2) {
+    if(joint.command_interfaces.size() != 3) {
       RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC joint should have 3 command interfaces");
-      return hardware_interface::CallbackReturn::ERROR;
-    }
-    if(joint.state_interfaces.size() != 3) {
-      RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "VESC joint should have 3 state interfaces");
       return hardware_interface::CallbackReturn::ERROR;
     }
 
     if(!(joint.command_interfaces[0].name == hardware_interface::HW_IF_VELOCITY ||
-         joint.command_interfaces[0].name == hardware_interface::HW_IF_CURRENT)) {
-      RCLCPP_FATAL(get_logger(), "Joint '%s' has %s command interface. Expected %s or %s", joint.name.c_str(),
+         joint.command_interfaces[0].name == hardware_interface::HW_IF_CURRENT ||
+         joint.command_interfaces[0].name == hardware_interface::HW_IF_EFFORT)) {
+      RCLCPP_FATAL(get_logger(), "Joint '%s' has %s command interface. Expected %s, %s or %s", joint.name.c_str(),
                    joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY,
-                   hardware_interface::HW_IF_CURRENT);
+                   hardware_interface::HW_IF_CURRENT, hardware_interface::HW_IF_EFFORT);
       return hardware_interface::CallbackReturn::ERROR;
     }
 
-    if(joint.state_interfaces.size() != 3) {
-      RCLCPP_FATAL(get_logger(), "Joint '%s'has %zu state interfaces. 3 expected.", joint.name.c_str(),
+    if(joint.state_interfaces.size() != 4) {
+      RCLCPP_FATAL(get_logger(), "Joint '%s'has %zu state interfaces. 4 expected.", joint.name.c_str(),
                    joint.command_interfaces.size());
       return hardware_interface::CallbackReturn::ERROR;
     }
 
     if(!(joint.state_interfaces[0].name == hardware_interface::HW_IF_POSITION ||
          joint.state_interfaces[0].name == hardware_interface::HW_IF_VELOCITY ||
-         joint.state_interfaces[0].name == hardware_interface::HW_IF_CURRENT)) {
+         joint.state_interfaces[0].name == hardware_interface::HW_IF_CURRENT ||
+         joint.state_interfaces[0].name == hardware_interface::HW_IF_EFFORT)) {
       RCLCPP_FATAL(get_logger(), "Joint '%s' has %s state interface. Expected %s, %s, or %s.",
                    joint.name.c_str(), joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION,
                    hardware_interface::HW_IF_VELOCITY, hardware_interface::HW_IF_CURRENT);
@@ -201,9 +200,23 @@ hardware_interface::return_type MCVescHardware::read(const rclcpp::Time &time, c
   set_state(prefix + "left_wheel_joint/position", joints[0].position);
   set_state(prefix + "left_wheel_joint/velocity", joints[0].velocity);
   set_state(prefix + "left_wheel_joint/current", joints[0].current);
+  set_state(prefix + "left_wheel_joint/effort", joints[0].current * current_to_torque);
+
   set_state(prefix + "right_wheel_joint/position", joints[1].position);
   set_state(prefix + "right_wheel_joint/velocity", joints[1].velocity);
   set_state(prefix + "right_wheel_joint/current", joints[1].current);
+  set_state(prefix + "right_wheel_joint/effort", joints[1].current * current_to_torque);
+
+  set_state(prefix + "left_wheel_joint_2/position", joints[2].position);
+  set_state(prefix + "left_wheel_joint_2/velocity", joints[2].velocity);
+  set_state(prefix + "left_wheel_joint_2/current", joints[2].current);
+  set_state(prefix + "left_wheel_joint_2/effort", joints[2].current * current_to_torque);
+
+
+  set_state(prefix + "right_wheel_joint_2/position", joints[3].position);
+  set_state(prefix + "right_wheel_joint_2/velocity", joints[3].velocity);
+  set_state(prefix + "right_wheel_joint_2/current", joints[3].current);
+  set_state(prefix + "right_wheel_joint_2/effort", joints[3].current * current_to_torque);
   // for(size_t i = 0; i < joints.size(); ++i) {
   //   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Joint %zu: position = %f, velocity = %f", i,
   //               joints[i].position, joints[i].velocity);
@@ -219,25 +232,45 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
   // FRIGHT front right
   // RLEFT  rear left
   // RRIGHT rear right
+  std::vector<double> joint_cur{ get_command<double>(prefix + "left_wheel_joint/current"),
+                                 get_command<double>(prefix + "right_wheel_joint/current"),
+                                 get_command<double>(prefix + "left_wheel_joint_2/current"),
+                                 get_command<double>(prefix + "right_wheel_joint_2/current") };
+  std::vector<double> joint_vel{ get_command<double>(prefix + "left_wheel_joint/velocity"),
+                                 get_command<double>(prefix + "right_wheel_joint/velocity"),
+                                 get_command<double>(prefix + "left_wheel_joint_2/velocity"),
+                                 get_command<double>(prefix + "right_wheel_joint_2/velocity") };
+  std::vector<double> joint_effort{ get_command<double>(prefix + "left_wheel_joint/effort"),
+                                    get_command<double>(prefix + "right_wheel_joint/effort"),
+                                    get_command<double>(prefix + "left_wheel_joint_2/effort"),
+                                    get_command<double>(prefix + "right_wheel_joint_2/effort") };
+  std::vector<double> joint_pos{ 0.0, 0.0, 0.0, 0.0 };
 
-  auto left_velocity  = get_command<double>(prefix + "left_wheel_joint/velocity");
-  auto left_current   = get_command<double>(prefix + "left_wheel_joint/current");
-  auto right_velocity = get_command<double>(prefix + "right_wheel_joint/velocity");
-  auto right_current  = get_command<double>(prefix + "right_wheel_joint/current");
+  // auto left_velocity = get_command<double>(prefix + "left_wheel_joint/velocity");
+  // auto left_current  = get_command<double>(prefix + "left_wheel_joint/current");
+  // auto left_effort   = get_command<double>(prefix + "left_wheel_joint/effort");
+
+  // auto right_velocity = get_command<double>(prefix + "right_wheel_joint/velocity");
+  // auto right_current  = get_command<double>(prefix + "right_wheel_joint/current");
+  // auto right_effort   = get_command<double>(prefix + "right_wheel_joint/effort");
+
+  // auto left_velocity_2 = get_command<double>(prefix + "left_wheel_joint_2/velocity");
+  // auto left_current_2  = get_command<double>(prefix + "left_wheel_joint_2/current");
+  // auto left_effort_2   = get_command<double>(prefix + "left_wheel_joint_2/effort");
+
+  // auto right_velocity_2 = get_command<double>(prefix + "right_wheel_joint_2/velocity");
+  // auto right_current_2  = get_command<double>(prefix + "right_wheel_joint_2/current");
+  // auto right_effort_2   = get_command<double>(prefix + "right_wheel_joint_2/effort");
+
 
   // Value given by ros2 are usual physical values, but the vesc expects them boring ones so.
   // for current we get amps so we are good
   // for position we get rad so we need to convert it to degrees but its doesn;t need postion so we ignore it
 
-  // for velocity we get rad/s so we need to convert it to rpm
-  // 1 rad/s = 60 / (2 * PI) rpm
-  double scale_for_velocity = 60.0 / (2.0 * M_PI);
-  left_velocity             = left_velocity * scale_for_velocity;
-  right_velocity            = right_velocity * scale_for_velocity;
-
-  std::vector<double> joint_cur = { left_current, right_current, left_current, right_current };
-  std::vector<double> joint_vel = { left_velocity, right_velocity, left_velocity, right_velocity };
-  std::vector<double> joint_pos = { 0.0, 0.0, 0.0, 0.0 };
+  // std::vector<double> joint_cur    = { left_current, right_current, left_current_2, right_current_2 };
+  // std::vector<double> joint_vel    = { left_velocity, right_velocity, left_velocity_2, right_velocity_2 };
+  // std::vector<double> joint_pos    = { 0.0, 0.0, 0.0, 0.0 };
+  // std::vector<double> joint_effort = { left_effort, right_effort, left_effort_2, right_effort_2 };
   // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Write lv: %f  rv: %f", left_velocity, right_velocity);
 
   for(size_t i = 0; i < 4; i++) {
@@ -246,15 +279,20 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
     switch(joint.integration_level) {
     case integration_level_t::CURRENT: {
       can_vesc_fleft_set_current_t str;
-      str.current = (uint32_t)joint_cur[i] * 1000; // the value of current is in mA | so we need to multiply it by 1000
-      frame.id   = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      double current = joint_cur[i] * 1000.0; // the value of current is in mA | so we need to multiply it by 1000
+      str.current = (uint32_t)current;
+      frame.id    = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size  = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
       can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
       break;
     }
     case integration_level_t::VELOCITY: {
       can_vesc_fleft_set_rpm_t str;
-      str.rpm    = (uint32_t)joint_vel[i]; // no scale
+      // for velocity we get rad/s so we need to convert it to rpm
+      // 1 rad/s = 60 / (2 * PI) rpm
+
+      double rpm = joint_vel[i] * 60.0 / (2.0 * M_PI);
+      str.rpm    = (uint32_t)rpm;
       frame.id   = (CAN_VESC_FLEFT_SET_RPM_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
       frame.size = CAN_VESC_FLEFT_SET_RPM_LENGTH;
       can_vesc_fleft_set_rpm_pack(frame.data, &str, frame.size);
@@ -262,10 +300,20 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
     }
     case integration_level_t::POSITION: {
       can_vesc_fleft_set_pos_t str;
-      str.position = (uint32_t)joint_pos[i] * 1000; // the value of position is in mDeg | so we need to multiply it by 1000
-      frame.id   = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size = CAN_VESC_FLEFT_SET_POS_LENGTH;
+      double pos = joint_pos[i] * 1000.0; // the value of position is in mDeg | so we need to multiply it by 1000
+      str.position = (uint32_t)pos;
+      frame.id     = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size   = CAN_VESC_FLEFT_SET_POS_LENGTH;
       can_vesc_fleft_set_pos_pack(frame.data, &str, frame.size);
+      break;
+    }
+    case integration_level_t::EFFORT: {
+      can_vesc_fleft_set_current_t str;
+      double current = joint_effort[i] / current_to_torque * 1000.0;
+      str.current    = (uint32_t)current;
+      frame.id   = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
       break;
     }
     default:
