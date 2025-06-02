@@ -66,8 +66,8 @@ hardware_interface::CallbackReturn MCGpsHardware::on_init(const hardware_interfa
                [](const hardware_interface::ComponentInfo &sensor) { return sensor.name == "gps"; });
   NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it != info_.sensors.end(), nameHardwareInterface, "gps not found in hardware info");
 
-  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 7, nameHardwareInterface,
-                               "gps should have 7 state interfaces");
+  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 14, nameHardwareInterface,
+                               "gps should have 14 state interfaces");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -202,13 +202,19 @@ hardware_interface::return_type MCGpsHardware::read(const rclcpp::Time &time, co
   };
 
   set_state("gps/status", static_cast<double>(status));
-  set_state("gps/signal_type", static_cast<double>(signal_type));
+  set_state("gps/service", static_cast<double>(signal_type));
   set_state("gps/latitude", latitude);
   set_state("gps/longitude", longitude);
   set_state("gps/altitude", altitude);
   set_state("gps/latitude_covariance", latitude_covariance);
   set_state("gps/longitude_covariance", longitude_covariance);
   set_state("gps/altitude_covariance", altitude_covariance);
+  set_state("gps/year", static_cast<double>(date_time.tm_year));
+  set_state("gps/month", static_cast<double>(date_time.tm_mon)); // tm_mon is 0-11, so we add 1
+  set_state("gps/day", static_cast<double>(date_time.tm_mday));
+  set_state("gps/hour", static_cast<double>(date_time.tm_hour));
+  set_state("gps/minute", static_cast<double>(date_time.tm_min));
+  set_state("gps/second", static_cast<double>(date_time.tm_sec));
 
 
   return hardware_interface::return_type::OK;
@@ -272,8 +278,8 @@ void MCGpsHardware::can_callback_date(CanDriver &can, const CanFrame &frame, voi
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack GPS date");
     return;
   }
-  date_time.tm_year = date.year - 1900; // tm_year is years since 1900
-  date_time.tm_mon  = date.month - 1;   // tm_mon is months since January
+  date_time.tm_year = date.year;  // tm_year is years since 1900
+  date_time.tm_mon  = date.month; // tm_mon is months since January
   date_time.tm_mday = date.day;
   date_time.tm_hour = date.hour;
   date_time.tm_min  = date.minute;

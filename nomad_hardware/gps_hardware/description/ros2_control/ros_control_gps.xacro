@@ -14,6 +14,7 @@
 
         <sensor name="gps">
           <state_interface name="status"/>
+          <state_interface name="service"/>
           <state_interface name="latitude"/>
           <state_interface name="longitude"/>
           <state_interface name="altitude"/>
@@ -26,7 +27,6 @@
           <state_interface name="hour"/>
           <state_interface name="minute"/>
           <state_interface name="second"/>
-
         </sensor>
 
       </ros2_control>

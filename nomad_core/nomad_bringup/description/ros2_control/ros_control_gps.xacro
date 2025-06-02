@@ -1,37 +1,38 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="ros_control_gps" params="name use_sim">
+  <xacro:macro name="ros_control_gps" params="name">
 
-    <xacro:unless value="${use_sim}">
+    <!-- <xacro:unless value="${use_sim}"> -->
 
-      <ros2_control name="${name}_gps" type="sensor">
+    <ros2_control name="${name}_gps" type="sensor">
 
-        <hardware>
-          <plugin>gps_hardware/MCGpsHardware</plugin>
-          <param name="can_interface">can0</param>
-        </hardware>
+      <hardware>
+        <plugin>gps_hardware/MCGpsHardware</plugin>
+        <param name="can_interface">can0</param>
+      </hardware>
 
-        <sensor name="gps">
-          <state_interface name="status"/>
-          <state_interface name="latitude"/>
-          <state_interface name="longitude"/>
-          <state_interface name="altitude"/>
-          <state_interface name="latitude_covariance"/>
-          <state_interface name="longitude_covariance"/>
-          <state_interface name="altitude_covariance"/>
-          <state_interface name="year"/>
-          <state_interface name="month"/>
-          <state_interface name="day"/>
-          <state_interface name="hour"/>
-          <state_interface name="minute"/>
-          <state_interface name="second"/>
 
-        </sensor>
+      <sensor name="gps">
+        <state_interface name="status"/>
+        <state_interface name="service"/>
+        <state_interface name="latitude"/>
+        <state_interface name="longitude"/>
+        <state_interface name="altitude"/>
+        <state_interface name="latitude_covariance"/>
+        <state_interface name="longitude_covariance"/>
+        <state_interface name="altitude_covariance"/>
+        <state_interface name="year"/>
+        <state_interface name="month"/>
+        <state_interface name="day"/>
+        <state_interface name="hour"/>
+        <state_interface name="minute"/>
+        <state_interface name="second"/>
+      </sensor>
 
-      </ros2_control>
+    </ros2_control>
 
-    </xacro:unless>
+    <!-- </xacro:unless> -->
 
   </xacro:macro>
 
