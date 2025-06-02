@@ -1,0 +1,7 @@
+<library path="gps_hardware">
+  <class name="gps_hardware/MCGpsHardware" type="nomad_hardware::MCGpsHardware" base_class_type="hardware_interface::SensorInterface">
+    <description>
+      The ros2_control gps interface system hardware interface-type.
+    </description>
+  </class>
+</library>
