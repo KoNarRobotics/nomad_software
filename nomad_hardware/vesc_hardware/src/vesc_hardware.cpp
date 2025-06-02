@@ -276,6 +276,8 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
   for(size_t i = 0; i < 4; i++) {
     joint_t &joint = joints[i];
     CanFrame frame;
+    frame.is_remote_request = false;
+
     switch(joint.integration_level) {
     case integration_level_t::CURRENT: {
       can_vesc_fleft_set_current_t str;
@@ -283,6 +285,7 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
       str.current = (uint32_t)current;
       frame.id    = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
       frame.size  = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      frame.is_extended = CAN_VESC_FLEFT_SET_CURRENT_BRAKE_IS_EXTENDED;
       can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
       break;
     }
@@ -291,19 +294,21 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
       // for velocity we get rad/s so we need to convert it to rpm
       // 1 rad/s = 60 / (2 * PI) rpm
 
-      double rpm = joint_vel[i] * 60.0 / (2.0 * M_PI);
-      str.rpm    = (uint32_t)rpm;
-      frame.id   = (CAN_VESC_FLEFT_SET_RPM_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size = CAN_VESC_FLEFT_SET_RPM_LENGTH;
+      double rpm        = joint_vel[i] * 60.0 / (2.0 * M_PI);
+      str.rpm           = (uint32_t)rpm;
+      frame.id          = (CAN_VESC_FLEFT_SET_RPM_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size        = CAN_VESC_FLEFT_SET_RPM_LENGTH;
+      frame.is_extended = CAN_VESC_FLEFT_SET_RPM_IS_EXTENDED;
       can_vesc_fleft_set_rpm_pack(frame.data, &str, frame.size);
       break;
     }
     case integration_level_t::POSITION: {
       can_vesc_fleft_set_pos_t str;
       double pos = joint_pos[i] * 1000.0; // the value of position is in mDeg | so we need to multiply it by 1000
-      str.position = (uint32_t)pos;
-      frame.id     = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
-      frame.size   = CAN_VESC_FLEFT_SET_POS_LENGTH;
+      str.position      = (uint32_t)pos;
+      frame.id          = (CAN_VESC_FLEFT_SET_POS_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
+      frame.size        = CAN_VESC_FLEFT_SET_POS_LENGTH;
+      frame.is_extended = CAN_VESC_FLEFT_SET_POS_IS_EXTENDED;
       can_vesc_fleft_set_pos_pack(frame.data, &str, frame.size);
       break;
     }
@@ -313,6 +318,7 @@ hardware_interface::return_type MCVescHardware::write(const rclcpp::Time &time, 
       str.current    = (uint32_t)current;
       frame.id   = (CAN_VESC_FLEFT_SET_CURRENT_FRAME_ID & 0xffffff00) | ((uint32_t)i + VESC_ID_BASE_START);
       frame.size = CAN_VESC_FLEFT_SET_CURRENT_LENGTH;
+      frame.is_extended = CAN_VESC_FLEFT_SET_CURRENT_IS_EXTENDED;
       can_vesc_fleft_set_current_pack(frame.data, &str, frame.size);
       break;
     }

@@ -20,6 +20,13 @@
           <state_interface name="latitude_covariance"/>
           <state_interface name="longitude_covariance"/>
           <state_interface name="altitude_covariance"/>
+          <state_interface name="year"/>
+          <state_interface name="month"/>
+          <state_interface name="day"/>
+          <state_interface name="hour"/>
+          <state_interface name="minute"/>
+          <state_interface name="second"/>
+
         </sensor>
 
       </ros2_control>
