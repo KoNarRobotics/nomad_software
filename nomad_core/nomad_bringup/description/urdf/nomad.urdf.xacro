@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
-<!-- Revolute-Revolute Manipulator -->
-<!--
-Copied and modified from ROS1 example -
-https://github.com/ros-simulation/gazebo_ros_demos/blob/kinetic-devel/rrbot_description/urdf/rrbot.xacro
--->
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="2dof_robot">
+<!-- NOMAD -->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="nomad_robot">
   <xacro:arg name="nomad" default="" />
 
-  <!-- Import Nomad vesc ros ros2_control description -->
-  <!-- <xacro:include filename="$(find vesc_hardware)/ros2_control/ros_control_vesc.xacro" /> -->
+
+
+  <!-- Import Nomad ros2_control descriptions -->
 
   <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_vesc.xacro" />
 
@@ -19,21 +17,51 @@ https://github.com/ros-simulation/gazebo_ros_demos/blob/kinetic-devel/rrbot_desc
 
   <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_gps.xacro" />
 
+  <!-- Import Nomad ros2_control descriptions end -->
 
 
-  <!-- Import Rviz colors  PROBALY NOT NEEDED since nomad_t_model have ewerthing -->
-  <!-- <xacro:include filename="$(find nomad_t_model_description)/nomad_t_model_description/urdf/materials.xacro" /> -->
-
-  <!-- Import Nomad urdf model description -->
-  <xacro:include filename="$(find nomad_t_model_description)/urdf/nomad_t_model.xacro" />
 
   <!-- Used for fixing robot -->
   <link name="world"/>
 
 
+  <!-- Nomad T model description -->
+
+  <!-- Import Nomad urdf model description -->
+  <xacro:include filename="$(find nomad_t_model_description)/urdf/nomad_t_model.xacro" />
+
   <xacro:nomad_t_model parent="world">
-    <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
   </xacro:nomad_t_model>
+
+  <!-- Nomad T model description end -->
+
+
+  <!-- Camera 360 mount -->
+  <xacro:include filename="$(find camera_360)/urdf/camera_360.xacro" />
+
+  <link name="camera_360_mount"/>
+
+  <joint name="camera_360_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_360_mount"/>
+    <origin xyz="0.55 0.2 0.25" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:camera_360 parent="camera_360_mount">
+  </xacro:camera_360>
+
+  <!-- Camera 360 mount end -->
+
+
+  <!-- LIVOX mount -->
+
+
+  <!-- LIVOX mount end -->
+
+
+
+
+
 
   <xacro:vesc_ros2_control name="nomad" />
 

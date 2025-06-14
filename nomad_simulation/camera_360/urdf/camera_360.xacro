@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+
+
+<robot name="camera_360"
+  xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="camera_360" params="parent">
+
+
+    <!-- FRONT-->
+
+    <joint name="camera_front_joint" type="fixed">
+      <!-- <origin xyz="0.55 0.2 0.25" rpy="0 0 0"/> -->
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="camera_front_link"/>
+    </joint>
+
+
+
+    <link name="camera_front_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find camera_360)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red"></material>
+      </visual>
+    </link>
+
+
+    <joint name="camera_front_optical_joint" type="fixed">
+      <parent link="camera_front_link"/>
+      <child link="camera_front_link_optical"/>
+      <origin xyz="0.0 0.0 0.0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    </joint>
+
+
+    <link name="camera_front_link_optical"></link>
+
+
+    <!-- LEFT-->
+
+    <joint name="camera_left_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 ${pi/2}"/>
+      <parent link="${parent}"/>
+      <child link="camera_left_link"/>
+    </joint>
+
+
+
+    <link name="camera_left_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find camera_360)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red"></material>
+      </visual>
+    </link>
+
+
+    <joint name="camera_left_optical_joint" type="fixed">
+      <parent link="camera_left_link"/>
+      <child link="camera_left_link_optical"/>
+      <origin xyz="0.0 0.0 0.0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    </joint>
+
+
+    <link name="camera_left_link_optical"></link>
+
+    <!-- RIGHT-->
+
+
+    <joint name="camera_right_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 ${-pi/2}"/>
+      <parent link="${parent}"/>
+      <child link="camera_right_link"/>
+    </joint>
+
+
+
+    <link name="camera_right_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find camera_360)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red"></material>
+      </visual>
+    </link>
+
+
+    <joint name="camera_right_optical_joint" type="fixed">
+      <parent link="camera_right_link"/>
+      <child link="camera_right_link_optical"/>
+      <origin xyz="0.0 0.0 0.0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    </joint>
+
+
+    <link name="camera_right_link_optical"></link>
+
+  </xacro:macro>
+
+</robot>

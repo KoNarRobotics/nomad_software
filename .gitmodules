@@ -6,3 +6,9 @@
 [submodule "nomad_core/Pilot_6_axis"]
 	path = nomad_core/Pilot_6_axis
 	url = git@github.com:X-Lemon-X/Pilot_6_axis.git
+[submodule "nomad_hardware/livox_ros_driver2"]
+	path = nomad_hardware/livox_ros_driver2
+	url = git@github.com:KoNarRobotics/livox_ros_driver2.git
+[submodule "dependencies/Livox-SDK2"]
+	path = dependencies/Livox-SDK2
+	url = git@github.com:KoNarRobotics/Livox-SDK2.git

@@ -269,19 +269,6 @@
         </geometry>
       </collision>
     </link>
-    <!-- 
-    <link name="camera_front_link">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="file://$(find nomad_t_model_description)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-        <material name="red">
-          <color rgba="1 0 0 1"/>
-        </material>
-      </visual>
-
-    </link> -->
 
 
     <joint name="revolute_arm_6" type="continuous">
