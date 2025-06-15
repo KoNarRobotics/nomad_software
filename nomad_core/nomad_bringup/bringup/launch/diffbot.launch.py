@@ -1,22 +1,9 @@
-# Copyright 2020 ros2_control Development Team
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration 
 from launch.actions import SetEnvironmentVariable
 
 from launch_ros.actions import Node
@@ -114,7 +101,16 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["imu_state_broadcaster"],
-    )720
+      )
+
+    gps_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gps_state_broadcaster"],
+    )
+
+    robot_controller_spawner = Node(
+        package="controller_manager",
         executable="spawner",
         arguments=[
             "nomad_diffdrive_base_controller",
@@ -124,6 +120,19 @@ def generate_launch_description():
             "-r /nomad_diffdrive_base_controller/cmd_vel:=/cmd_vel",
         ],
     )
+
+
+    # cameras
+    camera_launch = IncludeLaunchDescription(
+      PythonLaunchDescriptionSource([
+          PathJoinSubstitution([
+              FindPackageShare("camera_360"),
+              "launch",
+              "camera.launch.py",
+          ])
+      ]))
+
+
 
     # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
@@ -150,7 +159,8 @@ def generate_launch_description():
         delay_joint_state_broadcaster_after_robot_controller_spawner,
         barometer_state_broadcaster_spawner,
         imu_state_broadcaster_spawner,
-        gps_state_broadcaster_spawner
+        gps_state_broadcaster_spawner,
+        camera_launch,
     ]
 
     return LaunchDescription(environment_variable + declared_arguments + nodes)

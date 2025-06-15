@@ -12,10 +12,10 @@
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
-  <depend>image-transport-plugins</depend>
-  <depend>image-transport</depend>
-  <depend>v4l2-camera</depend>
-  <depend>usb-cam</depend>
+  <depend>image_transport_plugins</depend>
+  <depend>image_transport</depend>
+  <depend>v4l2_camera</depend>
+  <depend>usb_cam</depend>
 
   <export>
     <build_type>ament_python</build_type>
