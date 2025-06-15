@@ -101,5 +101,29 @@
     "valarray": "cpp",
     "*.txx": "cpp"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "python.autoComplete.extraPaths": [
+    "/home/lemonx/it/nomad_software/build/simple_driver",
+    "/home/lemonx/it/nomad_software/install/simple_driver/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/pilot_6axis",
+    "/home/lemonx/it/nomad_software/install/pilot_6axis/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/nomad_t_model_description",
+    "/home/lemonx/it/nomad_software/install/nomad_t_model_description/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/install/livox_ros_driver2/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/camera_360",
+    "/home/lemonx/it/nomad_software/install/camera_360/lib/python3.12/site-packages",
+    "/opt/ros/jazzy/lib/python3.12/site-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/lemonx/it/nomad_software/build/simple_driver",
+    "/home/lemonx/it/nomad_software/install/simple_driver/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/pilot_6axis",
+    "/home/lemonx/it/nomad_software/install/pilot_6axis/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/nomad_t_model_description",
+    "/home/lemonx/it/nomad_software/install/nomad_t_model_description/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/install/livox_ros_driver2/lib/python3.12/site-packages",
+    "/home/lemonx/it/nomad_software/build/camera_360",
+    "/home/lemonx/it/nomad_software/install/camera_360/lib/python3.12/site-packages",
+    "/opt/ros/jazzy/lib/python3.12/site-packages"
+  ]
 }

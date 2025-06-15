@@ -17,12 +17,19 @@ from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+from launch.actions import SetEnvironmentVariable
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+import os
 
 
 def generate_launch_description():
+    environment_variable = [
+        SetEnvironmentVariable(name="FASTDDS_BUILTIN_TRANSPORTS",value="LARGE_DATA")
+        ]
+
     # Declare arguments
     declared_arguments = []
     declared_arguments.append(
@@ -107,16 +114,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["imu_state_broadcaster"],
-    )
-
-    gps_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["gps_state_broadcaster"],
-    )
-
-    robot_controller_spawner = Node(
-        package="controller_manager",
+    )720
         executable="spawner",
         arguments=[
             "nomad_diffdrive_base_controller",
@@ -155,4 +153,4 @@ def generate_launch_description():
         gps_state_broadcaster_spawner
     ]
 
-    return LaunchDescription(declared_arguments + nodes)
+    return LaunchDescription(environment_variable + declared_arguments + nodes)
