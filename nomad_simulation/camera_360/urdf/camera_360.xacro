@@ -100,6 +100,26 @@
 
     <link name="camera_right_link_optical"></link>
 
+    <link name="lidar_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find camera_360)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red"></material>
+      </visual>
+    </link>
+
+
+    <joint name="lidar_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.08" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="lidar_link"/>
+    </joint>
+
+
+
+
   </xacro:macro>
 
 </robot>

@@ -23,7 +23,7 @@ def generate_launch_description():
   focus = 0
 
   environment_variable = [
-    SetEnvironmentVariable(name="FASTDDS_BUILTIN_TRANSPORTS",value="LARGE_DATA")
+    # SetEnvironmentVariable(name="FASTDDS_BUILTIN_TRANSPORTS",value="LARGE_DATA")
     ]
 
   device = "/dev/video2"
