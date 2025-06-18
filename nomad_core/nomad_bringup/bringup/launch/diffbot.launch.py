@@ -76,6 +76,7 @@ def generate_launch_description():
         output="both",
         parameters=[robot_description],
     )
+    
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -145,12 +146,12 @@ def generate_launch_description():
 
 
     # Delay rviz start after `joint_state_broadcaster`
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
+    # delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+    #     event_handler=OnProcessExit(
+    #         target_action=joint_state_broadcaster_spawner,
+    #         on_exit=[rviz_node],
+    #     )
+    # )
 
     # Delay start of joint_state_broadcaster after `robot_controller`
     # TODO(anyone): This is a workaround for flaky tests. Remove when fixed.
@@ -165,7 +166,8 @@ def generate_launch_description():
         control_node,
         robot_state_pub_node,
         robot_controller_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
+        # joint_state_broadcaster_spawner,
+        # delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
         barometer_state_broadcaster_spawner,
         imu_state_broadcaster_spawner,

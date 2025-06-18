@@ -1,6 +1,22 @@
 ## Nomad
 
-### Software Diagram
+## IP configuration:
+### IP config:
+- GATE: `192.168.20.1`
+- DHCP: `192.168.20.1`
+- MASK: `255.255.255.0`
+- DHCP range: `192.168.20.100 - 250`
+- STATIC addresses allowed : `192.168.20.2 - 99`
+- VPN: `10.10.0.1/16`
+
+### IP LIST:
+- Router: `192.168.20.1`
+- OBC: `192.168.20.2`, `10.10.0.6`
+- KonARM (sdrac): `192.168.20.10`
+- Livox 360: `192.168.20.20`
+
+
+## Software Diagram
 
 [Diagram](https://drive.google.com/file/d/13Ft7TU0lAM-w3s6LpOIg76KfH13r2Nhr/view?usp=sharing)
 

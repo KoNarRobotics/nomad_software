@@ -35,6 +35,7 @@ SOFTWARE.
 
 #include "gps_hardware/gps_hardware.hpp"
 
+#include "sensor_msgs/msg/detail/nav_sat_status__struct.hpp"
 
 using namespace nomad_hardware;
 using namespace nomad_core;
@@ -130,8 +131,8 @@ hardware_interface::CallbackReturn MCGpsHardware::on_activate(const rclcpp_lifec
   altitude_covariance  = std::numeric_limits<double>::quiet_NaN();
   std::time_t now      = std::time(nullptr);
   date_time            = *std::localtime(&now);
-  status               = MCGpsHardwareStatus::DISCONNECTED;
-  signal_type          = MCGpsSignalType::UNABLE_TO_FIX_POSITION;
+  status               = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
+  signal_type          = sensor_msgs::msg::NavSatStatus::SERVICE_UNKNOWN;
   NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
@@ -201,6 +202,13 @@ hardware_interface::return_type MCGpsHardware::read(const rclcpp::Time &time, co
     return hardware_interface::return_type::ERROR;
   };
 
+
+  if(stat_t == MCGpsHardwareStatus::DISCONNECTED) {
+    latitude  = std::numeric_limits<double>::quiet_NaN();
+    longitude = std::numeric_limits<double>::quiet_NaN();
+    altitude  = std::numeric_limits<double>::quiet_NaN();
+  }
+
   set_state("gps/status", static_cast<double>(status));
   set_state("gps/service", static_cast<double>(signal_type));
   set_state("gps/latitude", latitude);
@@ -210,7 +218,7 @@ hardware_interface::return_type MCGpsHardware::read(const rclcpp::Time &time, co
   set_state("gps/longitude_covariance", longitude_covariance);
   set_state("gps/altitude_covariance", altitude_covariance);
   set_state("gps/year", static_cast<double>(date_time.tm_year));
-  set_state("gps/month", static_cast<double>(date_time.tm_mon)); // tm_mon is 0-11, so we add 1
+  set_state("gps/month", static_cast<double>(date_time.tm_mon));
   set_state("gps/day", static_cast<double>(date_time.tm_mday));
   set_state("gps/hour", static_cast<double>(date_time.tm_hour));
   set_state("gps/minute", static_cast<double>(date_time.tm_min));
@@ -229,8 +237,27 @@ void MCGpsHardware::can_callback_status(CanDriver &can, const CanFrame &frame, v
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack GPS status");
     return;
   }
-  status      = static_cast<MCGpsHardwareStatus>(st.status);
-  signal_type = static_cast<MCGpsSignalType>(st.signal);
+
+  stat_t = static_cast<MCGpsHardwareStatus>(st.status);
+
+  switch(stat_t) {
+  case MCGpsHardwareStatus::OK: status = sensor_msgs::msg::NavSatStatus::STATUS_FIX; break;
+  case MCGpsHardwareStatus::DISCONNECTED: status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX; break;
+  case MCGpsHardwareStatus::ERROR: status = sensor_msgs::msg::NavSatStatus::STATUS_UNKNOWN; break;
+  }
+
+  switch(static_cast<MCGpsSignalType>(st.signal)) {
+  case MCGpsSignalType::GROUND_BASED_AUGMENTATION:
+    signal_type = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
+    break;
+  case MCGpsSignalType::SATELLITE_BASED_AUGMENTATION:
+    signal_type = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
+    break;
+  case MCGpsSignalType::UNABLE_TO_FIX_POSITION:
+    signal_type = sensor_msgs::msg::NavSatStatus::SERVICE_UNKNOWN;
+    break;
+  case MCGpsSignalType::UNAUGMENTED_FIX: signal_type = sensor_msgs::msg::NavSatStatus::SERVICE_GPS; break;
+  }
 }
 
 void MCGpsHardware::can_callback_latitude(CanDriver &can, const CanFrame &frame, void *args) {

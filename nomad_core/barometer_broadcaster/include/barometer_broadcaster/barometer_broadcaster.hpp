@@ -36,7 +36,7 @@ SOFTWARE.
 #include "sensor_msgs/msg/fluid_pressure.hpp"
 #include "sensor_msgs/msg/temperature.hpp"
 
-// #include "semantic_components/gps_sensor.hpp"
+#include "semantic_components/gps_sensor.hpp"
 // #include "semantic_components/range_sensor.hpp"
 // #include "multi_interface_forward_command_controller.hpp"
 #include "semantic_components/imu_sensor.hpp"

@@ -54,7 +54,9 @@ enum class MCGpsSignalType : int8_t {
   UNAUGMENTED_FIX              = CAN_GPS_STATUS_SIGNAL_UNAUGMENTED_FIX_CHOICE,
   SATELLITE_BASED_AUGMENTATION = CAN_GPS_STATUS_SIGNAL_SATELLITE_BASED_AUGMENTATION_CHOICE,
   GROUND_BASED_AUGMENTATION    = CAN_GPS_STATUS_SIGNAL_GROUND_BASED_AUGMENTATION_CHOICE,
+
 };
+
 
 class MCGpsHardware : public hardware_interface::SensorInterface {
 public:
@@ -86,8 +88,9 @@ private:
   void can_callback_date(CanDriver &can, const CanFrame &frame, void *args);
   void can_callback_covariance(CanDriver &can, const CanFrame &frame, void *args);
 
-  MCGpsHardwareStatus status;
-  MCGpsSignalType signal_type;
+  MCGpsHardwareStatus stat_t;
+  int8_t status;
+  uint16_t signal_type;
   double latitude;
   double longitude;
   double altitude;

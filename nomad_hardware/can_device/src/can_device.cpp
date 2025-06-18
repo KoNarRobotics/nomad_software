@@ -72,23 +72,25 @@ CanDriver::Make(const std::string &can_interface, bool threaded, uint32_t timeou
     return Status::Invalid("Invalid buffer size");
   }
 
-  auto mayby_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
-                                [can_interface](const std::shared_ptr<CanDriver> &driver) {
-                                  return driver->can_interface_name == can_interface;
-                                });
-  // if we have already created a driver for this interface, return it
-  if(mayby_can != global_can_driver.end()) {
-    return Result<std::shared_ptr<CanDriver>>::OK(*mayby_can);
-  }
+  // auto mayby_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
+  //                               [can_interface](const std::shared_ptr<CanDriver> &driver) {
+  //                                 return driver->can_interface_name == can_interface;
+  //                               });
+  // // if we have already created a driver for this interface, return it
+  // if(mayby_can != global_can_driver.end()) {
+  //   return Result<std::shared_ptr<CanDriver>>::OK(*mayby_can);
+  // }
   // if the driver is not found, create a new one
   auto driver =
   std::shared_ptr<CanDriver>(new CanDriver(can_interface, threaded, timeout_us, _queue_size, _buffer_size));
+  // global_can_driver.push_back(driver);
   return Result<std::shared_ptr<CanDriver>>::OK(driver);
 }
 
 Status CanDriver::open_can() {
   if(is_open) {
-    return Status::Invalid("CAN socket is already open");
+    return Status::OK();
+    // return Status::Invalid("CAN socket is already open");
   }
 
   // check if we have registered callbacks
@@ -169,29 +171,45 @@ Status CanDriver::close_can(std::shared_ptr<CanDriver> &can_driver) {
     return Status::Invalid("CAN driver is null");
   }
 
-  auto maybe_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
-                                [can_driver](const std::shared_ptr<CanDriver> &driver) {
-                                  return driver->can_interface_name == can_driver->can_interface_name;
-                                });
-  if(maybe_can == global_can_driver.end()) {
-    return Status::Invalid("CAN driver not found");
-  }
+  // auto maybe_can = std::find_if(global_can_driver.begin(), global_can_driver.end(),
+  //                               [can_driver](const std::shared_ptr<CanDriver> &driver) {
+  //                                 return driver->can_interface_name == can_driver->can_interface_name;
+  //                               });
+
+  // RCLCPP_INFO(rclcpp::get_logger("CanDriver"), "Current global_can_driver elements:");
+  // for(const auto &driver : global_can_driver) {
+  //   RCLCPP_INFO(rclcpp::get_logger("CanDriver"), "  Interface: %s, use_count: %zu",
+  //               driver->can_interface_name.c_str(), driver.use_count());
+  // }
+
+  // RCLCPP_INFO(rclcpp::get_logger("CanDriver"), "Closing CAN driver for interface: %s",
+  //             can_driver->can_interface_name.c_str());
+
+  // if(maybe_can == global_can_driver.end()) {
+  //   return Status::Invalid("CAN driver not found");
+  // }
+
+
+  // RCLCPP_INFO(rclcpp::get_logger("CanDriver"), "before maybe_can->use_count() : %zu", maybe_can->use_count());
 
   // we reset the pointer to the driver, so it will remove it references.
   if(can_driver) {
     can_driver.reset();
   }
+
+  // RCLCPP_INFO(rclcpp::get_logger("CanDriver"), "after maybe_can->use_count() : %zu", maybe_can->use_count());
+
   // we check if the driver is used by other instances
-  if(maybe_can->use_count() > 1) {
-    return Status::OK();
-  }
+  // if(maybe_can->use_count() > 1) {
+  //   return Status::OK();
+  // }
 
 
   // if the driver is not used by other instances, we close it
   // mayby_can->get()->internall_close_can();
 
   // remove the driver from the global list
-  global_can_driver.erase(maybe_can);
+  // global_can_driver.erase(maybe_can);
   // this will drop the last reference to the driver,
   // so it will trigger the destructor
   // and close the socket
@@ -220,6 +238,7 @@ Status CanDriver::internall_close_can() {
 }
 
 Status CanDriver::send_to_queue(const CanFrame &frame) {
+  std::lock_guard<std::mutex> lock(queue_mutex);
   if(!is_open) {
     return Status::Invalid("CAN socket is not open");
   }
@@ -232,7 +251,6 @@ Status CanDriver::send_to_queue(const CanFrame &frame) {
     return Status::Invalid("CAN frame ID is invalid");
   }
 
-  std::lock_guard<std::mutex> lock(queue_mutex);
   send_queue.push(frame);
 
   RCLCPP_DEBUG(rclcpp::get_logger("CanDriver"), "Sending CAN frame with ID %u", frame.id);

@@ -17,9 +17,9 @@ import subprocess
 
 def generate_launch_description():
   # max values are 3840 x 2160 and 30.0 fps
-  frame_rate = 15.0
-  width = 1280
-  height = 720
+  frame_rate = 10.0
+  width = 640
+  height = 480
   focus = 0
 
   environment_variable = [
