@@ -51,7 +51,41 @@ def generate_launch_description():
       executable='livox_ros_driver2_node',
       name='livox_lidar_publisher',
       output='screen',
-      parameters=livox_ros2_params
+      parameters=livox_ros2_params,
+      remappings=[
+        ('/livox/lidar', '/cloud'),
+      ]
       )
+  
 
-  return LaunchDescription( environment_variable + [livox_driver])
+  point_cloud_to_laserscan = Node(
+    package='pointcloud_to_laserscan',
+    executable='pointcloud_to_laserscan_node',
+    name='pointcloud_to_laserscan',
+    output='screen',
+    parameters=[{
+        'target_frame': 'lidar_link',
+        'min_height': 0.0,  ## so it wont detect stuff on the ground i don't know   
+        'max_height': 1.4, ## so we won't detect sealing
+        'angle_min': -3.141592653589793,
+        'angle_max': 3.141592653589793,
+        'angle_increment': 0.017453292519943295,  
+        'queue_size': 0,  # 0 lets it auto-detect
+        'scan_time': 1.0/20.0,
+        'range_min': 0.0,
+        'range_max': 40, # livox max range is 40 m
+        'transform_tolerance': 0.01,
+        'use_inf': True
+    }]
+    ,
+    remappings=[
+      ('/cloud_in', '/cloud')
+    ]
+  )
+
+  nodes = [
+      livox_driver,
+      point_cloud_to_laserscan
+  ]
+
+  return LaunchDescription( environment_variable + nodes)
