@@ -20,7 +20,7 @@ def generate_launch_description():
 
   # Initialize Arguments
   rviz_config_file = PathJoinSubstitution(
-    [FindPackageShare("nomad_bringup"), "nomad_bringup/config", "display.rviz"]
+    [FindPackageShare("nomad_bringup"), "config", "display.rviz"]
   )
 
   rviz_node = Node(
