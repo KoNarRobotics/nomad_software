@@ -22,6 +22,7 @@ setup(
         'console_scripts': [ 
           'sd_node = simple_driver.simple_driver:main',
           'rc_switch = simple_driver.rc_switch:main', 
+          'rc_driver = simple_driver.rc_driver:main',
         ],
     },
 )

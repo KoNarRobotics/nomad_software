@@ -97,10 +97,13 @@ private:
     double adc2;
     double adc3;
     double ppm;
-    integration_level_t integration_level;
+    integration_level_t command_interface;
   };
 
-
+  integration_level_t command_interface;
+  double gear_ratio;
+  double polar_pairs;
+  double current_to_torque;
   std::vector<joint_t> joints;
 
   std::string prefix;

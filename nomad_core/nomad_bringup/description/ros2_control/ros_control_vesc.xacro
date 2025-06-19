@@ -12,6 +12,10 @@
       <hardware>
         <plugin>vesc_hardware/MCVescHardware</plugin>
         <param name="can_interface">can0</param>
+        <param name="command_interface_type">velocity</param>
+        <param name="gear_ratio">4.375</param>
+        <param name="polar_pairs">7</param>
+        <param name="current_to_torque">0.0665</param>        <!-- / 66.5 mNm/A is the torque constant for the VESC motor -->
         <!-- <parameter>$(find nomad_bringup)/config/nomad_controllers.yaml</parameter> -->
       </hardware>
 

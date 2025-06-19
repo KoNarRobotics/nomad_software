@@ -1,13 +1,7 @@
 import rclpy
-from rclpy.duration import Duration
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from enum import Enum
-
-import can
-import cantools
-import time
-from pprint import pprint
 
   
 class PassRC(Enum):
@@ -44,21 +38,27 @@ class RCSwitch(Node):
   
 
   def joy_callback(self, msg: Joy):
+    ms = Joy()
+    ms.header.stamp = self.get_clock().now().to_msg()
+    ms.header.frame_id = msg.header.frame_id
+    ms.axes = [0.0] * len(msg.axes)
+    ms.buttons = [0] * len(msg.buttons)
+    
     # when buton 6 is pressed we switch next controler
     if self.check_if_button_pressed(msg.buttons, 6):
       self.get_logger().info("Switching to konar")
+      self.joy_pass_topics[self.pass_messages_to].publish(ms)
       self.pass_messages_to = PassRC.KONAR
     
     # when buton 7 is pressed we switch next controler
     if self.check_if_button_pressed(msg.buttons, 7):
       self.get_logger().info("Switching to nomad")
+      self.joy_pass_topics[self.pass_messages_to].publish(ms)
       self.pass_messages_to = PassRC.NOMAD
-    ms = Joy()
-    ms.header.stamp = self.get_clock().now().to_msg()
-    ms.header.frame_id = msg.header.frame_id
+    
     ms.axes = msg.axes
     ms.buttons = msg.buttons
-    self.joy_pass_topics[self.pass_messages_to].publish(msg)
+    self.joy_pass_topics[self.pass_messages_to].publish(ms)
 
 def main(args=None):
   rclpy.init(args=args)
