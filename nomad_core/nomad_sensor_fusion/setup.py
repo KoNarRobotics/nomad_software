@@ -24,7 +24,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'sensor_fusion_node = nomad_sensor_fusion.sensor_fusion:main',
         ],
     },
 )
