@@ -40,7 +40,7 @@ class SimpleDriver(Node):
 
 
     x = msg.axes[0] * max_velocity
-    ang_z = msg.axes[2] * max_angular_velocity 
+    ang_z = -msg.axes[2] * max_angular_velocity 
     
 
 

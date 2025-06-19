@@ -14,9 +14,12 @@
   <depend>pluginlib</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
+  <depend>navigation2</depend>
+  <depend>nav2_bringup</depend>
 
 
   <depend>can_device</depend>
+  <depend>simple_driver</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

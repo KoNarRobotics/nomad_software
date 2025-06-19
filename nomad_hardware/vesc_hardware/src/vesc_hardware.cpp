@@ -453,7 +453,7 @@ void MCVescHardware::can_callback_status_5(CanDriver &can, const CanFrame &frame
   //  This is weard tachometer shows position the wheel have moved in degrees
   // but for some mysterious resone it shows that value in 180 deg ber 360 deg rotation oven though
   // the cvalue input into the vesc are correct.
-  double scale_for_tachometer = 4.0 * M_PI / 360.0 * gear_ratio; //  2 * 2 * M_PI = 360 deg
+  double scale_for_tachometer = 4.0 * M_PI / 360.0; //  2 * 2 * M_PI = 360 deg
   joint->position             = (double)status.tachometer * scale_for_tachometer;
   joint->voltage              = (double)status.volts_in * 0.1;
   // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Tachometer: %f  Voltage: %f", joint->tachometer,

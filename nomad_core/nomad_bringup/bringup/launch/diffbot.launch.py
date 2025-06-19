@@ -142,8 +142,15 @@ def generate_launch_description():
           ])
       ]))
     
-
-
+    # Sensor Fusion
+    sensor_fusion_launch = IncludeLaunchDescription(
+      PythonLaunchDescriptionSource([
+          PathJoinSubstitution([
+              FindPackageShare("nomad_sensor_fusion"),
+              "launch",
+              "fusion.launch.py",
+          ])
+      ]))
 
     # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
@@ -163,17 +170,18 @@ def generate_launch_description():
     )
 
     nodes = [
-        control_node,
-        robot_state_pub_node,
-        robot_controller_spawner,
-        # joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_joint_state_broadcaster_after_robot_controller_spawner,
-        barometer_state_broadcaster_spawner,
-        imu_state_broadcaster_spawner,
-        gps_state_broadcaster_spawner,
-        camera_launch,
-        livox_launch,
+      control_node,
+      robot_state_pub_node,
+      robot_controller_spawner,
+      # joint_state_broadcaster_spawner,
+      delay_rviz_after_joint_state_broadcaster_spawner,
+      delay_joint_state_broadcaster_after_robot_controller_spawner,
+      barometer_state_broadcaster_spawner,
+      imu_state_broadcaster_spawner,
+      gps_state_broadcaster_spawner,
+      camera_launch,
+      livox_launch,
+      sensor_fusion_launch,
     ]
 
     return LaunchDescription(environment_variable + declared_arguments + nodes)

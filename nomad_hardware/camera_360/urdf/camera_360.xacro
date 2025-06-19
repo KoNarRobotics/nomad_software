@@ -100,6 +100,7 @@
 
     <link name="camera_right_link_optical"></link>
 
+
     <link name="lidar_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -118,6 +119,14 @@
     </joint>
 
 
+    <link name="base_laser"></link>
+
+
+    <joint name="laser_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <parent link="lidar_link"/>
+      <child link="base_laser"/>
+    </joint>
 
 
   </xacro:macro>

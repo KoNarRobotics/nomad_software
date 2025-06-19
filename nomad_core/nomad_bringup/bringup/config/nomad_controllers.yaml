@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 10 # Hz
+    update_rate: 20 # Hz
 
     nomad_diffdrive_base_controller:
       type: diff_drive_controller/DiffDriveController
@@ -53,7 +53,7 @@ nomad_diffdrive_base_controller:
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
     wheel_radius: 0.13
 
-    wheel_separation_multiplier: 1.0
+    wheel_separation_multiplier: 2.0  # 2.0 not 1.0 or the robot makes almost two turns when rotating once, but encoder reading are correct because it moves forward as expected distance
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
 
@@ -64,7 +64,7 @@ nomad_diffdrive_base_controller:
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
 
     open_loop: false
-    enable_odom_tf: true
+    enable_odom_tf: false
     position_feedback: true
     cmd_vel_timeout: 0.5
     #publish_limited_velocity: true

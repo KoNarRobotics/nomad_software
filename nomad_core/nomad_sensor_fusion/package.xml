@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>nomad_sensor_fusion</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="nomad.konarrobotics@gmail.com">ubuntu</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>robot_localization</depend>
+  <depend>camera_360</depend>
+
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

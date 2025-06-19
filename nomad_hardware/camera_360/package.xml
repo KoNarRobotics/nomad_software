@@ -16,6 +16,7 @@
   <depend>image_transport</depend>
   <depend>v4l2_camera</depend>
   <depend>usb_cam</depend>
+  <depend>pointcloud_to_laserscan</depend>
 
   <export>
     <build_type>ament_python</build_type>

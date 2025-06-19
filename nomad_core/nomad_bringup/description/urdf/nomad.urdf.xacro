@@ -22,7 +22,9 @@
 
 
   <!-- Used for fixing robot -->
-  <link name="world"/>
+  <!-- <link name="map"/> -->
+  <!-- <link name="odom"/> -->
+  <link name="base_link"/>
 
 
   <!-- Nomad T model description -->
@@ -30,8 +32,7 @@
   <!-- Import Nomad urdf model description -->
   <xacro:include filename="$(find nomad_t_model_description)/urdf/nomad_t_model.xacro" />
 
-  <xacro:nomad_t_model parent="world">
-  </xacro:nomad_t_model>
+  <xacro:nomad_t_model parent="base_link"></xacro:nomad_t_model>
 
   <!-- Nomad T model description end -->
 

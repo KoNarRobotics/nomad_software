@@ -1,5 +1,9 @@
 ## Nomad
 
+## Sensor Fusion based on
+https://github.com/methylDragon/ros-sensor-fusion-tutorial/blob/master/01%20-%20ROS%20and%20Sensor%20Fusion%20Tutorial.md
+
+
 ## IP configuration:
 ### IP config:
 - GATE: `192.168.20.1`
