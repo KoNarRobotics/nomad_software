@@ -84,6 +84,14 @@ def generate_launch_description():
     ]
   )
 
+  republish_lidar = Node(
+    package='topic_tools',
+    executable='throttle',
+    name='republish_lidar',
+    output='screen',
+    arguments=['messages', '/livox/imu', '20.0', '/livox/imu_throttled']
+  )
+
   relay_lidar = Node(
       package='camera_360',
     executable='relay_node',
@@ -96,6 +104,7 @@ def generate_launch_description():
     livox_driver,
     point_cloud_to_laserscan,
     relay_lidar,
+    republish_lidar,
   ]
 
   return LaunchDescription( environment_variable + nodes)

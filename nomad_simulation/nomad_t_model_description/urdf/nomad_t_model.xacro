@@ -270,6 +270,14 @@
       </collision>
     </link>
 
+    <link name="base_footprint"></link>
+
+    <joint name="base_footprint_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="base_footprint"/>
+    </joint>
+
 
     <joint name="revolute_arm_6" type="continuous">
       <origin xyz="0.0284 0.035222 0.0" rpy="0 0 0"/>
