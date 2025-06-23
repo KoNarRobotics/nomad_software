@@ -41,8 +41,23 @@ def generate_launch_description():
     }.items()
   )
 
+  slam_toolbox_launch = Node(
+    package='slam_toolbox',
+    executable='async_slam_toolbox_node',
+    name='slam_toolbox',
+    output='screen',
+    parameters=[PathJoinSubstitution([
+      FindPackageShare("nomad_navigation"),
+      "config/mapper.yaml"
+    ])],
+    remappings=[
+      ('/odometry/filtered', '/odom'),  # <--- Add this line
+    ]
+  )
+
   nodes = [
-    nav_launch
+    # nav_launch
+    slam_toolbox_launch
   ]
 
   return LaunchDescription( environment_variable + nodes)
