@@ -25,6 +25,13 @@
   <!-- <link name="map"/> -->
   <!-- <link name="odom"/> -->
   <link name="base_link"/>
+  <link name="base_reasonable_link"/>
+
+  <joint name="base_reasonable_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_reasonable_link"/>
+    <origin xyz="-0.345 -0.2 0" rpy="0 0 0"/>
+  </joint>
 
 
   <!-- Nomad T model description -->
@@ -32,7 +39,7 @@
   <!-- Import Nomad urdf model description -->
   <xacro:include filename="$(find nomad_t_model_description)/urdf/nomad_t_model.xacro" />
 
-  <xacro:nomad_t_model parent="base_link"></xacro:nomad_t_model>
+  <xacro:nomad_t_model parent="base_reasonable_link"></xacro:nomad_t_model>
 
   <!-- Nomad T model description end -->
 
@@ -43,7 +50,7 @@
   <link name="camera_360_mount"/>
 
   <joint name="camera_360_joint" type="fixed">
-    <parent link="base_link"/>
+    <parent link="base_reasonable_link"/>
     <child link="camera_360_mount"/>
     <origin xyz="0.55 0.2 0.25" rpy="0 0 0"/>
   </joint>
