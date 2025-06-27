@@ -1,0 +1,7 @@
+radiation_map_node:
+  ros__parameters:
+    # resolution of the radiation map in meters
+    resolution: 0.2
+    # size in meters
+    max_size_x: 200
+    max_size_y: 200 

@@ -195,7 +195,7 @@ def generate_launch_description():
       barometer_state_broadcaster_spawner,
       imu_state_broadcaster_spawner,
       gps_state_broadcaster_spawner,
-      # geiger_state_broadcaster_spawner,
+      geiger_state_broadcaster_spawner,
       camera_launch,
       livox_launch,
       sensor_fusion_launch,
