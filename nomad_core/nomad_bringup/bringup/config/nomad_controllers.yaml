@@ -52,7 +52,9 @@ nomad_diffdrive_base_controller:
     wheel_separation: 0.58
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
     wheel_radius: 0.13
-
+    
+    ## pobawić się z tymi wartościami, aby w ramce odom nie bvyło obrotu np laser scana jak się obracamy
+    ## wheel_separation_multiplier oraz aczkolwiek może to zależeć od powierzchni 
     wheel_separation_multiplier: 2.0  # 2.0 not 1.0 or the robot makes almost two turns when rotating once, but encoder reading are correct because it moves forward as expected distance
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0

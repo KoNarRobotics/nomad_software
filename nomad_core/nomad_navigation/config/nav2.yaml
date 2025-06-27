@@ -13,7 +13,7 @@ amcl:
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
+    laser_max_range: 40.0
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
     max_beams: 60
@@ -70,10 +70,10 @@ bt_navigator:
 controller_server:
   ros__parameters:
     enable_stamped_cmd_vel: true
-    controller_frequency: 5.0
+    controller_frequency: 10.0
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
+    min_y_velocity_threshold: 0.1
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
     progress_checker_plugins: ["progress_checker"]
@@ -100,16 +100,16 @@ controller_server:
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
       time_steps: 15
-      model_dt: 0.2
+      model_dt: 0.1
       batch_size: 2000
       ax_max: 3.0
       ax_min: -3.0
       ay_max: 3.0
       az_max: 3.5
-      vx_std: 0.2
+      vx_std: 0.4
       vy_std: 0.2
       wz_std: 0.4
-      vx_max: 1.0
+      vx_max: 0.4
       vx_min: -1.0
       vy_max: 0.5
       wz_max: 1.9
@@ -214,7 +214,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.40
+        inflation_radius: 1.4
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -232,9 +232,9 @@ local_costmap:
           marking: True
           data_type: "LaserScan"
           raytrace_max_range: 20.0
-          raytrace_min_range: 0.0
+          raytrace_min_range: 0.35
           obstacle_max_range: 15.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.35
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -267,14 +267,14 @@ global_costmap:
           raytrace_max_range: 20.0
           raytrace_min_range: 0.35
           obstacle_max_range: 15.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.35
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 1.0
-        inflation_radius: 0.4
+        cost_scaling_factor: 3.0
+        inflation_radius: 1.4
       always_send_full_costmap: True
 
 # The yaml_filename does not need to be specified since it going to be set by defaults in launch.
@@ -364,11 +364,11 @@ velocity_smoother:
     feedback: "OPEN_LOOP"
     max_velocity: [0.7, 0.0, 0.8]
     min_velocity: [-0.7, 0.0, -0.8]
-    max_accel: [2.5, 0.0, 3.2]
-    max_decel: [-2.5, 0.0, -3.2]
+    max_accel: [0.7, 0.0, 0.5]
+    max_decel: [-0.7, 0.0, -0.5]
     odom_topic: "odom"
     odom_duration: 0.1
-    deadband_velocity: [0.25, 0.0, 0.3]
+    deadband_velocity: [0.25, 0.0, 0.2]
     velocity_timeout: 1.0
 
 collision_monitor:

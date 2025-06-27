@@ -28,9 +28,9 @@ def generate_launch_description():
   nav_launch = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([
       PathJoinSubstitution([
-        FindPackageShare("nav2_bringup"),
+        FindPackageShare("nomad_navigation"),
         "launch",
-        "nav.launch.py",
+        "nav2.launch.py",
       ])
     ])
   )

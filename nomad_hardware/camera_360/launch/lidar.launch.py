@@ -92,19 +92,33 @@ def generate_launch_description():
     arguments=['messages', '/livox/imu', '20.0', '/livox/imu_throttled']
   )
 
-  relay_lidar = Node(
-      package='camera_360',
-    executable='relay_node',
-    name='relay_node',
-    output='screen',
-)
+  # relay_lidar = Node(
+  #     package='camera_360',
+  #   executable='relay_node',
+  #   name='relay_node',
+  #   output='screen',
+  # )
 
+
+  # Filtr do lidar-a żeby nie widział elementów robota jako przeszkody.   
+  laser_filter_config = PathJoinSubstitution([FindPackageShare("camera_360"), "config", "laser_filter.yaml"])
+  laser_filter_node = Node(
+    package="laser_filters",
+    executable="scan_to_scan_filter_chain",
+    name="laser_filter",
+    parameters=[laser_filter_config],
+    remappings=[
+      ("/scan", "/scan_relay"),
+      ("/scan_filtered", "/scan")
+    ]
+  )
 
   nodes = [
     livox_driver,
     point_cloud_to_laserscan,
-    relay_lidar,
+    # relay_lidar,
     republish_lidar,
+    laser_filter_node,
   ]
 
   return LaunchDescription( environment_variable + nodes)

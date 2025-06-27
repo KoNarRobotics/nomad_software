@@ -1,7 +1,7 @@
 {
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
   "ros.distro": "jazzy",
-  "cmake.sourceDirectory": "/home/lemonx/it/nomad_software/nomad_core/shared_types_nomad",
+  "cmake.sourceDirectory": "/home/ubuntu/it/nomad_software/dependencies/Livox-SDK2",
   "files.associations": {
     "cctype": "cpp",
     "clocale": "cpp",
