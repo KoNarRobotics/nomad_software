@@ -1,0 +1,7 @@
+<library path="geiger_hardware">
+  <class name="geiger_hardware/MCGeigerHardware" type="nomad_hardware::MCGeigerHardware" base_class_type="hardware_interface::SensorInterface">
+    <description>
+      The ros2_control geiger counter interface system hardware interface-type.
+    </description>
+  </class>
+</library>

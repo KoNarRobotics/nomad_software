@@ -1,0 +1,7 @@
+<library path="geiger_broadcaster">
+  <class name="geiger_broadcaster/GeigerBroadcaster" type="nomad_core::GeigerBroadcaster" base_class_type="controller_interface::ControllerInterface">
+    <description>
+	  This controller publishes the readings of an Geiger sensor as geiger_msg/msg/Radiation message.
+    </description>
+  </class>
+</library>

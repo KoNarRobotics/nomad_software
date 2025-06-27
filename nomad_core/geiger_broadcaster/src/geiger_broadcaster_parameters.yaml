@@ -1,0 +1,13 @@
+geiger_broadcaster:
+  sensor_name:
+    {
+      type: string,
+      default_value: "geiger_sensor",
+      description: "Name of the sensor used as prefix for interfaces if there are no individual interface names defined.",
+    }
+  frame_id:
+    {
+      type: string,
+      default_value: "geiger_sensor_frame",
+      description: "Sensor's frame_id in which values are published.",
+    }

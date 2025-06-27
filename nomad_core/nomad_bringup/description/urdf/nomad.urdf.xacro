@@ -17,6 +17,8 @@
 
   <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_gps.xacro" />
 
+  <xacro:include filename="$(find nomad_bringup)/ros2_control/ros_control_geiger.xacro" />
+
   <!-- Import Nomad ros2_control descriptions end -->
 
 
@@ -79,6 +81,8 @@
   <xacro:ros_control_imu name="nomad" />
 
   <xacro:ros_control_gps name="nomad"/>
+
+  <xacro:ros_control_geiger name="nomad" />
 
   <!-- <xacro:ros_control_barometer name="nomad" use_sim="${use_sim}" /> -->
 
