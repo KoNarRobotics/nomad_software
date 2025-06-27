@@ -1,19 +1,37 @@
-## Nomad
+# Nomad
 
-## Sensor Fusion based on
-https://github.com/methylDragon/ros-sensor-fusion-tutorial/blob/master/01%20-%20ROS%20and%20Sensor%20Fusion%20Tutorial.md
+## Services
+### Services running  on the rover:
+- nomad_base.service (diffbot)
+- nomad_nav.service (navigation)
+
+### You can see status using:
+- To see their status use:
+```bash
+sudo systemctl status nomad_nav.service 
+``` 
+- To view log messages live use:
+```bash
+sudo journalctl -u nomad_nav.service -f 
+```
 
 
 ## IP configuration:
-### IP config:
+### IP config local:
 - GATE: `192.168.20.1`
 - DHCP: `192.168.20.1`
 - MASK: `255.255.255.0`
 - DHCP range: `192.168.20.100 - 250`
 - STATIC addresses allowed : `192.168.20.2 - 99`
-- VPN: `10.10.0.1/16`
+### IP config VPN:
+- GATE: `10.10.0.1`
+- DHCP: `10.10.0.1`
+- MASK: `255.255.0.0`
+- DHCP: `None`
+- STATIC addresses allowed : `10.10.0.2 - 10.10.255.254`
 
 ### IP LIST:
+local IP [, vpn IP]
 - Router: `192.168.20.1`
 - OBC: `192.168.20.2`, `10.10.0.6`
 - KonARM (sdrac): `192.168.20.10`
@@ -21,7 +39,7 @@ https://github.com/methylDragon/ros-sensor-fusion-tutorial/blob/master/01%20-%20
 
 
 ## Software Diagram
-
+DrawIO amazing software diagram presenting how its all connected:
 [Diagram](https://drive.google.com/file/d/13Ft7TU0lAM-w3s6LpOIg76KfH13r2Nhr/view?usp=sharing)
 
 ## Connecting to OBC
@@ -102,7 +120,16 @@ sudo apt remove brltty
 
 [more info about the problem](https://github.com/juliagoda/CH341SER/issues/18)
 
+
+
+## Navigation base on
+https://docs.nav2.org/setup_guides/index.html#table-of-contents
+
+
+## Sensor Fusion based on
+https://github.com/methylDragon/ros-sensor-fusion-tutorial/blob/master/01%20-%20ROS%20and%20Sensor%20Fusion%20Tutorial.md
+
 ### Real time problem scheduler
 
-When you start ros yut get error that scheduling is not configured.
-[link](https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html)
+When you start ros and get error that scheduling is not configured.
+[Then check this out ](https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html).

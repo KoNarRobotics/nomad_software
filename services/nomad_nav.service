@@ -1,0 +1,14 @@
+# filepath: /etc/systemd/system/nomad.service
+[Unit]
+Description=Nomad navigation and slam.
+After=nomad_base.service
+Requires=nomad_base.service
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/home/ubuntu/it/nomad_software/services/start_nav.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

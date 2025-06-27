@@ -16,6 +16,8 @@
   <depend>rclcpp_lifecycle</depend>
   <depend>navigation2</depend>
   <depend>nav2_bringup</depend>
+  <depend>plotjuggler_ros</depend>
+  <depend>plotjuggler</depend>
 
 
   <depend>can_device</depend>

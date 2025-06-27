@@ -4,7 +4,7 @@ After=basic.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/orangepi/it/nomad_software/start_can.sh
+ExecStart=/home/ubuntu/it/nomad_software/start_can.sh
 RemainAfterExit=true
 User=root
 Restart=on-failure
