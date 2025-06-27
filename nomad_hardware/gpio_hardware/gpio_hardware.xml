@@ -1,0 +1,7 @@
+<library path="gpio_hardware">
+  <class name="gpio_hardware/MCGpioHardware" type="nomad_hardware::MCGpioHardware" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ros2_control barometer interface system hardware interface-type.
+    </description>
+  </class>
+</library>
