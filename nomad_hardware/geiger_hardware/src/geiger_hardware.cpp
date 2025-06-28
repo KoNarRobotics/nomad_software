@@ -178,9 +178,10 @@ void MCGeigerHardware::can_callback_status(CanDriver &can, const CanFrame &frame
   (void)can;
   (void)args;
   can_geiger_status_t msg;
-  if(!can_geiger_status_unpack(&msg, frame.data, frame.size)) {
+  if(can_geiger_status_unpack(&msg, frame.data, frame.size) != 0) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface),
                         "Geiger sensor failed to unpack \"geiger_status\"!");
+    return;
   }
   geiger_status = msg.geiger_status;
 }
@@ -190,11 +191,11 @@ void MCGeigerHardware::can_callback_geiger_read(CanDriver &can, const CanFrame &
   (void)can;
   (void)args;
   can_geiger_read_t msg;
-  if(!can_geiger_read_unpack(&msg, frame.data, frame.size)) {
+  if(can_geiger_read_unpack(&msg, frame.data, frame.size) != 0) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface),
                         "Geiger sensor failed to unpack \"geiger_read\"!");
+    return;
   }
-
   cpm    = msg.cpm;
   siwert = msg.micro_siwert;
 }

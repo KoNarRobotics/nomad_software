@@ -45,9 +45,18 @@ def generate_launch_description():
     ])
   )
 
+  # explore_node =  Node(
+  #     package='explore_lite',
+  #     executable='explore',
+  #     name='explore',
+  #     output='screen',
+  #     parameters=[{'use_sim_time': False}]
+  #   )
+
   nodes = [
     nav_launch,
     slam_launch,
+    # explore_node
   ]
 
   return LaunchDescription( environment_variable + nodes)

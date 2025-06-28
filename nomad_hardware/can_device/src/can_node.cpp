@@ -42,8 +42,8 @@ public:
 
     float err  = (float)(sent - recived) * 100.0f / sent;
     float freq = (float)recived * 1000.0f / elapsed_time;
-    RCLCPP_INFO(this->get_logger(), "CAN Nope stoped Rec: %d Sent: %d  Error: %d ", recived, sent, error);
-    RCLCPP_INFO(this->get_logger(), "CAN Nope stoped Prec: %.6f%%    Freq: %.3f%%", err, freq);
+    RCLCPP_INFO(this->get_logger(), "CAN node stoped Rec: %d Sent: %d  Error: %d ", recived, sent, error);
+    RCLCPP_INFO(this->get_logger(), "CAN node stoped Prec: %.6f%%    Freq: %.3f%%", err, freq);
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
