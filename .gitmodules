@@ -15,7 +15,3 @@
 [submodule "nomad_core/Autonomous-Explorer-and-Mapper-ros2-nav2"]
 	path = nomad_core/Autonomous-Explorer-and-Mapper-ros2-nav2
 	url = git@github.com:X-Lemon-X/Autonomous-Explorer-and-Mapper-ros2-nav2.git
-[submodule "nomad_core/image_pipeline"]
-	path = nomad_core/image_pipeline
-	url = git@github.com:KoNarRobotics/image_pipeline.git
-	branch = jazzy
