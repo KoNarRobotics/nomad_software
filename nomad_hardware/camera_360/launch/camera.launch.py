@@ -47,7 +47,7 @@ def generate_launch_description():
     }]
   )
 
-  device = "/dev/video0"
+  device = "/dev/video6"
   camera_left = Node(
     package="usb_cam",
     executable="usb_cam_node_exe",
