@@ -28,6 +28,20 @@ class RCSwitch(Node):
       PassRC.NOMAD: nomad_joy_pub
     }  
     self.pass_messages_to = PassRC.NOMAD
+    self.last_conn_timer = self.get_clock().now().nanoseconds
+    self.timeout_send = False
+    self.timer = self.create_timer(0.05, self.timer_callback_timeout)
+
+  def timer_callback_timeout(self):
+    if(self.last_conn_timer > 1000000000 and not self.timeout_send ):
+      self.timeout_send = True
+      ms = Joy()
+      ms.header.stamp = self.get_clock().now().to_msg()
+      ms.header.frame_id = 'base_link'
+      ms.axes = [0.0] * 6
+      ms.buttons = [0] * 10
+      self.joy_pass_topics[self.pass_messages_to].publish(ms)  
+    pass
 
   def check_if_button_pressed(self, buttons, index):
     pressed = False
@@ -43,7 +57,9 @@ class RCSwitch(Node):
     ms.header.frame_id = msg.header.frame_id
     ms.axes = [0.0] * len(msg.axes)
     ms.buttons = [0] * len(msg.buttons)
-    
+    self.last_conn_timer = self.get_clock().now().nanoseconds
+    self.timeout_send = False
+
     # when buton 6 is pressed we switch next controler
     if self.check_if_button_pressed(msg.buttons, 6):
       self.get_logger().info("Switching to konar")
