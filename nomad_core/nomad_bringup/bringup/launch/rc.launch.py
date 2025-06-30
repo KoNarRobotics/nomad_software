@@ -46,7 +46,7 @@ def generate_launch_description():
   )
 
   nodes = [
-    pilot_6_axis,
+    # pilot_6_axis,
     simple_control_switch,
     rc_driver
   ]
