@@ -33,8 +33,9 @@ def detect_orange_plates(image, show_result=True, min_area=1000):
       result_image (np.ndarray): Image with detections drawn.
       centers (list of (x, y)): List of center coordinates of detected orange regions.
   """
+
   # Define orange HSV range
-  lower_orange = np.array([10, 100, 100])
+  lower_orange = np.array([1, 80, 80])
   upper_orange = np.array([25, 255, 255])
 
   # Convert to HSV and create mask
@@ -128,10 +129,19 @@ class SignDetector(Node):
     self.laser_scan = msg
 
   def detect_sign(self,msg:Image):
-    x = None
-    y = None
     frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-    x,y = detect_orange_plates(frame, show_result=False, min_area=1000)
+    image, centers = detect_orange_plates(frame, show_result=False, min_area=1000)
+    if len(centers) == 0:
+      self.get_logger().warn("No orange plates detected")
+      return None, None
+    x =0
+    y = 0
+    for center in centers:
+      x += center[0]
+      y += center[1]
+    x = int(x / len(centers))
+    y = int(y / len(centers))
+    self.get_logger().info(f"Detected orange plate at Pixels: x={x}, y={y}")
     return x,y
 
   def image_to_map_coords(self, u, v, camera_info, camera_frame):
@@ -259,7 +269,6 @@ class SignDetector(Node):
 def main(args=None):
     rclpy.init(args=args)
     explorer_node = SignDetector()
-
     try:
         explorer_node.get_logger().info("Starting SignDetector...")
         rclpy.spin(explorer_node)
@@ -269,7 +278,20 @@ def main(args=None):
         explorer_node.destroy_node()
         rclpy.shutdown()
 
-
-if __name__ == "__main__":
-  image = cv2.imread('/home/ubuntu/it/nomad_software/nomad_core/elrob_signs/elrob_signs/test_images/orange_plate.jpg')
-  x,y = detect_orange_plates(image,True, min_area=1000)
+# if __name__ == "__main__":
+#   images = [
+#     '/home/lemonx/Pictures/Screenshot_20250702_013859.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013852.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013847.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013837.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013833.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013829.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013823.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013817.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013408.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013359.png',
+#     '/home/lemonx/Pictures/Screenshot_20250702_013340.png'
+#   ]
+#   for i in images:
+#     image = cv2.imread(i)
+#     x,y = detect_orange_plates(image,True, min_area=1000)
