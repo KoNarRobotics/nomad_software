@@ -34,3 +34,5 @@ old
 
 
 .venv
+
+rosbag*

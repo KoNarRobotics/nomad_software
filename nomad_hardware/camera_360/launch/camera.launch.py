@@ -88,7 +88,7 @@ def generate_launch_description():
   )
 
   nodes = [   
-    camera_front,
+    # camera_front,
     camera_left,
     camera_right,
   ]

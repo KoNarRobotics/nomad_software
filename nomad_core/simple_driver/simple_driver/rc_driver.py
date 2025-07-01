@@ -2,6 +2,8 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import TwistStamped   
+from nav2_msgs.action import NavigateToPose
+from rclpy.action import ActionClient
 # geometry_msgs/msg/TwistStamped
 
 
@@ -13,6 +15,8 @@ class SimpleDriver(Node):
 
 
     self.declare_parameter("kaganiec_predkosci", 0.1)
+    self.nav_to_pose_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
+    self.canceling_goal  =False
 
 
     self.sub_joint_states = self.create_subscription(
@@ -27,6 +31,10 @@ class SimpleDriver(Node):
       '/cmd_vel',
       10
     )
+
+  def goal_canceled_callback(self):
+    self.canceling_goal = False
+    pass
 
   def joy_callback(self, msg: Joy):
     kaganiec = self.get_parameter("kaganiec_predkosci").value
@@ -43,6 +51,10 @@ class SimpleDriver(Node):
     ang_z = -msg.axes[2] * max_angular_velocity 
     
 
+    if msg.buttons[5]==1 and not self.canceling_goal:
+      self.canceling_goal = True
+      self.get_logger().info("Gol Canceling by Joystick")
+      self.nav_to_pose_client._cancel_goal_async(self.goal_canceled_callback)
 
     msg_cmd = TwistStamped()
     msg_cmd.header.frame_id = "base_link"

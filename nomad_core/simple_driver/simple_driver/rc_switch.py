@@ -3,7 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from enum import Enum
 
-  
+
 class PassRC(Enum):
   NOMAD = 1
   KONAR = 2
@@ -18,7 +18,8 @@ class RCSwitch(Node):
         self.joy_callback,
         10
       )
-    
+
+
     nomad_joy_pub = self.create_publisher(Joy, "/nomad/joy", 10)
     konar_joy_pub = self.create_publisher(Joy, "/sdrac/joy", 10)
 
@@ -30,7 +31,9 @@ class RCSwitch(Node):
     self.pass_messages_to = PassRC.NOMAD
     self.last_conn_timer = self.get_clock().now().nanoseconds
     self.timeout_send = False
-    self.timer = self.create_timer(0.05, self.timer_callback_timeout)
+    # self.timer = self.create_timer(0.05, self.timer_callback_timeout)
+
+
 
   def timer_callback_timeout(self):
     if(self.last_conn_timer > 1000000000 and not self.timeout_send ):
@@ -57,8 +60,8 @@ class RCSwitch(Node):
     ms.header.frame_id = msg.header.frame_id
     ms.axes = [0.0] * len(msg.axes)
     ms.buttons = [0] * len(msg.buttons)
-    self.last_conn_timer = self.get_clock().now().nanoseconds
-    self.timeout_send = False
+    # self.last_conn_timer = self.get_clock().now().nanoseconds
+    # self.timeout_send = False
 
     # when buton 6 is pressed we switch next controler
     if self.check_if_button_pressed(msg.buttons, 6):

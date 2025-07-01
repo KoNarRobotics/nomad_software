@@ -14,8 +14,8 @@ import os
 
 def generate_launch_description():
     environment_variable = [
-        # SetEnvironmentVariable(name="FASTDDS_BUILTIN_TRANSPORTS",value="LARGE_DATA")
-        ]
+       # SetEnvironmentVariable(name="RMW_IMPLEMENTATION",value="rmw_zenoh_cpp")
+      ]
 
     # Declare arguments
     declared_arguments = []
