@@ -144,7 +144,7 @@ class SignDetector(Node):
     self.get_logger().info(f"Detected orange plate at Pixels: x={x}, y={y}")
     return x,y
 
-  def image_to_map_coords(self, u, v, camera_info, camera_frame):
+  def image_to_map_coords(self, u, v, camera_info, image:Image):
     """
     Transforms image pixel coordinates (u, v) from a camera to map coordinates.
 
@@ -170,8 +170,8 @@ class SignDetector(Node):
 
     # Create a PoseStamped in the camera frame
     pose_cam = PoseStamped()
-    pose_cam.header.stamp = self.get_clock().now().to_msg()
-    pose_cam.header.frame_id = camera_frame
+    pose_cam.header.stamp = image.header.stamp
+    pose_cam.header.frame_id = image.header.frame_id
     pose_cam.pose.position.x = X
     pose_cam.pose.position.y = Y
     pose_cam.pose.position.z = Z
@@ -240,7 +240,7 @@ class SignDetector(Node):
 
     # Transform to map frame
     try:
-      pose_map = self.tf_buffer.transform(pose_base, 'map', timeout=rclpy.duration.Duration(seconds=0.5))
+      pose_map = self.tf_buffer.transform(pose_base, 'map', timeout=rclpy.duration.Duration(seconds=5.0))
     except Exception as e:
       self.get_logger().warn(f"TF transform to map failed: {e}")
       return (None,None)

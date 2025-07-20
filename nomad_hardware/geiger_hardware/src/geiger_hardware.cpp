@@ -197,7 +197,7 @@ void MCGeigerHardware::can_callback_geiger_read(CanDriver &can, const CanFrame &
     return;
   }
   cpm    = msg.cpm;
-  siwert = msg.micro_siwert;
+  siwert = msg.micro_siwert * 0.000001;
 }
 
 

@@ -65,7 +65,7 @@ def generate_launch_description():
     output='screen',
     parameters=[{
       'target_frame': 'base_laser',
-      'min_height': -0.1,  ## so it wont detect stuff on the ground i don't know   
+      'min_height': -0.3,  ## so it wont detect stuff on the ground i don't know   
       'max_height': 0.3, ## so we won't detect sealing
       'angle_min': -3.141592653589793,
       'angle_max': 3.141592653589793,

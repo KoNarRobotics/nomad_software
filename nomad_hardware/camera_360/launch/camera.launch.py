@@ -15,6 +15,7 @@ import subprocess
 # Condif base on package usb_cam
 # https://github.com/ros-drivers/usb_cam
 
+
 def generate_launch_description():
   # max values are 3840 x 2160 and 30.0 fps
   frame_rate = 10.0
@@ -38,6 +39,7 @@ def generate_launch_description():
       "framerate": frame_rate,
       "video_device": device,
       "camera_name": "camera_front_link_optical",
+      "frame_id" : "camera_front_link_optical",
       "camera_info_url": "package://camera_360/config/camera_info_front.yaml",
       "pixel_format": "mjpeg2rgb",
       "autofocus" : False,
@@ -47,7 +49,7 @@ def generate_launch_description():
     }]
   )
 
-  device = "/dev/video6"
+  device = "/dev/video0"
   camera_left = Node(
     package="usb_cam",
     executable="usb_cam_node_exe",
@@ -58,6 +60,7 @@ def generate_launch_description():
       "framerate": frame_rate,
       "video_device": device,
       "camera_name": "camera_left_link_optical",
+      "frame_id" : "camera_left_link_optical",
       "camera_info_url": "package://camera_360/config/camera_info_left.yaml",
       "pixel_format": "mjpeg2rgb",
       "autofocus" : False,
@@ -78,6 +81,7 @@ def generate_launch_description():
       "framerate": frame_rate,
       "video_device": device,
       "camera_name": "camera_right_link_optical",
+      "frame_id" : "camera_right_link_optical",
       "camera_info_url": "package://camera_360/config/camera_info_right.yaml",
       "pixel_format": "mjpeg2rgb",
       "autofocus" : False,
