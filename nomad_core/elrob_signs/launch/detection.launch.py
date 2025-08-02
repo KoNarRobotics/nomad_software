@@ -26,7 +26,7 @@ def generate_launch_description():
 
   front_cam_node =  Node(
     package='elrob_signs',
-    executable='detection',
+    executable='detection_node',
     name='detection_node',
     output='screen',
     remappings=[
@@ -37,7 +37,7 @@ def generate_launch_description():
 
   right_cam_node =  Node(
     package='elrob_signs',
-    executable='detection',
+    executable='detection_node',
     name='detection_node',
     output='screen',
     remappings=[
@@ -60,7 +60,7 @@ def generate_launch_description():
   nodes = [
     # front_cam_node,
     right_cam_node,
-    # left_cam_node
+    left_cam_node
   ]
 
   return LaunchDescription( environment_variable + nodes)

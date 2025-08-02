@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
           'detection_node = elrob_signs.detection:main',
+          'radiation_node = elrob_signs.radiation_maper:main'
         ],
     },
 )
