@@ -2,6 +2,18 @@
 
 ## Services
 
+# <<<<<<< HEAD
+
+### Installing services
+
+To install the services on the rover, run the following command:
+
+```bash
+./scripts/./make_service.sh
+```
+
+> > > > > > > 4cc3ea42f0beb7ed1a1ccdf71d2565bcef63428f
+
 ### Services running on the rover:
 
 - nomad_base.service (diffbot)
