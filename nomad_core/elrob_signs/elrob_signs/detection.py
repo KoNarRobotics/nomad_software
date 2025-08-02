@@ -20,7 +20,7 @@ from std_msgs.msg import Header
 from geometry_msgs.msg import PointStamped
 
 
-def detect_orange_plates(image, show_result=True, min_area=1000):
+def detect_orange_plates(image, show_result=True, min_area=60):
   """
   Detect orange plates in a BGR image using HSV color thresholding.
   
@@ -100,8 +100,9 @@ class SignDetector(Node):
     # Convert to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     # Define orange color range
-    lower_orange = np.array([10, 100, 100])
-    upper_orange = np.array([25, 255, 255])
+    lower_orange = np.array([100, 150, 150])
+    upper_orange = np.array([255, 255, 255
+    ])
     # Threshold the HSV image to get only orange colors
     mask = cv2.inRange(hsv, lower_orange, upper_orange)
 
@@ -278,20 +279,23 @@ def main(args=None):
         explorer_node.destroy_node()
         rclpy.shutdown()
 
-# if __name__ == "__main__":
-#   images = [
-#     '/home/lemonx/Pictures/Screenshot_20250702_013859.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013852.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013847.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013837.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013833.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013829.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013823.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013817.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013408.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013359.png',
-#     '/home/lemonx/Pictures/Screenshot_20250702_013340.png'
-#   ]
-#   for i in images:
-#     image = cv2.imread(i)
-#     x,y = detect_orange_plates(image,True, min_area=1000)
+if __name__ == "__main__":
+  images = [
+    '/home/lemonx/Pictures/Screenshot_20250702_151320.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_134723.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_135029.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013859.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013852.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013847.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013837.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013833.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013829.png',
+    # '/home/lemonx/Pictures/Screenshot_20250702_013823.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_013817.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_013408.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_013359.png',
+    '/home/lemonx/Pictures/Screenshot_20250702_013340.png',
+  ]
+  for i in images:
+    image = cv2.imread(i)
+    x,y = detect_orange_plates(image,True, min_area=1000)

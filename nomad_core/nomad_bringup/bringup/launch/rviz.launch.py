@@ -29,6 +29,7 @@ def generate_launch_description():
     name="rviz2",
     output="log",
     arguments=["-d", rviz_config_file],
+    parameters=[{"use_sim_time": True}],
   )
   nodes = [
     rviz_node,
