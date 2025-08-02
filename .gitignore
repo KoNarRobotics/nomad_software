@@ -36,3 +36,6 @@ old
 .venv
 
 rosbag*
+
+
+ignore/*
