@@ -107,5 +107,6 @@
   ],
   "python.analysis.extraPaths": [
     "/opt/ros/jazzy/lib/python3.12/site-packages"
-  ]
+  ],
+  "idf.pythonInstallPath": "/usr/bin/python3"
 }
