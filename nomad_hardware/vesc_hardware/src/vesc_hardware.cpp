@@ -412,8 +412,8 @@ void MCVescHardware::can_callback_status_2(CanDriver &can, const CanFrame &frame
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 2");
     return;
   }
-  joint->amd_hours         = (double)status.amp_hours * 1000;
-  joint->amd_hours_charged = (double)status.amp_hours_chg * 1000;
+  joint->amd_hours         = (double)status.amp_hours * 1000.0;
+  joint->amd_hours_charged = (double)status.amp_hours_chg * 1000.0;
 }
 
 void MCVescHardware::can_callback_status_3(CanDriver &can, const CanFrame &frame, void *args) {
@@ -424,8 +424,8 @@ void MCVescHardware::can_callback_status_3(CanDriver &can, const CanFrame &frame
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 3");
     return;
   }
-  joint->watt_hours         = (double)status.wat_hours * 1000;
-  joint->watt_hours_charged = (double)status.wat_hours_chg * 1000;
+  joint->watt_hours         = (double)status.wat_hours * 1000.0;
+  joint->watt_hours_charged = (double)status.wat_hours_chg * 1000.0;
 }
 
 void MCVescHardware::can_callback_status_4(CanDriver &can, const CanFrame &frame, void *args) {
@@ -468,10 +468,10 @@ void MCVescHardware::can_callback_status_6(CanDriver &can, const CanFrame &frame
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack status 6");
     return;
   }
-  joint->adc1 = (double)status.adc1 * 1000;
-  joint->adc2 = (double)status.adc2 * 1000;
-  joint->adc3 = (double)status.adc3 * 1000;
-  joint->ppm  = (double)status.ppm * 1000;
+  joint->adc1 = (double)status.adc1 * 1000.0;
+  joint->adc2 = (double)status.adc2 * 1000.0;
+  joint->adc3 = (double)status.adc3 * 1000.0;
+  joint->ppm  = (double)status.ppm * 1000.0;
 }
 
 
