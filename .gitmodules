@@ -15,6 +15,6 @@
 [submodule "nomad_core/Autonomous-Explorer-and-Mapper-ros2-nav2"]
 	path = nomad_core/Autonomous-Explorer-and-Mapper-ros2-nav2
 	url = git@github.com:X-Lemon-X/Autonomous-Explorer-and-Mapper-ros2-nav2.git
-[submodule "dependencies/gpsd"]
-	path = dependencies/gpsd
-	url = https://gitlab.com/gpsd/gpsd.git
+[submodule "nomad_hardware/ublox"]
+	path = nomad_hardware/ublox
+	url = git@github.com:KumarRobotics/ublox.git
