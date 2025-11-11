@@ -25,6 +25,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   controller_interface
   generate_parameter_library
   pluginlib
+  pal_statistics
   rclcpp
   rclcpp_lifecycle
   sensor_msgs

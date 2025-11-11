@@ -17,6 +17,7 @@
   <depend>generate_parameter_library</depend>
   <depend>rclcpp</depend>
   <depend>geiger_msg</depend>
+  <depend>pal_statistics</depend>
 
 
   <test_depend>ament_lint_auto</test_depend>

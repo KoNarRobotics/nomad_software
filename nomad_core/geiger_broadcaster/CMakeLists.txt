@@ -26,6 +26,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   generate_parameter_library
   pluginlib
   rclcpp
+  pal_statistics
   rclcpp_lifecycle
   sensor_msgs
   shared_types_nomad
@@ -36,6 +37,7 @@ set(CMAKE_CXX_STANDARD 20)
 # find dependencies
 # find_package(ros2_control_cmake REQUIRED)
 find_package(ament_cmake REQUIRED)
+find_package(pal_statistics REQUIRED)
 find_package(backward_ros REQUIRED)
 find_package(generate_parameter_library REQUIRED)
 

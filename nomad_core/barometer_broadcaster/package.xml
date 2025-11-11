@@ -16,6 +16,7 @@
   <depend>shared_types_nomad</depend>
   <depend>generate_parameter_library</depend>
   <depend>rclcpp</depend>
+  <depend>pal_statistics</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
