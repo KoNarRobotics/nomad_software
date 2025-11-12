@@ -1,39 +1,40 @@
 # NTRIP client configuration
+ntrip_client:
+  ros__parameters:
+    # Required parameters used to connect to the NTRIP server
+    host: "system.asgeupos.pl"   # e.g. "ntrip.example.com"
+    port: 2101             # e.g. 2101
+    mountpoint: "RTN4G_VRS_RTCM32" # e.g. "MOUNTPOINT"
 
-# Required parameters used to connect to the NTRIP server
-host: "system.asgeupos.pl"   # e.g. "ntrip.example.com"
-port: 2101             # e.g. 2101
-mountpoint: "RTN4G_VRS_RTCM32" # e.g. "MOUNTPOINT"
+    # Optional parameter that will set the NTRIP version in the initial HTTP request to the NTRIP caster.
+    ntrip_version: "NTRIP/3.2"  # e.g. "NTRIP/2.0"
 
-# Optional parameter that will set the NTRIP version in the initial HTTP request to the NTRIP caster.
-ntrip_version: "NTRIP/3.2"  # e.g. "NTRIP/2.0"
+    # If this is true, the client will attempt to authenticate. If false, connect unauthenticated.
+    authenticate: true
 
-# If this is true, the client will attempt to authenticate. If false, connect unauthenticated.
-authenticate: true
+    # If authenticate is true, these will be used for authentication
+    username: "konar/nomad"
+    password: "LHdSlp1vCUaB6r"
 
-# If authenticate is true, these will be used for authentication
-username: "konar/nomad"
-password: "LHdSlp1vCUaB6r"
+    # Whether to connect with SSL. cert, key and ca_cert only used if true.
+    ssl: false
+    cert: "None"           # path to client certificate file (PEM)
+    key: "None"            # path to client private key file (PEM)
+    ca_cert: "None"        # path to CA bundle or CA cert file (PEM)
 
-# Whether to connect with SSL. cert, key and ca_cert only used if true.
-ssl: false
-cert: "None"           # path to client certificate file (PEM)
-key: "None"            # path to client private key file (PEM)
-ca_cert: "None"        # path to CA bundle or CA cert file (PEM)
+    # Frame ID added to published RTCM messages
+    rtcm_frame_id: "odom"
 
-# Frame ID added to published RTCM messages
-rtcm_frame_id: "odom"
+    # Optional parameters to allow longer or shorter NMEA messages (standard max is 82)
+    nmea_max_length: 128
+    nmea_min_length: 3
 
-# Optional parameters to allow longer or shorter NMEA messages (standard max is 82)
-nmea_max_length: 128
-nmea_min_length: 3
+    # Which message package to use for published RTCM messages (e.g. "mavros_msgs" or "rtcm_msgs")
+    rtcm_message_package: "rtcm_msgs"
 
-# Which message package to use for published RTCM messages (e.g. "mavros_msgs" or "rtcm_msgs")
-rtcm_message_package: "rtcm_msgs"
+    # Reconnect behaviour
+    reconnect_attempt_max: 10
+    reconnect_attempt_wait_seconds: 5
 
-# Reconnect behaviour
-reconnect_attempt_max: 10
-reconnect_attempt_wait_seconds: 5
-
-# How many seconds is acceptable between receiving RTCM; if exceeded, attempt reconnect
-rtcm_timeout_seconds: 4
+    # How many seconds is acceptable between receiving RTCM; if exceeded, attempt reconnect
+    rtcm_timeout_seconds: 4
