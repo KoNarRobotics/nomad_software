@@ -8,6 +8,8 @@ ublox_gps_node:
       baudrate: 115200
     # TMODE3 Config
     tmode3: 1                   # Survey-In Mode
+    rate: 5.0
+    dynamic_model: automotive
     sv_in:
       reset: True               # True: disables and re-enables survey-in (resets)
                                 # False: Disables survey-in only if TMODE3 is
