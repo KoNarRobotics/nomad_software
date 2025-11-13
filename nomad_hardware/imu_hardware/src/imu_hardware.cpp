@@ -263,11 +263,15 @@ void MCImuHardware::can_callback_orientation(CanDriver &can, const CanFrame &fra
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu orientation");
     return;
   }
-  double scale      = (1 << 14);
-  imu_orientation_x = (double)orientation.x / scale;
-  imu_orientation_y = (double)orientation.y / scale;
-  imu_orientation_z = (double)orientation.z / scale;
-  imu_orientation_w = (double)orientation.w / scale;
+  // double scale      = (1 << 14);
+  // imu_orientation_x = (double)orientation.x / scale;
+  // imu_orientation_y = (double)orientation.y / scale;
+  // imu_orientation_z = (double)orientation.z / scale;
+  // imu_orientation_w = (double)orientation.w / scale;
+  imu_orientation_x = can_imu_orientation_x_decode(orientation.x);
+  imu_orientation_y = can_imu_orientation_y_decode(orientation.y);
+  imu_orientation_z = can_imu_orientation_z_decode(orientation.z);
+  imu_orientation_w = can_imu_orientation_w_decode(orientation.w);
 }
 
 void MCImuHardware::can_callback_linear_acceleration(CanDriver &can, const CanFrame &frame, void *args) {
@@ -279,10 +283,13 @@ void MCImuHardware::can_callback_linear_acceleration(CanDriver &can, const CanFr
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu linear acceleration");
     return;
   }
-  double scale              = 100;
-  imu_linear_acceleration_x = (double)linear_acceleration.x / scale;
-  imu_linear_acceleration_y = (double)linear_acceleration.y / scale;
-  imu_linear_acceleration_z = (double)linear_acceleration.z / scale;
+  // double scale              = 100;
+  // imu_linear_acceleration_x = (double)linear_acceleration.x / scale;
+  // imu_linear_acceleration_y = (double)linear_acceleration.y / scale;
+  // imu_linear_acceleration_z = (double)linear_acceleration.z / scale;
+  imu_linear_acceleration_x = can_imu_linear_acceleration_x_decode(linear_acceleration.x);
+  imu_linear_acceleration_y = can_imu_linear_acceleration_y_decode(linear_acceleration.y);
+  imu_linear_acceleration_z = can_imu_linear_acceleration_z_decode(linear_acceleration.z);
 }
 
 void MCImuHardware::can_callback_magnetic_field(CanDriver &can, const CanFrame &frame, void *args) {
@@ -294,10 +301,14 @@ void MCImuHardware::can_callback_magnetic_field(CanDriver &can, const CanFrame &
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu magnetic field");
     return;
   }
-  double scale         = 16;
-  imu_magnetic_field_x = (double)magnetic_field.x / scale;
-  imu_magnetic_field_y = (double)magnetic_field.y / scale;
-  imu_magnetic_field_z = (double)magnetic_field.z / scale;
+  // double scale         = 16;
+  // imu_magnetic_field_x = (double)magnetic_field.x / scale;
+  // imu_magnetic_field_y = (double)magnetic_field.y / scale;
+  // imu_magnetic_field_z = (double)magnetic_field.z / scale;
+
+  imu_magnetic_field_x = can_imu_magnetic_field_x_decode(magnetic_field.x);
+  imu_magnetic_field_y = can_imu_magnetic_field_y_decode(magnetic_field.y);
+  imu_magnetic_field_z = can_imu_magnetic_field_z_decode(magnetic_field.z);
 }
 
 void MCImuHardware::can_callback_gyration(CanDriver &can, const CanFrame &frame, void *args) {
@@ -309,10 +320,13 @@ void MCImuHardware::can_callback_gyration(CanDriver &can, const CanFrame &frame,
     RCLCPP_ERROR(rclcpp::get_logger(nameHardwareInterface), "Failed to unpack imu gyration");
     return;
   }
-  double scale   = 100;
-  imu_gyration_x = (double)gyration.x / scale;
-  imu_gyration_y = (double)gyration.y / scale;
-  imu_gyration_z = (double)gyration.z / scale;
+  // double scale   = 900; // 100
+  // imu_gyration_x = (double)gyration.x / scale;
+  // imu_gyration_y = (double)gyration.y / scale;
+  // imu_gyration_z = (double)gyration.z / scale;
+  imu_gyration_x = can_imu_gyration_x_decode(gyration.x);
+  imu_gyration_y = can_imu_gyration_y_decode(gyration.y);
+  imu_gyration_z = can_imu_gyration_z_decode(gyration.z);
 }
 
 void MCImuHardware::can_callback_temperature_status(CanDriver &can, const CanFrame &frame, void *args) {
