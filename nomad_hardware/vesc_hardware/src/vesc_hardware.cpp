@@ -400,8 +400,8 @@ void MCVescHardware::can_callback_status_1(CanDriver &can, const CanFrame &frame
   joint->erpm       = (double)status.erpm * gear_ratio * polar_pairs;
   joint->velocity = (double)status.erpm / 60.0 * (2.0 * M_PI) / (gear_ratio * polar_pairs); // convert rpm to rad/s
 
-  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Current: %f  Duty: %f  Erpm: %f", joint->current,
-  //             joint->duty_cycle, joint->erpm);
+  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "ID: %i Current: %f  Duty: %f  Erpm: %f", frame.id,
+  //             joint->current, joint->duty_cycle, joint->erpm);
 }
 
 void MCVescHardware::can_callback_status_2(CanDriver &can, const CanFrame &frame, void *args) {
@@ -456,8 +456,7 @@ void MCVescHardware::can_callback_status_5(CanDriver &can, const CanFrame &frame
   double scale_for_tachometer = 4.0 * M_PI / 360.0; //  2 * 2 * M_PI = 360 deg
   joint->position             = (double)status.tachometer * scale_for_tachometer;
   joint->voltage              = (double)status.volts_in * 0.1;
-  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Tachometer: %f  Voltage: %f", joint->tachometer,
-  //             joint->voltage);
+  // RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "Pos: %f  Voltage: %f", joint->position, joint->voltage);
 }
 
 void MCVescHardware::can_callback_status_6(CanDriver &can, const CanFrame &frame, void *args) {
