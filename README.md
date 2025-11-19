@@ -120,7 +120,17 @@ if you don't have picocom installed you can install it with the following comman
 sudo apt install picocom
 ```
 
-###### Issues:
+
+### Streaming video from OBC camera
+
+
+
+ffmpeg -f v4l2 -pixel_format mjpeg -framerate 30 -s 1280x720 -i /dev/video0 -preset ultrafast -tune zero_latency -b:v 100M -maxrate 120M -bufsize 600M -f mpegts -omit_video_pes_length 1 udp://10.10.0.8:2000
+
+ffplay -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 1 -strict experimental -framedrop -f mpegts -vf setpts=0 udp://10.10.0.6:2000
+
+
+### Issues:
 
 if you have a problem with interface disconnecting or not being visible.
 And your log looks something like this:
