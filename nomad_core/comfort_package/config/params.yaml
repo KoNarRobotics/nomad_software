@@ -1,0 +1,4 @@
+audio_node:
+  ros__parameters:
+    max_velocity: 2.5  # Maximum velocity for maximum audio volume (m/s)
+    audio_samplera: 48000  # Audio sample rate (Hz)

@@ -7,16 +7,16 @@ from comfort_package.electric_motor_synthesizer import ElectricMotorSynth
 class AudioComforterSubscriber(Node):
   def __init__(self):
     super().__init__('minimal_subscriber')
+    self.param_max_velocity = self.declare_parameter('max_velocity', 2.5)
+    self.max_velocity = self.param_max_velocity.get_parameter_value().double_value
+    self.param_audio_samplera = self.declare_parameter('audio_samplera', 48000)
+    self.audio_samplera = self.param_audio_samplera.get_parameter_value().integer_value
+
     self.subscription = self.create_subscription(
       TwistStamped,
       'cmd_vel',
       self.msg_callback,
       10)
-    self.param_max_velocity = self.declare_parameter('my_parameter', 2.5)
-    self.max_velocity = self.param_max_velocity.get_parameter_value().double_value
-    self.param_audio_samplera = self.declare_parameter('audio_samplera', 48000)
-    self.audio_samplera = self.param_audio_samplera.get_parameter_value().integer_value
-      
     try:
       self.synth = ElectricMotorSynth(samplerate=self.audio_samplera)
       self.synth.set_level(0.0)
