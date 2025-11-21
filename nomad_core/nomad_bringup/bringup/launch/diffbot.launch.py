@@ -128,6 +128,17 @@ def generate_launch_description():
         ],
     )
 
+    robot_controller_fix_spawner =  Node(
+      package='simple_driver',
+      executable='diff_drive_fix',
+      name='diff_drive_fix',
+      output='screen',
+      remappings=[
+        ('/odom_in', '/nomad_diffdrive_base_controller/odom'),
+        ('/odom_out', '/nomad_diffdrive_base_controller/odom_fix'),
+      ]
+    )
+
 
     # cameras
     camera_launch = IncludeLaunchDescription(
@@ -189,6 +200,7 @@ def generate_launch_description():
       control_node,
       robot_state_pub_node,
       robot_controller_spawner,
+      robot_controller_fix_spawner,
       # joint_state_broadcaster_spawner,
       delay_rviz_after_joint_state_broadcaster_spawner,
       delay_joint_state_broadcaster_after_robot_controller_spawner,

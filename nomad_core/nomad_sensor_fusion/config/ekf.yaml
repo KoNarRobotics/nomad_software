@@ -24,7 +24,7 @@ ekf_filter_node:
 
 # Use this parameter to provide specify how long the tf listener should wait for a transform to become available. 
 # Defaults to 0.0 if unspecified.
-        transform_timeout: 0.0
+        transform_timeout: 0.5
 
 # If you're having trouble, try setting this to true, and then echo the /diagnostics_agg topic to see if the node is
 # unhappy with any settings or data.
@@ -38,7 +38,7 @@ ekf_filter_node:
         disabled_at_startup: false
 
 # Defaults to "robot_localization_debug.txt" if unspecified. Please specify the full path.
-        # debug_out_file: /path/to/debug/file.txt
+        debug_out_file: /home/ubuntu/it/nomad_software/nomad_core/nomad_sensor_fusion/file.txt
 
 # Whether we'll allow old measurements to cause a re-publication of the updated state
         permit_corrected_publication: false
@@ -78,7 +78,7 @@ ekf_filter_node:
 # sensor_msgs/Imu). To add an input, simply append the next number in the sequence to its "base" name, e.g., odom0,
 # odom1, twist0, twist1, imu0, imu1, imu2, etc. The value should be the topic name. These parameters obviously have no
 # default values, and must be specified.
-        odom0: nomad_diffdrive_base_controller/odom
+        odom0: nomad_diffdrive_base_controller/odom_fix
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
 # values from each measurement are fed to the filter. For example, if you have an odometry message as input, but only
@@ -95,7 +95,7 @@ ekf_filter_node:
 
 # If you have high-frequency data or are running with a low frequency parameter value, then you may want to increase
 # the size of the subscription queue so that more measurements are fused.
-        odom0_queue_size: 3
+        odom0_queue_size: 1
 
 # [ADVANCED] Large messages in ROS can exhibit strange behavior when they arrive at a high frequency. This is a result
 # of Nagle's algorithm. This option tells the ROS subscriber to use the tcpNoDelay option, which disables Nagle's
@@ -116,7 +116,7 @@ ekf_filter_node:
 # for all future measurements. While you can achieve the same effect with the differential paremeter, the key
 # difference is that the relative parameter doesn't cause the measurement to be converted to a velocity before
 # integrating it. If you simply want your measurements to start at 0 for a given sensor, set this to true.
-        odom0_relative: false
+        odom0_relative: true
 
 # [ADVANCED] If your data is subject to outliers, use these threshold settings, expressed as Mahalanobis distances, to
 # control how far away from the current vehicle state a sensor measurement is permitted to be. Each defaults to
@@ -163,36 +163,36 @@ ekf_filter_node:
         # twist0_rejection_threshold: 2.0
         # twist0_nodelay: false
 
-        imu1: livox/imu_throttled
-        imu1_config: [false, false, false,
-                      false, false, false,
-                      false, false, false,
-                      true,  true,  true,
-                      true,  true,  true]
-        imu1_nodelay: false
-        imu1_differential: false
-        imu1_relative: true
-        imu1_queue_size: 50
-        imu1_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
-        imu1_twist_rejection_threshold: 0.8                #
-        imu1_linear_acceleration_rejection_threshold: 0.8  #
-        imu1_remove_gravitational_acceleration: true
+        # imu0: livox/imu_throttled
+        # imu0_config: [false, false, false,
+        #               false, false, false,
+        #               false, false, false,
+        #               false, false, false,
+        #               true,  true,  true]
+        # imu0_nodelay: false
+        # imu0_differential: false
+        # imu0_relative: true
+        # imu0_queue_size: 1
+        # imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
+        # imu0_twist_rejection_threshold: 0.8                #
+        # imu0_linear_acceleration_rejection_threshold: 0.8  #
+        # imu0_remove_gravitational_acceleration: true
 
 
 # [ADVANCED] Some IMUs automatically remove acceleration due to gravity, and others don't. If yours doesn't, please set
 # this to true, and *make sure* your data conforms to REP-103, specifically, that the data is in ENU frame.
 
-
+        # x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az.
         imu0: imu_state_broadcaster/imu
         imu0_config: [false, false, false,
                       true,  true,  true,
                       false, false, false,
-                      true,  true,  true,
-                      false, false, false]
+                      false, false, false,
+                      true,  true,  true]
         imu0_nodelay: false
         imu0_differential: false
         imu0_relative: true
-        imu0_queue_size: 20
+        imu0_queue_size: 1
         imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
         imu0_twist_rejection_threshold: 0.8                #
         imu0_linear_acceleration_rejection_threshold: 0.8  #
@@ -210,7 +210,7 @@ ekf_filter_node:
 # predicition. Note that if an acceleration measurement for the variable in question is available from one of the
 # inputs, the control term will be ignored.
 # Whether or not we use the control input during predicition. Defaults to false.
-        use_control: true
+        use_control: false
 # Whether the input (assumed to be cmd_vel) is a geometry_msgs/Twist or geometry_msgs/TwistStamped message. Defaults to
 # false.
         stamped_control: true

@@ -41,7 +41,7 @@ def generate_launch_description():
       ('/joy', '/nomad/joy')
     ],
     parameters=[
-      {"kaganiec_predkosci" : 0.4},
+      {"kaganiec_predkosci" : 0.7},
     ]
   )
 

@@ -270,6 +270,29 @@
       </collision>
     </link>
 
+    <link name="gps">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find nomad_t_model_description)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+
     <link name="base_footprint"></link>
 
     <joint name="base_footprint_joint" type="fixed">
@@ -361,6 +384,14 @@
       <origin xyz="0.4 0.05 0.15" rpy="0 ${PI/2} 0"/>
       <parent link="robot_link"/>
       <child link="imu_link"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+
+    <joint name="gps_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <parent link="robot_link"/>
+      <child link="gps"/>
       <axis xyz="0 0 1"/>
     </joint>
 

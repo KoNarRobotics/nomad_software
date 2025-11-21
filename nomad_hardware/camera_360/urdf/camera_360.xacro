@@ -112,12 +112,32 @@
     </link>
 
 
+
+    <link name="livox_frame">
+      <!-- <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/> -->
+      <!-- <geometry>
+          <mesh filename="file://$(find camera_360)/meshes/xyz.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="red"></material>
+      </visual> -->
+    </link>
+
+
+
     <joint name="lidar_joint" type="fixed">
       <origin xyz="0.0 0.0 0.08" rpy="0 0 0"/>
       <parent link="${parent}"/>
       <child link="lidar_link"/>
     </joint>
 
+
+
+    <joint name="lidar_link" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0.174532925 0"/>
+      <parent link="${parent}"/>
+      <child link="livox_frame"/>
+    </joint>
 
     <link name="base_laser"></link>
 

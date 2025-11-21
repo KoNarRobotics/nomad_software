@@ -1,7 +1,7 @@
 # Configuration Settings for C94-M8P device
 ublox_gps_node:
   ros__parameters:
-    debug: 4                    # Range 0-4 (0 means no debug statements will print)
+    debug: 1                    # Range 0-4 (0 means no debug statements will print)
     device: /dev/ttyACM1
     frame_id: gps
     uart1:

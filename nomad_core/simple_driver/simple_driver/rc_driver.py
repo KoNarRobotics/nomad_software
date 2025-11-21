@@ -37,18 +37,18 @@ class SimpleDriver(Node):
     pass
 
   def joy_callback(self, msg: Joy):
-    kaganiec = self.get_parameter("kaganiec_predkosci").value
+    kaganiec = self.get_parameter("kaganiec_predkosci").get_parameter_value().double_value
     if msg.buttons[8] == 1:
       kaganiec = 1
       self.get_logger().warning("TURBO Activated")
     
 
-    max_velocity  = 13.0 * kaganiec # m/s
-    max_angular_velocity = kaganiec * 12.56 
+    max_velocity  = 3.5 * kaganiec # m/s
+    max_angular_velocity = kaganiec * 1.428571429
 
 
     x = msg.axes[0] * max_velocity
-    ang_z = -msg.axes[2] * max_angular_velocity 
+    ang_z = -msg.axes[1] * max_angular_velocity 
     
 
     if msg.buttons[5]==1 and not self.canceling_goal:
