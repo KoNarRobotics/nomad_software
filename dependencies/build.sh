@@ -16,7 +16,6 @@ cd ..
 
 
 ## ORB SLAM 3 Dependency
-cd ROS2_ORB-SLAM3_Odometry
 sudo apt update
 sudo apt install -y libeigen3-dev
 sudo apt install -y \
@@ -45,19 +44,21 @@ sudo apt install -y \
 
 
 # ORB Pangolin Dependency
+echo "Building Pangolin..."
 cd Pangolin
 git checkout v0.9.2
-mkdir build && cd build
+mkdir -p build && cd build
 cmake ..
 make -j$(nproc)
 sudo make install
 sudo ldconfig
-cd ..
+cd ../..
 
 # build open CV 4.12.0 from source
 # mkdir -p opencv-4.12.0
 # wget -O opencv.zip https://github.com/opencv/opencv/archive/4.12.0.zip
 # unzip opencv.zip
+echo "Building OpenCV"
 cd opencv
 git checkout 4.12.0
 cmake -B build -D CMAKE_BUILD_TYPE=Release -G Ninja
