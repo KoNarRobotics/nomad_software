@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Init/Build Dependencies",
+      "type": "shell",
+      "command": "./init_repo.sh",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": []
+}

@@ -18,6 +18,8 @@
   <depend>nav2_bringup</depend>
   <depend>plotjuggler_ros</depend>
   <depend>plotjuggler</depend>
+  <depend>rviz_imu_plugin</depend>
+  <depend>rviz_satellite</depend>
 
 
   <depend>can_device</depend>
