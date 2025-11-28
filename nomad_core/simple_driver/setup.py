@@ -23,7 +23,8 @@ setup(
           'sd_node = simple_driver.simple_driver:main',
           'rc_switch = simple_driver.rc_switch:main', 
           'rc_driver = simple_driver.rc_driver:main',
-          'diff_drive_fix = simple_driver.diff_drive_fix:main'
+          'diff_drive_fix = simple_driver.diff_drive_fix:main',
+          "nav_css = simple_driver.nav_css:main"
         ],
     },
 )
