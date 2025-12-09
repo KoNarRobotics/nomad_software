@@ -18,9 +18,6 @@
 [submodule "nomad_hardware/ublox"]
 	path = nomad_hardware/ublox
 	url = git@github.com:KumarRobotics/ublox.git
-[submodule "nomad_core/ROS2_ORB-SLAM3_Odometry"]
-	path = nomad_core/ROS2_ORB-SLAM3_Odometry
-	url = git@github.com:X-Lemon-X/ROS2_ORB-SLAM3_Odometry.git
 [submodule "dependencies/Pangolin"]
 	path = dependencies/Pangolin
 	url = https://github.com/stevenlovegrove/Pangolin.git
@@ -30,3 +27,6 @@
 [submodule "dependencies/opencv"]
 	path = dependencies/opencv
 	url = git@github.com:opencv/opencv.git
+[submodule "nomad_core/ROS2_ORB-SLAM3_Odometry"]
+	path = nomad_core/ROS2_ORB-SLAM3_Odometry
+	url = https://github.com/KoNarRobotics/ROS2_ORB-SLAM3_Odometry
