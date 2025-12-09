@@ -27,3 +27,6 @@
 [submodule "dependencies/opencv"]
 	path = dependencies/opencv
 	url = git@github.com:opencv/opencv.git
+[submodule "nomad_core/ROS2_ORB-SLAM3_Odometry"]
+	path = nomad_core/ROS2_ORB-SLAM3_Odometry
+	url = https://github.com/KoNarRobotics/ROS2_ORB-SLAM3_Odometry
