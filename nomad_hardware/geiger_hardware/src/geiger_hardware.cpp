@@ -37,7 +37,6 @@ SOFTWARE.
 
 
 using namespace nomad_hardware;
-using namespace nomad_core;
 
 namespace {
 constexpr const char *nameHardwareInterface = "MCGeigerHardware";

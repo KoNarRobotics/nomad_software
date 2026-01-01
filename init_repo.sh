@@ -5,11 +5,15 @@ source .venv/bin/activate
 
 python3 -m pip install -r requirements.txt
 
+pre-commit install
+pre-commit autoupdate
+pre-commit install
+
 git submodule update --init --recursive
 ./dependencies/build.sh
 
 
-nomad_hardware/can_device/can_constants/generate-files.sh -v
+nomad_hardware/ros_can_device/can_constants/generate-files.sh -v
 
 rosdep install -i --from-path nomad_hardware --rosdistro jazzy -y
 rosdep install -i --from-path nomad_simulation --rosdistro jazzy -y

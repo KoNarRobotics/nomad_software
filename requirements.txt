@@ -30,3 +30,4 @@ textparser==0.24.0
 typeguard==4.4.4
 typing_extensions==4.14.0
 wrapt==1.17.2
+pre-commit>=4.5.1

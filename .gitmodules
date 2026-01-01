@@ -30,3 +30,9 @@
 [submodule "dependencies/opencv"]
 	path = dependencies/opencv
 	url = git@github.com:opencv/opencv.git
+[submodule "nomad_core/ros_ari_shared_types"]
+	path = nomad_core/ros_ari_shared_types
+	url = git@github.com:X-Lemon-X/ros_ari_shared_types.git
+[submodule "nomad_hardware/ros_can_device"]
+	path = nomad_hardware/ros_can_device
+	url = git@github.com:X-Lemon-X/ros_can_device.git
