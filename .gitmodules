@@ -36,3 +36,6 @@
 [submodule "nomad_core/ROS2_ORB-SLAM3_Odometry"]
 	path = nomad_core/ROS2_ORB-SLAM3_Odometry
 	url = https://github.com/KoNarRobotics/ROS2_ORB-SLAM3_Odometry
+[submodule "nomad_hardware/ros_vesc_hardware"]
+	path = nomad_hardware/ros_vesc_hardware
+	url = git@github.com:X-Lemon-X/ros_vesc_hardware.git
