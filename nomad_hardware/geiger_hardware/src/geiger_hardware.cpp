@@ -44,6 +44,24 @@ constexpr const char *nameHardwareInterface = "MCGeigerHardware";
 
 #define VESC_ID_BASE_START 0x14
 
+#define NOMAD_RC_RETURN_ON_ERROR_MSG(result, msg, name)   \
+  do {                                                    \
+    if(result) {                                          \
+      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg); \
+      return hardware_interface::CallbackReturn::ERROR;   \
+    }                                                     \
+  } while(false);
+
+#define NOMAD_RC_RETURN_ON_ERROR_NAM(result, name)                           \
+  do {                                                                       \
+    Status _x = result.status();                                             \
+    if(!_x.ok()) {                                                           \
+      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _x.to_string().c_str()); \
+      return hardware_interface::CallbackReturn::ERROR;                      \
+    }                                                                        \
+  } while(false);
+
+
 hardware_interface::CallbackReturn MCGeigerHardware::on_init(const hardware_interface::HardwareInfo &info) {
   if(hardware_interface::SensorInterface::on_init(info) != hardware_interface::CallbackReturn::SUCCESS) {
     return hardware_interface::CallbackReturn::ERROR;
@@ -72,8 +90,13 @@ hardware_interface::CallbackReturn MCGeigerHardware::on_init(const hardware_inte
   NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 2, nameHardwareInterface,
                                "\"geiger\" should have 2 state interfaces: cpm, siwert");
 
-  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name), nameHardwareInterface,
-                                   "Failed to create CAN driver");
+
+  auto mayby_can_driver = CanDriver::Make(can_interface_name);
+  if(!mayby_can_driver.ok()) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface), "Failed to create CAN driver");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+  can_driver = mayby_can_driver.valueOrDie();
 
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "CAN driver created on interface %s",
                can_interface_name.c_str());
