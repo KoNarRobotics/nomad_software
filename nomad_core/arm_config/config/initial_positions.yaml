@@ -1,0 +1,9 @@
+# Default initial positions for nomad_robot's ros2_control fake system
+
+initial_positions:
+  revolute_arm_1: 0
+  revolute_arm_2: 0
+  revolute_arm_3: 0
+  revolute_arm_4: 0
+  revolute_arm_5: 0
+  revolute_arm_6: 0
