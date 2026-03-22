@@ -162,3 +162,14 @@ https://github.com/methylDragon/ros-sensor-fusion-tutorial/blob/master/01%20-%20
 
 When you start ros and get error that scheduling is not configured.
 [Then check this out ](https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html).
+
+
+
+# runing with irium camera
+
+```bash
+export GSCAM_CONFIG='v4l2src device=/dev/video0 io-mode=2 ! video/x-raw,format=I420,width=1280,height=720,framerate=30/1 ! videoconvert ! video/x-raw,format=RGB'
+```
+```bash
+ros2 run gscam gscam_node --ros-args -p camera_name:=iriun_cam -p frame_id:=iriun_cam_optical -p image_encoding:=rgb8
+```

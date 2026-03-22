@@ -20,6 +20,7 @@
   <depend>plotjuggler</depend>
   <depend>rviz_imu_plugin</depend>
   <depend>rviz_satellite</depend>
+  <depend>ari_shared_types</depend>
 
 
   <depend>can_device</depend>

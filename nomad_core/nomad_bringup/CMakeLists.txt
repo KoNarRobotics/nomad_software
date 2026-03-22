@@ -14,8 +14,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
   rclcpp_lifecycle
   can_device
-  shared_types_nomad
-  
+  ari_shared_types
 )
 
 set(CMAKE_CXX_STANDARD 20)
@@ -47,7 +46,7 @@ endif()
 # install(TARGETS barometer_node DESTINATION lib/${PROJECT_NAME})
 
 
-add_library(${PROJECT_NAME} 
+add_library(${PROJECT_NAME}
   src/nomad_bringup.cpp
 )
 
@@ -81,12 +80,12 @@ install(
 )
 
 install(
-  DIRECTORY  description/ros2_control description/urdf description/launch  
+  DIRECTORY  description/ros2_control description/urdf description/launch
   DESTINATION share/${PROJECT_NAME}
 )
 
 install(
-  DIRECTORY  bringup/launch  bringup/config 
+  DIRECTORY  bringup/launch  bringup/config
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -104,8 +103,8 @@ install(TARGETS ${PROJECT_NAME}
 
 
 # # old
-# install(TARGETS 
-#   ${PROJECT_NAME} 
+# install(TARGETS
+#   ${PROJECT_NAME}
 #   DESTINATION lib/${PROJECT_NAME}
 # )
 
