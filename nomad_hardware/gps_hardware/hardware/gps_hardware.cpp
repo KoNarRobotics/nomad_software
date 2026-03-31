@@ -33,33 +33,19 @@ SOFTWARE.
 #include "can_device/can_device.hpp"
 #include "can_device/can_messages.h"
 
+#include "ari_shared_types/status.hpp"
+#include "ari_shared_types/status_hardware.hpp"
+
 #include "gps_hardware/gps_hardware.hpp"
 
 #include "sensor_msgs/msg/detail/nav_sat_status__struct.hpp"
 
 using namespace nomad_hardware;
+using namespace ari;
 
 namespace {
 constexpr const char *nameHardwareInterface = "MCGpsHardware";
 }
-
-
-#define NOMAD_RC_RETURN_ON_ERROR_MSG(result, msg, name)   \
-  do {                                                    \
-    if(result) {                                          \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg); \
-      return hardware_interface::CallbackReturn::ERROR;   \
-    }                                                     \
-  } while(false);
-
-#define NOMAD_RC_RETURN_ON_ERROR_NAM(result, name)                           \
-  do {                                                                       \
-    Status _x = result.status();                                             \
-    if(!_x.ok()) {                                                           \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _x.to_string().c_str()); \
-      return hardware_interface::CallbackReturn::ERROR;                      \
-    }                                                                        \
-  } while(false);
 
 
 hardware_interface::CallbackReturn MCGpsHardware::on_init(const hardware_interface::HardwareInfo &info) {
@@ -70,11 +56,16 @@ hardware_interface::CallbackReturn MCGpsHardware::on_init(const hardware_interfa
   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "MCGpsHardware creating...");
 
   auto mayby_can_interface = info_.hardware_parameters.find("can_interface");
-  NOMAD_RC_RETURN_ON_ERROR_MSG(mayby_can_interface != info_.hardware_parameters.end(), nameHardwareInterface,
-                               "No CAN interface specified");
+  if(mayby_can_interface != info_.hardware_parameters.end()) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface), "No CAN interface specified");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
 
   auto can_interface_name = mayby_can_interface->second;
-  NOMAD_RC_RETURN_ON_ERROR_MSG(!can_interface_name.empty(), nameHardwareInterface, "CAN interface is empty");
+  if(!can_interface_name.empty()) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface), "CAN interface is empty");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
 
   auto mayby_can_driver = CanDriver::Make(can_interface_name);
   if(!mayby_can_driver.ok()) {
@@ -87,52 +78,56 @@ hardware_interface::CallbackReturn MCGpsHardware::on_init(const hardware_interfa
   auto sensor_it =
   std::find_if(info_.sensors.begin(), info_.sensors.end(),
                [](const hardware_interface::ComponentInfo &sensor) { return sensor.name == "gps"; });
-  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it != info_.sensors.end(), nameHardwareInterface, "gps not found in hardware info");
+  if(sensor_it != info_.sensors.end()) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface), "gps not found in hardware info");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
 
-  NOMAD_RC_RETURN_ON_ERROR_MSG(sensor_it->state_interfaces.size() == 14, nameHardwareInterface,
-                               "gps should have 14 state interfaces");
+  if(sensor_it->state_interfaces.size() == 14) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(nameHardwareInterface), "gps should have 14 state interfaces");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MCGpsHardware::on_configure(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_STATUS_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_status, this,
-                                                                  std::placeholders::_1, std::placeholders::_2,
-                                                                  std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_STATUS_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_status, this, std::placeholders::_1,
+                                                                std::placeholders::_2, std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
 
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_LATITUDE_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_latitude, this,
-                                                                  std::placeholders::_1, std::placeholders::_2,
-                                                                  std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_LONGITUDE_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_longitude, this,
-                                                                  std::placeholders::_1, std::placeholders::_2,
-                                                                  std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_ALTITUDE_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_altitude, this,
-                                                                  std::placeholders::_1, std::placeholders::_2,
-                                                                  std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_DATE_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_date, this, std::placeholders::_1,
-                                                                  std::placeholders::_2, std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_LATITUDE_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_latitude, this,
+                                                                std::placeholders::_1, std::placeholders::_2,
+                                                                std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_LONGITUDE_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_longitude, this,
+                                                                std::placeholders::_1, std::placeholders::_2,
+                                                                std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_ALTITUDE_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_altitude, this,
+                                                                std::placeholders::_1, std::placeholders::_2,
+                                                                std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_DATE_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_date, this, std::placeholders::_1,
+                                                                std::placeholders::_2, std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
 
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_COVARIANCE_FRAME_ID,
-                                                        std::bind(&MCGpsHardware::can_callback_covariance,
-                                                                  this, std::placeholders::_1,
-                                                                  std::placeholders::_2, std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_GPS_COVARIANCE_FRAME_ID,
+                                                      std::bind(&MCGpsHardware::can_callback_covariance, this,
+                                                                std::placeholders::_1, std::placeholders::_2,
+                                                                std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
 
 
   for(const auto &[name, descr] : sensor_state_interfaces_) {
@@ -155,14 +150,14 @@ hardware_interface::CallbackReturn MCGpsHardware::on_activate(const rclcpp_lifec
   date_time            = *std::localtime(&now);
   status               = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
   signal_type          = sensor_msgs::msg::NavSatStatus::SERVICE_UNKNOWN;
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MCGpsHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_deactivate");
-  NOMAD_RC_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 

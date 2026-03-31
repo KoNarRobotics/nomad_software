@@ -15,6 +15,7 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>can_device</depend>
+  <depend>ari_shared_types</depend>
 
   <exec_depend>controller_manager</exec_depend>
 

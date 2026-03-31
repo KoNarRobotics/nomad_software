@@ -35,30 +35,15 @@ SOFTWARE.
 
 #include "gpio_hardware/gpio_hardware.hpp"
 
+#include "ari_shared_types/status.hpp"
+#include "ari_shared_types/status_hardware.hpp"
+
 
 using namespace nomad_hardware;
 
 namespace {
 constexpr const char *nameHardwareInterface = "MCGpioHardware";
 } // namespace
-
-#define NOMAD_RC_RETURN_ON_ERROR_MSG(result, msg, name)   \
-  do {                                                    \
-    if(result) {                                          \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg); \
-      return hardware_interface::CallbackReturn::ERROR;   \
-    }                                                     \
-  } while(false);
-
-#define NOMAD_RC_RETURN_ON_ERROR_NAM(result, name)                           \
-  do {                                                                       \
-    Status _x = result.status();                                             \
-    if(!_x.ok()) {                                                           \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _x.to_string().c_str()); \
-      return hardware_interface::CallbackReturn::ERROR;                      \
-    }                                                                        \
-  } while(false);
-
 
 #define VESC_ID_BASE_START 0x14
 
@@ -120,7 +105,7 @@ hardware_interface::CallbackReturn MCGpioHardware::on_configure(const rclcpp_lif
 
 hardware_interface::CallbackReturn MCGpioHardware::on_activate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
 
   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "System successfully activated!");
   return hardware_interface::CallbackReturn::SUCCESS;
@@ -128,7 +113,7 @@ hardware_interface::CallbackReturn MCGpioHardware::on_activate(const rclcpp_life
 
 hardware_interface::CallbackReturn MCGpioHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
-  NOMAD_RC_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
 
   RCLCPP_INFO(rclcpp::get_logger(nameHardwareInterface), "System successfully deactivated!");
   return hardware_interface::CallbackReturn::SUCCESS;

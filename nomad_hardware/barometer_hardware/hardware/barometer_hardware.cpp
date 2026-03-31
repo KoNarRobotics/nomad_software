@@ -32,101 +32,18 @@ SOFTWARE.
 #include "rclcpp/macros.hpp"
 #include "can_device/can_device.hpp"
 #include "can_device/can_messages.h"
+#include "ari_shared_types/status.hpp"
+#include "ari_shared_types/status_hardware.hpp"
 
 #include "barometer_hardware/barometer_hardware.hpp"
 
 
 using namespace nomad_hardware;
+using namespace ari;
 
 namespace {
 constexpr const char *nameHardwareInterface = "MCBarometerHardware";
 }
-
-
-#define NOMAD_RC_RETURN_ON_ERROR(x)                     \
-  do {                                                  \
-    Status _x = x;                                      \
-    if(!_x.ok()) {                                      \
-      return hardware_interface::CallbackReturn::ERROR; \
-    }                                                   \
-  } while(false)
-
-#define NOMAD_RC_RETURN_ON_ERROR_MSG(x, name, msg)        \
-  do {                                                    \
-    Status _x = x;                                        \
-    if(!_x.ok()) {                                        \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg); \
-      return hardware_interface::CallbackReturn::ERROR;   \
-    }                                                     \
-  } while(false)
-
-#define NOMAD_RC_RETURN_ON_ERROR_NAM(x, name)                        \
-  do {                                                               \
-    Status _x = x;                                                   \
-    if(!_x.ok()) {                                                   \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _x.to_string()); \
-      return hardware_interface::CallbackReturn::ERROR;              \
-    }                                                                \
-  } while(false)
-
-#define NOMAD_RC_ASSING_OR_RETURN(assign, result)       \
-  auto _xsar##assign = result;                          \
-  do {                                                  \
-    if(!_xsar##assign.ok()) {                           \
-      return hardware_interface::CallbackReturn::ERROR; \
-    }                                                   \
-  } while(false);                                       \
-  auto assign = std::move(_xsar##assign.valueOrDie());
-
-
-#define NOMAD_RC_ASSING_TO_OR_RETURN(assign, result)    \
-  do {                                                  \
-    auto _xsar##assign = result;                        \
-    if(!_xsar##assign.ok())                             \
-      return hardware_interface::CallbackReturn::ERROR; \
-    assign = std::move(_xsar##assign.valueOrDie());     \
-  } while(false);
-
-
-#define NOMAD_RC_ASSIGN_OR_RETURN_MSG(assign, result, name, msg) \
-  do {                                                           \
-    auto _xsar##assign = result;                                 \
-    if(!_xsar##assign.ok()) {                                    \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg);        \
-      return hardware_interface::CallbackReturn::ERROR;          \
-    }                                                            \
-    assign = std::move(_xsar##assign.valueOrDie());              \
-  } while(false);
-
-#define NOMAD_RC_ASSIGN_OR_RETURN_NAM(assign, result, name)                     \
-  do {                                                                          \
-    auto _xsar##assign = result;                                                \
-    if(!_xsar##assign.ok()) {                                                   \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _xsar##assign.to_string()); \
-      return hardware_interface::CallbackReturn::ERROR;                         \
-    }                                                                           \
-    assign = std::move(_xsar##assign.valueOrDie());                             \
-  } while(false);
-
-#define NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(assign, result, name, msg) \
-  do {                                                              \
-    auto _xsar##assign = result;                                    \
-    if(!_xsar##assign.ok()) {                                       \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), msg);           \
-      return hardware_interface::CallbackReturn::ERROR;             \
-    }                                                               \
-    assign = std::move(_xsar##assign.valueOrDie());                 \
-  } while(false);
-
-#define NOMAD_RC_ASSIGN_TO_OR_RETURN_NAM(assign, result, name)                  \
-  do {                                                                          \
-    auto _xsar##assign = result;                                                \
-    if(!_xsar##assign.ok()) {                                                   \
-      RCLCPP_ERROR_STREAM(rclcpp::get_logger(name), _xsar##assign.to_string()); \
-      return hardware_interface::CallbackReturn::ERROR;                         \
-    }                                                                           \
-    assign = std::move(_xsar##assign.valueOrDie());                             \
-  } while(false);
 
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_init(const hardware_interface::HardwareInfo &info) {
@@ -150,8 +67,8 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_init(const hardware_i
   }
 
 
-  NOMAD_RC_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name), nameHardwareInterface,
-                                   "Failed to create CAN driver");
+  ARI_HW_ASSIGN_TO_OR_RETURN_MSG(can_driver, CanDriver::Make(can_interface_name), nameHardwareInterface,
+                                 "Failed to create CAN driver");
 
 
   auto sensor_it =
@@ -175,19 +92,19 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_init(const hardware_i
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_configure(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_BAROMETER_STATUS_FRAME_ID,
-                                                        std::bind(&MCBarometerHardware::can_callback_status,
-                                                                  this, std::placeholders::_1,
-                                                                  std::placeholders::_2, std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_BAROMETER_STATUS_FRAME_ID,
+                                                      std::bind(&MCBarometerHardware::can_callback_status,
+                                                                this, std::placeholders::_1,
+                                                                std::placeholders::_2, std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
 
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_BAROMETER_DATA_FRAME_ID,
-                                                        std::bind(&MCBarometerHardware::can_callback_data,
-                                                                  this, std::placeholders::_1,
-                                                                  std::placeholders::_2, std::placeholders::_3),
-                                                        nullptr),
-                               nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->add_callback(CAN_BAROMETER_DATA_FRAME_ID,
+                                                      std::bind(&MCBarometerHardware::can_callback_data, this,
+                                                                std::placeholders::_1, std::placeholders::_2,
+                                                                std::placeholders::_3),
+                                                      nullptr),
+                             nameHardwareInterface);
 
   for(const auto &[name, descr] : sensor_state_interfaces_) {
     set_state(name, 0.0);
@@ -203,14 +120,14 @@ hardware_interface::CallbackReturn MCBarometerHardware::on_activate(const rclcpp
   barometer_temperature = std::numeric_limits<double>::quiet_NaN();
   barometer_status      = 0;
 
-  NOMAD_RC_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(can_driver->open_can(), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MCBarometerHardware::on_deactivate(const rclcpp_lifecycle::State &previous_state) {
   (void)previous_state;
   RCLCPP_DEBUG(rclcpp::get_logger(nameHardwareInterface), "on_deactivate");
-  NOMAD_RC_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
+  ARI_HW_RETURN_ON_ERROR_NAM(CanDriver::close_can(can_driver), nameHardwareInterface);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
