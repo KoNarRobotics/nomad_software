@@ -173,3 +173,17 @@ export GSCAM_CONFIG='v4l2src device=/dev/video0 io-mode=2 ! video/x-raw,format=I
 ```bash
 ros2 run gscam gscam_node --ros-args -p camera_name:=iriun_cam -p frame_id:=iriun_cam_optical -p image_encoding:=rgb8
 ```
+
+# Testing MC modules
+- To generate plugins from yaml config file:
+```bash
+python3 nomad_core/moducard_ros/moducard_generators/mc_generator.py -r --force nomad_core/mc_drivers/CONFIG_YAML_NAME.yaml
+```
+- Remember to build after generating plugins:
+```bash
+./compile.sh
+```
+- To run main driver module (it won't run unless there is at least one plugin available):
+```bash
+ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="nomad_core/nomad_bringup/bringup/config/mc_config.yaml"
+```

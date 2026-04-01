@@ -1,0 +1,57 @@
+include: [mcan_basic_module,mcan_ros_types]
+
+hardware:
+  name: suspension_position_module
+  vendor: konar
+  unique_id: 0x0000000000000001 # this will be 64-bit unique identifier fpr the series of the same module
+  hw_revision: 1
+  fw_revision: 1
+  date: 2026-01-15
+  description: "Suspension module"
+  inherit: [mcan_basic_module]
+  power_requirements:
+    voltage: 48V
+    current: 0.1A
+
+custom_types:
+
+messages:
+  commands: # this section defines commands that can be sent to the module
+    # set_encoder_offset:
+    #   readable_name: "Set offset"
+    #   description: "Command to set constant as offset"
+    #   var_type: float[2]
+    #   units: "radians"
+    #   default: 0.0,0.0
+    set_encoder_offset_left:
+      readable_name: "Set left offset"
+      description: "Command to set constant as offset"
+      var_type: float
+      units: "radians"
+      default: 0.0
+    set_encoder_offset_right:
+      readable_name: "Set right offset"
+      description: "Command to set constant as offset"
+      var_type: float
+      units: "radians"
+      default: 0.0
+#lepiej jako ofsset left-right
+  states:
+    # current_position:
+    #   name: "Current positions"
+    #   description: "Current positions of the suspension"
+    #   var_type: float[2]
+    #   units: "radians"
+    #   default: 0.0,0.0
+    current_position_left:
+      name: "Current left position"
+      description: "Current position of the suspension"
+      var_type: float
+      units: "radians"
+      default: 0.0
+    current_position_right:
+      name: "Current right position"
+      description: "Current position of the suspension"
+      var_type: float
+      units: "radians"
+      default: 0.0

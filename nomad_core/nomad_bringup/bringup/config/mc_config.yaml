@@ -1,0 +1,29 @@
+
+states_update_default_rate: 15
+
+# * Name of the primary can interface
+can_primary_interface: can0
+
+# * Name of the secondary can interface
+can_secondary_interface: can1
+
+# * Base ROS frame id, inherited by the modules unless specified otherwise.
+frame_id: "euro_rack"
+
+# * List of plugins required for the system to work
+drivers:
+  - motor_hat_msgs
+
+
+# * List of modules that should be configured for the system
+modules:
+  # # * Name of the module that will be visible as in the system
+  # # so for example topics and services will start with this name
+  # motor_front_left:
+  #   # Plugin which should be used as a driver for the module, if not provided the plugin will be selected automatically if available
+  #   driver: motor_hat_v3
+  #   # ROS frame_id. if not specified the global one will be used.
+  #   frame_id: "motor_front_left"
+
+  #   ## * Unique ID of the board connected to the system, this can be obtained by scanning the system.
+  #   unique_id: 1

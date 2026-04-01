@@ -1,0 +1,5 @@
+<library path="suspension_position_module_plugin">
+  <class name="suspension_position_module_msgs" type="mcan::suspension_position_module_plugin" base_class_type="mcan::McPluginExporterBase">
+    <description>Plugin for suspension_position_module.Suspension module</description>
+  </class>
+</library>

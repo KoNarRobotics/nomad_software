@@ -39,3 +39,6 @@
 [submodule "nomad_hardware/ros_vesc_hardware"]
 	path = nomad_hardware/ros_vesc_hardware
 	url = git@github.com:X-Lemon-X/ros_vesc_hardware.git
+[submodule "nomad_core/moducard_ros"]
+	path = nomad_core/moducard_ros
+	url = git@github.com:X-Lemon-X/moducard_ros.git
