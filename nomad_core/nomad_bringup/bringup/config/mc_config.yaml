@@ -12,7 +12,7 @@ frame_id: "euro_rack"
 
 # * List of plugins required for the system to work
 drivers:
-  - motor_hat_msgs
+  - suspension_position_module_msgs
 
 
 # * List of modules that should be configured for the system
