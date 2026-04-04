@@ -187,3 +187,166 @@ python3 nomad_core/moducard_ros/moducard_generators/mc_generator.py -r --force n
 ```bash
 ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="nomad_core/nomad_bringup/bringup/config/mc_config.yaml"
 ```
+
+
+# ROAD MAP
+
+## Sensor Pipeline
+
+### depth_camera_node
+- **Outputs:**
+  - `/stereo_image`
+  - `/depth_image`
+  - `/rgb_image`
+
+### lidar_driver_node
+- **Outputs:**
+  - `/point_cloud2`
+
+### imu_sensor_node
+- **Outputs:**
+  - `/imu`
+
+### suspension_driver
+- **Outputs**
+  - `/wheel_odom`
+
+### robot_state_publisher
+- **Outputs:**
+  - `/tf`
+
+## Perception & Localization
+
+### orb_slam3_node
+- **Inputs:**
+  - `/imu`
+  - `/stereo_image`
+- **Outputs:**
+  - `/visual_odom`
+
+### ekf_node_odometry
+- **Inputs:**
+  - `/visual_odom`
+  - `/wheel_odom`
+  - `/imu`
+- **Outputs:**
+  - `/odometry`
+
+### yolo_segmentation_node
+- **Inputs:**
+  - `/image`
+- **Outputs:**
+  - `/segmentation_mask` (with IDs)
+
+### node_separating_dynamic_objects_from_static_ones
+- **Inputs:**
+  - `/segmentation_mask`
+- **Outputs:**
+  - `/dynamic_masks`
+  - `/static_masks` (for 3D position mapping on the map)
+
+### nvblox_node
+- **Inputs:**
+  - `/depth_image` (from RealSense/Stereo Cameras)
+  - `/lidar_pointcloud`
+  - `/camera_info`
+  - `/dynamic_masks`
+  - `/tf` (position in world frame)
+- **Outputs:**
+  - `/esdf_map`
+  - `/mesh`
+  - `/static_map`
+  - `/diagnostics`
+
+## Planning & Control
+
+### Simple Planner
+**State Machine (4 States):**
+- **IDLE** - No goal active
+- **PLANNING** - Goal received, calculate global path using OMPL on terrain
+- **EXECUTING** - Send `cmd_vel` commands, monitor progress (stuck, rides)
+- **COMPLETED** → IDLE
+- **FAILED** → Retry (up to N attempts) or return to IDLE
+
+**Implementation with OMPL:**
+- Custom state validity checker (uses ESDF from nvblox)
+- Motion validator (collision checking against terrain obstacles)
+- State space definition (terrain-aware path planning)
+
+**Parameters:**
+- Movement limits
+- Robot size (from 3D model)
+- Collision detection spheres
+- Terrain properties (slope limits, passability)
+
+**Inputs:**
+- `/goal`
+- `/manual_command`
+- `/stop`
+- `/esdf_map` (from nvblox for terrain obstacles)
+- `/tf` (current robot pose)
+
+**Outputs:**
+- `/cmd_vel`
+- `/diagnostics`
+- `/planned_path` (global path on terrain)
+
+### RL-based Terrain Controller
+**Dual Function: Local Planning Evaluation + Terrain-Aware Control**
+- **Inputs:**
+  - `/cmd_vel` (from Simple Planner global path)
+  - `/joint_states` (current robot configuration)
+  - `/orientation` (roll, pitch, yaw)
+  - `/world_perception` (ESDF or 2.5D map around robot [live view, local region])
+  - `/dynamic_masks` (moving obstacles for local avoidance)
+  - `/tf` (current pose in world frame)
+
+- **Local Planning (Internal Evaluation):**
+  - Evaluates multiple feasible directions/velocities in local window
+  - Assesses collision risk and terrain passability for each candidate motion
+  - Selects optimal velocity command based on terrain properties and obstacle avoidance
+  - No explicit trajectory stored—only velocity outputs
+
+- **Terrain-Aware Control:**
+  - Analyzes local terrain properties (slope, friction, passability)
+  - Converts selected velocities into motor commands across joints
+  - Distributes power for optimal traction based on terrain type
+  - Adapts suspension/drive parameters dynamically
+
+- **Parameters:**
+  - Model parameters (trained RL policy for evaluation)
+  - Joint limits and smooth constraints
+  - Local planning window size
+  - Terrain classification thresholds
+
+- **Outputs:**
+  - `/multiple_joint_command_outputs` (wheel speeds + suspension + arm commands)
+  - `/diagnostics` (terrain type, traction estimate, local obstacles detected, selected velocity)
+
+### controller_manager (Hardware Interfaces)
+and all the ros_controllers for the hardware drivers
+along with their inputs and outputs
+- **Outputs:**
+  - `/wheel_odom`
+
+
+
+# Extended Read Map
+- **POINT-TO-POINT NAVIGATION (A -> B)**
+  - allow user to place two or more point for robot to move
+  between, add a option to make a robot do a loop or something. 
+
+- **Mapping, Explore new Terrain**
+  - maybe use some how ESDF to move with a  robot to unknown positions so the mapping algos can automatically map it
+  - add some gui to it, mayby allow to make  constraint map
+  so robot wont leave the are while mapping or map only certain are 
+
+- **Follow a Meat Bag**
+  - lock on a closest person to the robot and follow them until stopped.
+  - probably some gui button 
+
+- **Action time** (we can forget to ever get here)
+  - some dynamic algo that basically tells the robot to look around for some TARGET/or perform action like manipulate sth
+  but that will most likely require some LLM and a completely new 
+  algo that will be able to remember on a 3d map object with specific ID Notes even, room naming,  so the robot can recognize a task like:  a collection of some item or go to the "control panel of pump 5 in a machine room 3 and press the red button".
+  for now it shouel be just mapping of obejct and rooms so robot can have useful memory or even use the 3d mesh map genrated by the `nvblox` sine its literally Colored 3d mesh if the environment so technically he can also just look for stuff on an already existing world in its memory.     Then there is manipulation of object which basically mens more RL.
