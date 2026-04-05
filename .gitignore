@@ -44,4 +44,8 @@ ignore/*
 maps
 
 
-.cache
+.cachesetup_local_env.sh
+
+setup_local_env.sh
+
+local_install
