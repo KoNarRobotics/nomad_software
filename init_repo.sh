@@ -10,8 +10,8 @@ pre-commit autoupdate
 pre-commit install
 
 git submodule update --init --recursive
-./dependencies/build.sh
-
+./dependencies/./build_local.sh
+source setup_local_env.sh
 
 nomad_hardware/ros_can_device/can_constants/generate-files.sh -v
 
@@ -19,6 +19,6 @@ rosdep install -i --from-path nomad_hardware --rosdistro jazzy -y
 rosdep install -i --from-path nomad_simulation --rosdistro jazzy -y
 rosdep install -i --from-path nomad_core --rosdistro jazzy -y
 
-# nomad_hardware/livox_ros_driver2/./build.sh jazzy
 
+./compile.sh
 

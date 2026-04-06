@@ -14,6 +14,26 @@ mkdir -p "$LOCAL_INSTALL"
 
 echo "Installing dependencies to: $LOCAL_INSTALL"
 
+# Function to install only missing packages
+install_missing_packages() {
+    local missing_packages=()
+
+    # Check which packages are not installed
+    for package in "$@"; do
+        if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q "ok installed"; then
+            missing_packages+=("$package")
+        fi
+    done
+
+    # If there are packages to install, do it all at once (single sudo prompt)
+    if [ ${#missing_packages[@]} -gt 0 ]; then
+        echo "Installing missing packages: ${missing_packages[*]}"
+        sudo apt update
+        sudo apt install -y "${missing_packages[@]}"
+    else
+        echo "All packages already installed."
+    fi
+}
 git submodule update --init --recursive
 
 
@@ -35,9 +55,8 @@ cd ..
 ## ORB SLAM 3 Dependencies (system packages needed for build)
 echo ""
 echo "========== Installing system build dependencies =========="
-sudo apt update
-sudo apt install -y libeigen3-dev
-sudo apt install -y \
+install_missing_packages \
+  libeigen3-dev \
   cmake \
   build-essential \
   libglew-dev \
@@ -60,7 +79,6 @@ sudo apt install -y \
   libgl1-mesa-dev \
   libglu1-mesa-dev \
   libepoxy-dev
-  # libdc1394-22-dev \
 
 
 # ORB SLAM 3: Build Pangolin locally
