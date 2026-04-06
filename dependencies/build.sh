@@ -59,15 +59,15 @@ cd ../..
 # mkdir -p opencv-4.12.0
 # wget -O opencv.zip https://github.com/opencv/opencv/archive/4.12.0.zip
 # unzip opencv.zip
-# echo "Building OpenCV"
-# cd opencv
-# git checkout 4.12.0
-# cmake -B build -D CMAKE_BUILD_TYPE=Release -G Ninja
-# cmake --build build --config Release 
-# cd build
-# sudo ninja install
-# sudo ldconfig
-# cd ../..
+echo "Building OpenCV"
+cd opencv
+git checkout 4.12.0
+cmake -B build -D CMAKE_BUILD_TYPE=Release -G Ninja
+cmake --build build --config Release 
+cd build
+sudo ninja install
+sudo ldconfig
+cd ../..
 
 # Build and install ORB SLAM 3
 cd ORB-SLAM3_Ubuntu24.04

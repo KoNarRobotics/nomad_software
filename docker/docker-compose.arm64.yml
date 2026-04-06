@@ -1,0 +1,20 @@
+# docker-compose.arm64.yml
+# Raspberry Pi 5 specific overrides
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.arm64.yml up
+
+version: '3.8'
+
+services:
+  nomad:
+    container_name: nomad_edge
+    hostname: nomad-rpi
+    
+    # Add ARM-specific environment variables
+    environment:
+      - NOMAD_NODE_TYPE=edge
+      - NOMAD_DEVICE_TYPE=arm64
+    
+    # Optional: mount datasets/logs
+    volumes:
+      - ./data/arm64:/ws/data:rw
+      - ./logs/arm64:/ws/log:rw

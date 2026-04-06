@@ -1,0 +1,20 @@
+# docker-compose.x86.yml
+# x86 PC specific overrides
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.x86.yml up
+
+version: '3.8'
+
+services:
+  nomad:
+    container_name: nomad_control
+    hostname: nomad-x86
+    
+    # Add x86-specific environment variables
+    environment:
+      - NOMAD_NODE_TYPE=control
+      - NOMAD_DEVICE_TYPE=x86_64
+    
+    # Optional: mount datasets/logs
+    volumes:
+      - ./data/x86:/ws/data:rw
+      - ./logs/x86:/ws/log:rw

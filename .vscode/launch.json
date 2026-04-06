@@ -8,7 +8,7 @@
       "name": "C++ Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/install/can_device/lib/can_device/can_device_node",
+      "program": "${workspaceFolder}/install/orbslam3/lib/orbslam3/mono",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",

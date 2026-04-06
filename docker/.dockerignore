@@ -1,0 +1,57 @@
+# Docker build context exclusions
+# This reduces build context size and build time
+
+# Git
+.git/
+.gitignore
+.gitmodules
+
+# Build outputs
+build/
+**/build/
+install/
+**/install/
+log/
+**/log/
+local_install/
+**/local_install/
+*.so
+*.a
+*.o
+
+# IDE/Editor
+.vscode/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Test outputs
+rosbag2_*/
+
+# Documentation
+docs/
+README.md
+
+# Temporary
+*.swp
+*.swo
+*~
+.pre-commit-config.yaml
+
+# Large files
+*.tar.gz
+*.zip
+
+# Local environment
+.env
+.local/
+
+# Services (might have config specific to host)
+services/
+
+# Ignore generated files
+ignore/
+
+local_install/
+

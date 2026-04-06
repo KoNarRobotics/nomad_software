@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  nomad:
+    image: nomad:latest
+    container_name: nomad_robot
+    
+    # Use host network for direct ROS2 DDS communication
+    network_mode: host
+    
+    # Keep container running
+    stdin_open: true
+    tty: true
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0'  # No CPU limit
+          memory: 0  # No memory limit
+    
+    # Environment variables
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    
+    # Volume mounts
+    volumes:
+      # X11 for GUI applications
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:ro
+      
+      # Optional: mount configs from host for runtime updates
+      # Uncomment to use:
+      # - ./configs:/ws/configs:ro
+      
+      # Optional: data directory for recordings/logs
+      # - ./data:/ws/data:rw
+    
+    # GPU access - NVIDIA
+    devices: []
+    # Privileged mode for hardware access
+    privileged: true
+    
+    # IPC and PID namespaces for better control node communication
+    ipc: 'host'
+    pid: 'host'
+    
+
+# Network is not defined because we use host mode
