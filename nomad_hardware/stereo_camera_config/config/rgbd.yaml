@@ -4,14 +4,60 @@
       i_nn_type: none
       i_enable_rgbd: true
       i_pipeline_type: rgbd
+      i_synced: false
+      i_enable_imu: true
+
     stereo:
-      i_depth_preset: DEFAULT
+      i_publish_topic: true
+      # i_fps: 60.0
+    #   i_depth_preset: ROBOTICS
+    #   i_synced: false
+    #   i_undistorted: true
+    #   i_max_q_size: 30
+
+    #   i_subpixel: true                   # Better depth detail, smoother pointclouds
+    #   i_extended_disp: false             # Good range (0-95 disparities, typical for indoor)
+
+    #   # Filtering for stability (minimal latency impact at 60Hz)
+    #   i_enable_spatial_filter: true      # Smooths depth noise
+    #   i_spatial_filter_alpha: 0.5
+    #   i_spatial_filter_num_iterations: 1 # Keep minimal for latency
+
+    #   i_enable_temporal_filter: true     # Improves stability over time
+    #   i_temporal_filter_alpha: 0.4
+    #   i_temporal_filter_persistency: VALID_2_IN_LAST_4
+
+    #   i_enable_threshold_filter: true    # Remove invalid depths
+    #   i_threshold_filter_min_range: 200  # Mm, avoid close noise
+    #   i_threshold_filter_max_range: 8000 # Mm, typical indoor range
+
+    #   i_enable_distortion_correction: true
+
+    rgb:
+      i_publish_topic: true
+      # i_fps: 15.0
+      # i_width: 1920
+      # i_height: 1080
+      # # i_synced: false
+      # i_undistorted: true
+
+    # imu:
+    #   i_publish_topic: true
+    #   i_max_q_size: 8
+    #   i_acc_freq: 480
+    #   i_acc_cov: 0.0
+    #   i_gyro_freq: 400
+    #   i_gyro_cov: 0.0
+    #   i_message_type: IMU  # or IMU_WITH_MAG, IMU_WITH_MAG_SPLIT
+    #   i_sync_method: COPY
     # uncomment for better performance in RVC2 PoE devices
     #   i_publish_topic: false
     # rgb:
     #   i_fps: 15.0
     #   i_publish_topic: false
-    # left:
-    #   i_fps: 15.0
-    # right:
-    #   i_fps: 15.0
+    left:
+      # i_fps: 30.0
+      i_publish_topic: true    # Add this if not present
+    right:
+      # i_fps: 30.0
+      i_publish_topic: true    # Add this if not present

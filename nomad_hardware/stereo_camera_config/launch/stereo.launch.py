@@ -39,7 +39,7 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    depthai_prefix = get_package_share_directory("depthai_ros_driver_v3")
+    depthai_prefix = get_package_share_directory("stereo_camera_config")
     declared_arguments = [
         DeclareLaunchArgument("name", default_value="oak"),
         DeclareLaunchArgument("camera_model", default_value="OAK-D"),
