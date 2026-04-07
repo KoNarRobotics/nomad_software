@@ -221,6 +221,7 @@ ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="noma
 - **Inputs:**
   - `/imu`
   - `/stereo_image`
+  - /gps (if available)
 - **Outputs:**
   - `/visual_odom`
 
@@ -261,7 +262,7 @@ ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="noma
 ## Planning & Control
 
 ### Simple Planner
-**State Machine (4 States):**
+**State Machine:**
 - **IDLE** - No goal active
 - **PLANNING** - Goal received, calculate global path using OMPL on terrain
 - **EXECUTING** - Send `cmd_vel` commands, monitor progress (stuck, rides)
@@ -334,19 +335,19 @@ along with their inputs and outputs
 # Extended Read Map
 - **POINT-TO-POINT NAVIGATION (A -> B)**
   - allow user to place two or more point for robot to move
-  between, add a option to make a robot do a loop or something. 
+  between, add a option to make a robot do a loop or something.
 
 - **Mapping, Explore new Terrain**
   - maybe use some how ESDF to move with a  robot to unknown positions so the mapping algos can automatically map it
   - add some gui to it, mayby allow to make  constraint map
-  so robot wont leave the are while mapping or map only certain are 
+  so robot wont leave the are while mapping or map only certain are
 
 - **Follow a Meat Bag**
   - lock on a closest person to the robot and follow them until stopped.
-  - probably some gui button 
+  - probably some gui button
 
 - **Action time** (we can forget to ever get here)
   - some dynamic algo that basically tells the robot to look around for some TARGET/or perform action like manipulate sth
-  but that will most likely require some LLM and a completely new 
+  but that will most likely require some LLM and a completely new
   algo that will be able to remember on a 3d map object with specific ID Notes even, room naming,  so the robot can recognize a task like:  a collection of some item or go to the "control panel of pump 5 in a machine room 3 and press the red button".
   for now it shouel be just mapping of obejct and rooms so robot can have useful memory or even use the 3d mesh map genrated by the `nvblox` sine its literally Colored 3d mesh if the environment so technically he can also just look for stuff on an already existing world in its memory.     Then there is manipulation of object which basically mens more RL.
