@@ -2,7 +2,7 @@
 # This reduces build context size and build time
 
 # Git
-.git/
+# .git/
 .gitignore
 .gitmodules
 
@@ -55,3 +55,4 @@ ignore/
 
 local_install/
 
+docker

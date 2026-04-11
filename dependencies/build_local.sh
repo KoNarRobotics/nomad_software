@@ -34,8 +34,6 @@ install_missing_packages() {
         echo "All packages already installed."
     fi
 }
-git submodule update --init --recursive
-
 
 ## Build and install Livox-SDK2
 
@@ -115,6 +113,7 @@ chmod +x build.sh
 # Set CMake paths so ORB-SLAM3 can find locally-built OpenCV and Pangolin
 export CMAKE_PREFIX_PATH="$LOCAL_INSTALL:$CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LOCAL_INSTALL/lib:$LOCAL_INSTALL/lib64:$LD_LIBRARY_PATH"
+git checkout main
 ./build.sh
 cd Thirdparty/Sophus/build
 make install DESTDIR="$LOCAL_INSTALL" || true

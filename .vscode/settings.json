@@ -110,5 +110,6 @@
   ],
   "idf.pythonInstallPath": "/usr/bin/python3",
   "dotnet.defaultSolution": "disable",
-  "ROS2.distro": "jazzy"
+  "ROS2.distro": "jazzy",
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true
 }

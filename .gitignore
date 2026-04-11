@@ -52,3 +52,12 @@ local_install
 
 
 .cache/
+
+# Compressed files
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.gz
+
+
