@@ -21,6 +21,9 @@ git clone --recursive git@github.com:KoNarRobotics/nomad_software.git
 ./compile.sh
 ```
 
+### VSCODE
+* you can also use VSCODE Tasks: to run all this commands
+
 ### Docker Build
 * Build the docker image:
 ```bash

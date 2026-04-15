@@ -2,9 +2,27 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Init/Build Dependencies",
+      "label": "Repo Init ",
       "type": "shell",
-      "command": "./init_repo.sh",
+      "command": "./repo_init.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Docker Image",
+      "type": "shell",
+      "command": "./docker/build.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Repo Build",
+      "type": "shell",
+      "command": "./repo_build.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Colcon Build (compile)",
+      "type": "shell",
+      "command": "./compile.sh",
       "problemMatcher": []
     }
   ],
