@@ -1,8 +1,8 @@
 #!/bin/bash
 # Build Nomad Docker image with optional compression
-# Usage: ./build.sh        # Build for x86, save as .tar
+# Usage: ./build.sh        # Build for x86
 #        ./build.sh -c     # Build for x86 and compress to .tar.zst
-#        ./build.sh -a     # Build for ARM64, save as .tar
+#        ./build.sh -a     # Build for ARM64
 #        ./build.sh -a -c  # Build for ARM64 and compress to .tar.zst
 
 set -e
