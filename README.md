@@ -1,5 +1,49 @@
 # Nomad
 
+## Building the software
+
+
+### Local Build
+1. Clone the repository:
+```bash
+git clone --recursive git@github.com:KoNarRobotics/nomad_software.git
+```
+2. Run the initialization script to set up the environment for development:
+```bash
+./repo_init.sh
+```
+3. To build repo from scratch with dependencies run:
+```bash
+./repo_build.sh
+```
+4. To build only the code without dependencies (you at lest have to build dependencie once) run (you can also just use this as a normal build command):
+```bash
+./compile.sh
+```
+
+### VSCODE
+* you can also use VSCODE Tasks: to run all this commands
+
+### Docker Build
+* Build the docker image:
+```bash
+docker/build.sh 
+```
+#### Args
+You can also specify a args to build for x86, ARM or if you already want to save the image to file so it can be transferred to the rover:
+* For x86:
+```bash
+docker/build.sh 
+```
+* To save the image to file:
+```bash
+docker/build.sh -c
+```
+* For ARM:
+```bash
+docker/build.sh -a
+```
+
 ## Services
 
 ### Installing services
