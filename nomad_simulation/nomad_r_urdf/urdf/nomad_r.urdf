@@ -1,0 +1,315 @@
+<?xml version="1.0" ?>
+<robot name="nomad_r_urdf">
+  <link name="base_view">
+    <visual name="base_view_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/base_view.stl"/>
+      </geometry>
+      <material name="base_view-material">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision name="base_view_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/base_view.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="right_side">
+    <visual name="right_side_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/right_side.stl"/>
+      </geometry>
+      <material name="right_side-material">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <collision name="right_side_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/right_side.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="left_side">
+    <visual name="left_side_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/left_side.stl"/>
+      </geometry>
+      <material name="left_side-material">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <collision name="left_side_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/left_side.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_rot_right_rear">
+    <visual name="wheel_rot_right_rear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_right_rear.stl"/>
+      </geometry>
+      <material name="wheel_rot_right_rear-material">
+        <color rgba="1 0 1 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_rot_right_rear_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_right_rear.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_rot_right_front">
+    <visual name="wheel_rot_right_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_right_front.stl"/>
+      </geometry>
+      <material name="wheel_rot_right_front-material">
+        <color rgba="1 0 1 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_rot_right_front_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_right_front.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_rot_left_rear">
+    <visual name="wheel_rot_left_rear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_left_rear.stl"/>
+      </geometry>
+      <material name="wheel_rot_left_rear-material">
+        <color rgba="1 0 1 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_rot_left_rear_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_left_rear.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0"/>
+      <inertia ixx="1.0981587e-05" iyy="6.65986e-06" izz="8.174529e-06" ixy="1.9155768e-06" ixz="-1.9617273e-07" iyz="-1.5571575e-06"/>
+      <origin xyz="-0.004800488 0.038464362 -0.1250763" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_rot_left_front">
+    <visual name="wheel_rot_left_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_left_front.stl"/>
+      </geometry>
+      <material name="wheel_rot_left_front-material">
+        <color rgba="1 0 1 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_rot_left_front_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_rot_left_front.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_right_rear">
+    <visual name="wheel_right_rear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_right_rear.stl"/>
+      </geometry>
+      <material name="wheel_right_rear-material">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_right_rear_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_right_rear.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_right_front">
+    <visual name="wheel_right_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_right_front.stl"/>
+      </geometry>
+      <material name="wheel_right_front-material">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_right_front_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_right_front.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_left_rear">
+    <visual name="wheel_left_rear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_left_rear.stl"/>
+      </geometry>
+      <material name="wheel_left_rear-material">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_left_rear_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_left_rear.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <link name="wheel_left_front">
+    <visual name="wheel_left_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_left_front.stl"/>
+      </geometry>
+      <material name="wheel_left_front-material">
+       <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision name="wheel_left_front_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://nomad_r_urdf/meshes/wheel_left_front.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0"/>
+      <inertia ixx="5.5048305e-07" iyy="5.274976e-07" izz="2.4032098e-08" ixy="-3.5075213e-09" ixz="-1.6606574e-08" iyz="-1.1130372e-07"/>
+      <origin xyz="0.0015189242 0.010180422 0.048199829" rpy="0 0 0"/>
+    </inertial>
+  </link>
+  <joint name="right_side_suspension_joint" type="revolute">
+    <origin xyz="9.5062846e-18 0.4225 0.455" rpy="-1.5707963 0 -3.1415927"/>
+    <parent link="base_view"/>
+    <child link="right_side"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-1.5707963" upper="1.5707963"/>
+  </joint>
+  <joint name="left_side_suspension_joint" type="revolute">
+    <origin xyz="-2.6645353e-17 -0.4225 0.455" rpy="-1.5707963 0 0"/>
+    <parent link="base_view"/>
+    <child link="left_side"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-1.5707963" upper="1.5707963"/>
+  </joint>
+  <joint name="wheel_rot_right_rear_joint" type="revolute">
+    <origin xyz="-0.35 0.075 -0.0325" rpy="1.5707963 0 1.2212453e-15"/>
+    <parent link="right_side"/>
+    <child link="wheel_rot_right_rear"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+  </joint>
+  <joint name="wheel_rot_right_front_joint" type="revolute">
+    <origin xyz="0.5 0.075 -0.0325" rpy="1.5707963 6.6613381e-16 -1.2212453e-15"/>
+    <parent link="right_side"/>
+    <child link="wheel_rot_right_front"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+  </joint>
+  <joint name="wheel_rot_left_rear_joint" type="revolute">
+    <origin xyz="0.35 0.075 -0.0325" rpy="1.5707963 0 -1.2212453e-15"/>
+    <parent link="left_side"/>
+    <child link="wheel_rot_left_rear"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+  </joint>
+  <joint name="wheel_rot_left_front_joint" type="revolute">
+    <origin xyz="-0.5 0.075 -0.0325" rpy="1.5707963 0 1.2212453e-15"/>
+    <parent link="left_side"/>
+    <child link="wheel_rot_left_front"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+  </joint>
+  <joint name="wheel_right_rear_joint" type="revolute">
+    <origin xyz="0 -0.0635 -0.175" rpy="-1.5707963 2.220446e-16 -4.4408921e-16"/>
+    <parent link="wheel_rot_right_rear"/>
+    <child link="wheel_right_rear"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+  </joint>
+  <joint name="wheel_right_front_joint" type="revolute">
+    <origin xyz="-6.6613381e-16 -0.0635 -0.175" rpy="-1.5707963 -1.5707963 0"/>
+    <parent link="wheel_rot_right_front"/>
+    <child link="wheel_right_front"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+  </joint>
+  <joint name="wheel_left_rear_joint" type="revolute">
+    <origin xyz="-2.220446e-16 -0.0635 -0.175" rpy="-1.5707963 0 0"/>
+    <parent link="wheel_rot_left_rear"/>
+    <child link="wheel_left_rear"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+  </joint>
+  <joint name="wheel_left_front_joint" type="revolute">
+    <origin xyz="-2.7755576e-16 -0.0635 -0.175" rpy="-1.5707963 0 0"/>
+    <parent link="wheel_rot_left_front"/>
+    <child link="wheel_left_front"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+  </joint>
+</robot>
