@@ -8,7 +8,7 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 nomad_hardware/ros_can_device/can_constants/generate-files.sh -v
-nomad_hardware/can_device/can_constants/can_messages/generator.py -v
+nomad_hardware/can_device/can_constants/can_messages/generate-files.sh -v
 
 rosdep install -i --from-path nomad_hardware nomad_simulation nomad_core --rosdistro jazzy -y
 
