@@ -27,13 +27,13 @@ git clone --recursive git@github.com:KoNarRobotics/nomad_software.git
 ### Docker Build
 * Build the docker image:
 ```bash
-docker/build.sh 
+docker/build.sh
 ```
 #### Args
 You can also specify a args to build for x86, ARM or if you already want to save the image to file so it can be transferred to the rover:
 * For x86:
 ```bash
-docker/build.sh 
+docker/build.sh
 ```
 * To save the image to file:
 ```bash
@@ -167,12 +167,15 @@ sudo apt install picocom
 
 ### Streaming video from OBC camera
 
-
-
+Camera PC
+```bash
 ffmpeg -f v4l2 -pixel_format mjpeg -framerate 30 -s 1280x720 -i /dev/video0 -preset ultrafast -tune zero_latency -b:v 100M -maxrate 120M -bufsize 600M -f mpegts -omit_video_pes_length 1 udp://10.10.0.8:2000
+```
 
+Receiver
+```bash
 ffplay -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 1 -strict experimental -framedrop -f mpegts -vf setpts=0 udp://10.10.0.6:2000
-
+```
 
 ### Issues:
 
