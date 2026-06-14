@@ -258,7 +258,7 @@
     <parent link="base_view"/>
     <child link="right_side"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-1.5707963" upper="1.5707963"/>
+    <limit effort="140" velocity="6" lower="-1.5707963" upper="1.5707963"/>
   </joint>
 
   <joint name="left_side_suspension_joint" type="revolute">
@@ -266,7 +266,7 @@
     <parent link="base_view"/>
     <child link="left_side"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-1.5707963" upper="1.5707963"/>
+    <limit effort="140" velocity="6" lower="-1.5707963" upper="1.5707963"/>
   </joint>
 
   <joint name="wheel_rot_right_rear_joint" type="revolute">
@@ -274,7 +274,7 @@
     <parent link="right_side"/>
     <child link="wheel_rot_right_rear"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+    <limit effort="140" velocity="6" lower="-6.981317" upper="6.981317"/>
   </joint>
 
   <joint name="wheel_rot_right_front_joint" type="revolute">
@@ -282,7 +282,7 @@
     <parent link="right_side"/>
     <child link="wheel_rot_right_front"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+    <limit effort="140" velocity="6" lower="-6.981317" upper="6.981317"/>
   </joint>
 
   <joint name="wheel_rot_left_rear_joint" type="revolute">
@@ -290,7 +290,7 @@
     <parent link="left_side"/>
     <child link="wheel_rot_left_rear"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+    <limit effort="140" velocity="6" lower="-6.981317" upper="6.981317"/>
   </joint>
 
   <joint name="wheel_rot_left_front_joint" type="revolute">
@@ -298,7 +298,7 @@
     <parent link="left_side"/>
     <child link="wheel_rot_left_front"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.981317" upper="6.981317"/>
+    <limit effort="140" velocity="6" lower="-6.981317" upper="6.981317"/>
   </joint>
 
   <joint name="wheel_right_rear_joint" type="revolute">
@@ -306,7 +306,7 @@
     <parent link="wheel_rot_right_rear"/>
     <child link="wheel_right_rear"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+    <limit effort="140" velocity="6" lower="-6.2831853" upper="6.2831853"/>
   </joint>
 
   <joint name="wheel_right_front_joint" type="revolute">
@@ -314,7 +314,7 @@
     <parent link="wheel_rot_right_front"/>
     <child link="wheel_right_front"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+    <limit effort="140" velocity="6" lower="-6.2831853" upper="6.2831853"/>
   </joint>
 
   <joint name="wheel_left_rear_joint" type="revolute">
@@ -322,7 +322,7 @@
     <parent link="wheel_rot_left_rear"/>
     <child link="wheel_left_rear"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+    <limit effort="140" velocity="6" lower="-6.2831853" upper="6.2831853"/>
   </joint>
 
   <joint name="wheel_left_front_joint" type="revolute">
@@ -330,7 +330,7 @@
     <parent link="wheel_rot_left_front"/>
     <child link="wheel_left_front"/>
     <axis xyz="0 0 -1"/>
-    <limit effort="1" velocity="1" lower="-6.2831853" upper="6.2831853"/>
+    <limit effort="140" velocity="6" lower="-6.2831853" upper="6.2831853"/>
   </joint>
 
 </robot>

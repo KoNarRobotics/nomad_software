@@ -33,29 +33,39 @@ class SimpleDriver(Node):
     # - wheel_left_front_joint (index 8)
     # - wheel_left_rear_joint (index 9)
 
-    joint_commands = [0.0] * 10
+    joint_commands_pos = [0.0] * 10
+    joint_commands_vel = [0.0] * 10
 
-    x = msg.axes[0] * 1000
-    y = msg.axes[1] * 1000
+    wheels = msg.axes[0] * 100
+
+
+    x2 = msg.axes[1] * 1
+    x3 = msg.axes[2] * 1000
+    x4 = msg.axes[3] * 1000
+    x5 = msg.axes[4] * 1000
+    x6 = msg.axes[5] * 1000
+    # x7 = msg.axes[6] * 1000
+    # x8 = msg.axes[7] * 1000
+    self.get_logger().info(f"x2:{x2} wheel:{wheels}")
 
     if len(msg.axes) >= 2:
       # For suspension joints - use axes[0] for right, axes[1] for left
-      joint_commands[0] = 0  # right_side_suspension_joint
-      joint_commands[1] = 0  # left_side_suspension_joint
+      joint_commands_pos[0] = 0  # right_side_suspension_joint
+      joint_commands_pos[1] = 0  # left_side_suspension_joint
 
       # For wheel rotation joints (front and rear)
       # Use axes[0] for X scale, axes[1] for Y scale to control rotation
-      joint_commands[2] = 0  # wheel_rot_right_front_joint
-      joint_commands[3] = 0  # wheel_rot_right_rear_joint
-      joint_commands[4] = 0  # wheel_rot_left_front_joint
-      joint_commands[5] = 0  # wheel_rot_left_rear_joint
+      joint_commands_pos[2] = x2  # wheel_rot_right_front_joint
+      joint_commands_pos[3] = x2  # wheel_rot_right_rear_joint
+      joint_commands_pos[4] = x2  # wheel_rot_left_front_joint
+      joint_commands_pos[5] = x2  # wheel_rot_left_rear_joint
 
       # For wheel position joints (front and rear)
       # Use axes[1] for Y scale to control position/translation
-      joint_commands[6] = 0  # wheel_right_front_joint
-      joint_commands[7] = x  # wheel_right_rear_joint
-      joint_commands[8] = 0  # left_side_suspension_joint
-      joint_commands[9] = 0  # wheel_left_rear_joint
+      joint_commands_vel[6] = wheels  # wheel_right_front_joint
+      joint_commands_vel[7] = wheels # wheel_right_rear_joint
+      joint_commands_vel[8] = -wheels # left_side_suspension_joint
+      joint_commands_vel[9] = -wheels # wheel_left_rear_joint
 
     # Create and publish joint command message
     command_msg = JointState()
@@ -73,9 +83,9 @@ class SimpleDriver(Node):
         "wheel_left_front_joint",
         "wheel_left_rear_joint"
     ]
-    command_msg.velocity = joint_commands
+    command_msg.velocity = joint_commands_vel
     command_msg.effort  = [0] * 10
-    command_msg.position = [0] * 10
+    command_msg.position = joint_commands_pos
 
     self.publisher.publish(command_msg)
 
