@@ -20,6 +20,8 @@ class SimpleDriver(Node):
       10
     )
 
+    self.turn_val = 0
+
   def joy_callback(self, msg: Joy):
     # Joint mapping based on the provided joint list:
     # - right_side_suspension_joint (index 0)
@@ -36,14 +38,17 @@ class SimpleDriver(Node):
     joint_commands_pos = [0.0] * 10
     joint_commands_vel = [0.0] * 10
 
-    wheels = msg.axes[0] * 100
+    wheels = msg.axes[0] * 20
 
 
-    x2 = msg.axes[1] * 1
-    x3 = msg.axes[2] * 1000
-    x4 = msg.axes[3] * 1000
-    x5 = msg.axes[4] * 1000
-    x6 = msg.axes[5] * 1000
+    x2 = msg.axes[2] * 1
+
+    self.turn_val += x2 * 0.04
+
+    # x3 = msg.axes[2] * 1000
+    # x4 = msg.axes[3] * 1000
+    # x5 = msg.axes[4] * 1000
+    # x6 = msg.axes[5] * 1000
     # x7 = msg.axes[6] * 1000
     # x8 = msg.axes[7] * 1000
     self.get_logger().info(f"x2:{x2} wheel:{wheels}")
@@ -55,10 +60,10 @@ class SimpleDriver(Node):
 
       # For wheel rotation joints (front and rear)
       # Use axes[0] for X scale, axes[1] for Y scale to control rotation
-      joint_commands_pos[2] = x2  # wheel_rot_right_front_joint
-      joint_commands_pos[3] = x2  # wheel_rot_right_rear_joint
-      joint_commands_pos[4] = x2  # wheel_rot_left_front_joint
-      joint_commands_pos[5] = x2  # wheel_rot_left_rear_joint
+      joint_commands_pos[2] = self.turn_val  # wheel_rot_right_front_joint
+      joint_commands_pos[3] = self.turn_val  # wheel_rot_right_rear_joint
+      joint_commands_pos[4] = self.turn_val  # wheel_rot_left_front_joint
+      joint_commands_pos[5] = self.turn_val  # wheel_rot_left_rear_joint
 
       # For wheel position joints (front and rear)
       # Use axes[1] for Y scale to control position/translation
