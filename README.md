@@ -236,6 +236,26 @@ ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="noma
 ```
 
 
+# RUNNING SIMULATION
+1. Setup environment
+```bash
+source setup_local_env.sh
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+```
+
+2. Run remote controller in one terminal
+```bash
+ros2 run remote_6d remote_6d_node
+```
+
+3. Run Nomad-R driver node
+```bash
+ros2 run simple_driver diff_drive_fix
+```
+
+4. Open IsaacSim, load nomad-r model ane a  world model then start the simulation
+
 # ROAD MAP
 
 ## Sensor Pipeline
@@ -254,17 +274,26 @@ ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="noma
 - **Outputs:**
   - `/imu`
 
-### suspension_driver
+### suspension_driver (jakub K)
+Kinematyka Robota
+https://control.ros.org/humble/doc/ros2_controllers/doc/mobile_robot_kinematics.html
 - **Outputs**
   - `/wheel_odom`
+  - /sterowanie kół 4x
+  - /sterowanie skrętem kół  pozycja 4x
+- **Inputs**
+  - /cmd_vel
+  - /wheel_velocity x4
+  - /wheel_pos x4
+  - /wheel_rotation_pos x4
 
-### robot_state_publisher
+### robot_state_publisher (Patryk)
 - **Outputs:**
   - `/tf`
 
 ## Perception & Localization
 
-### orb_slam3_node
+### orb_slam3_node (Damian)
 - **Inputs:**
   - `/imu`
   - `/stereo_image`
@@ -280,7 +309,7 @@ ros2 run mc_plugin_driver mc_plugin_driver_node --ros-args -p config_file:="noma
 - **Outputs:**
   - `/odometry`
 
-### yolo_segmentation_node
+### yolo_segmentation_node (Nikodem W)
 - **Inputs:**
   - `/image`
 - **Outputs:**
