@@ -2,7 +2,9 @@
 
 source /opt/ros/jazzy/setup.bash
 source setup_local_env.sh
+if [ -d "$ISAAC_ROS_WS" ]; then
 isaac-ros activate
+fi
 
 python3 -m venv .venv
 source .venv/bin/activate
