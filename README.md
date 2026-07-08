@@ -1,5 +1,15 @@
 # Nomad
 
+## HELPER
+- Create python package
+```bash
+ros2 pkg create --license MIT --build-type ament_python NAME
+```
+- Create Cpp package
+```bash
+ros2 pkg create --license MIT --build-type ament_cmake NAME
+```
+
 ## Building the software
 
 

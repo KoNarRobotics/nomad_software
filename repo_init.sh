@@ -5,6 +5,7 @@ set -e
 git submodule update --init --recursive
 
 source /opt/ros/jazzy/setup.bash
+isaac-ros activate
 
 python3 -m venv .venv
 source .venv/bin/activate
