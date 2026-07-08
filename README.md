@@ -12,6 +12,12 @@ ros2 pkg create --license MIT --build-type ament_cmake NAME
 
 ## Building the software
 
+### Install Nvidia ROS package nad repos
+
+1. Go to: https://nvidia-isaac-ros.github.io/getting_started/index.html
+2. Install Isaac ros for **Ubuntu 24.04 Noble**
+3. With **Bare Metal** config
+3. Thats it.
 
 ### Local Build
 1. Clone the repository:

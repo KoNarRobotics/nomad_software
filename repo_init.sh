@@ -7,6 +7,9 @@ git submodule update --init --recursive
 source /opt/ros/jazzy/setup.bash
 if [ -d "$ISAAC_ROS_WS" ]; then
 isaac-ros activate
+else
+echo INSTALL ISAAC ROS !
+exit 1
 fi
 
 python3 -m venv .venv

@@ -7,6 +7,9 @@
   <maintainer email="dodpat02@gmail.com">lemonx</maintainer>
   <license>MIT</license>
 
+  <depend>isaac_ros_nvblox</depend>
+
+
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
