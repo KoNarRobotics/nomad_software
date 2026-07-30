@@ -16,7 +16,10 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <functional>
+
+#include "geometry_msgs/msg/transform_stamped.hpp"
 
 namespace suspension_driver {
 
@@ -61,6 +64,10 @@ SuspensionDriverNode::SuspensionDriverNode(const rclcpp::NodeOptions &options)
   // --- Publishers ------------------------------------------------------------
   drive_cmd_pub_ = create_publisher<std_msgs::msg::Float64MultiArray>("/drive_velocity_cmd", rclcpp::QoS(1));
   steering_cmd_pub_ = create_publisher<std_msgs::msg::Float64MultiArray>("/steering_position_cmd", rclcpp::QoS(1));
+  odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("/wheel_odom", rclcpp::QoS(10));
+  if(publish_tf_) {
+    tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
+  }
 
   // --- Control loop ------------------------------------------------------------
   const auto control_period = std::chrono::duration<double>(1.0 / std::max(control_rate_hz, 1.0));
@@ -162,8 +169,79 @@ void SuspensionDriverNode::wheel_velocity_callback(const std_msgs::msg::Float64M
   if(!values) {
     return;
   }
-  const std::lock_guard<std::mutex> lock(mutex_);
-  wheel_states_.drive_velocities = *values;
+  {
+    const std::lock_guard<std::mutex> lock(mutex_);
+    wheel_states_.drive_velocities = *values;
+  }
+  // Drive velocity is the fastest-changing measurement, so each new sample
+  // drives one odometry integration step (dt = time between samples).
+  update_odometry(now());
+}
+
+void SuspensionDriverNode::update_odometry(const rclcpp::Time &stamp) {
+  Pose2D pose;
+  BodyVelocity twist;
+
+  {
+    const std::lock_guard<std::mutex> lock(mutex_);
+
+    // Without steering feedback the wheel headings are unknown and forward
+    // kinematics would integrate garbage; wait for the first sample.
+    if(!steering_feedback_received_) {
+      return;
+    }
+
+    twist       = kinematics_->forward(wheel_states_);
+    odom_twist_ = twist;
+
+    if(last_odom_time_.has_value()) {
+      const double dt = (stamp - *last_odom_time_).seconds();
+      // Reject non-monotonic stamps and gaps (e.g. feedback dropouts or a
+      // sim-time reset); resume integrating from the next sample.
+      if(dt > 0.0 && dt < 1.0) {
+        SwerveKinematics::integrate(odom_pose_, twist, dt);
+      }
+    }
+    last_odom_time_ = stamp;
+    pose            = odom_pose_;
+  }
+
+  nav_msgs::msg::Odometry odom;
+  odom.header.stamp    = stamp;
+  odom.header.frame_id = odom_frame_id_;
+  odom.child_frame_id  = base_frame_id_;
+
+  odom.pose.pose.position.x    = pose.x;
+  odom.pose.pose.position.y    = pose.y;
+  odom.pose.pose.orientation.z = std::sin(0.5 * pose.yaw);
+  odom.pose.pose.orientation.w = std::cos(0.5 * pose.yaw);
+
+  odom.twist.twist.linear.x  = twist.vx;
+  odom.twist.twist.linear.y  = twist.vy;
+  odom.twist.twist.angular.z = twist.omega;
+
+  // Conservative fixed covariance diagonal for a wheel-odometry source; a
+  // downstream EKF (e.g. robot_localization) should treat this as one input.
+  constexpr double kPoseVariance  = 1e-3;
+  constexpr double kTwistVariance = 1e-3;
+  for(const std::size_t i : { 0, 7, 14, 21, 28, 35 }) {
+    odom.pose.covariance[i]  = kPoseVariance;
+    odom.twist.covariance[i] = kTwistVariance;
+  }
+
+  odom_pub_->publish(odom);
+
+  if(tf_broadcaster_) {
+    geometry_msgs::msg::TransformStamped tf;
+    tf.header.stamp            = stamp;
+    tf.header.frame_id         = odom_frame_id_;
+    tf.child_frame_id          = base_frame_id_;
+    tf.transform.translation.x = pose.x;
+    tf.transform.translation.y = pose.y;
+    tf.transform.rotation.z    = std::sin(0.5 * pose.yaw);
+    tf.transform.rotation.w    = std::cos(0.5 * pose.yaw);
+    tf_broadcaster_->sendTransform(tf);
+  }
 }
 
 void SuspensionDriverNode::wheel_position_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
