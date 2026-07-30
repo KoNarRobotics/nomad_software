@@ -70,8 +70,13 @@ TEST(SwerveKinematics, InversePureRotationIsTangential) {
   for(std::size_t i = 0; i < kNumWheels; ++i) {
     EXPECT_NEAR(std::abs(commands.drive_velocities[i]), omega * radius / 0.1, 1e-6);
   }
-  // Front-left module: velocity (-omega*y, omega*x) = (-0.2, 0.3).
-  EXPECT_NEAR(commands.steering_angles[0], std::atan2(0.3, -0.2), kTol);
+  // Front-left module: contact velocity (-omega*y, omega*x) = (-0.2, 0.3),
+  // i.e. a raw heading of atan2(0.3, -0.2) ~ 124 deg. That is more than
+  // 90 deg away from the current angle (0), so the optimization steers to
+  // the supplementary angle and reverses the drive direction instead.
+  EXPECT_NEAR(commands.steering_angles[0],
+              SwerveKinematics::normalize_angle(std::atan2(0.3, -0.2) - std::numbers::pi), kTol);
+  EXPECT_LT(commands.drive_velocities[0], 0.0);
 }
 
 TEST(SwerveKinematics, InverseReversesInsteadOfLargeSteer) {
