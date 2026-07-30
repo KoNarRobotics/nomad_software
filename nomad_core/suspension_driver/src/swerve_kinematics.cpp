@@ -94,4 +94,73 @@ WheelCommands SwerveKinematics::inverse(const BodyVelocity &body,
   return commands;
 }
 
+BodyVelocity SwerveKinematics::forward(const WheelStates &wheels) const {
+  // Each wheel contributes two linear equations in the unknowns
+  // q = [vx, vy, omega]^T:
+  //
+  //   v_i * cos(phi_i) = vx - omega * y_i
+  //   v_i * sin(phi_i) = vy + omega * x_i
+  //
+  // with v_i the measured ground speed and phi_i the measured steering
+  // angle. Eight equations and three unknowns are solved via the normal
+  // equations (A^T A) q = A^T b of the least-squares problem, which
+  // averages out encoder noise and wheel slip. For the standard symmetric
+  // wheel layout A^T A is well conditioned and the closed-form 3x3 solve
+  // below is exact and allocation-free.
+
+  double sum_x  = 0.0; // sum of x_i
+  double sum_y  = 0.0; // sum of y_i
+  double sum_r2 = 0.0; // sum of (x_i^2 + y_i^2)
+  double b0     = 0.0; // sum of v_xi
+  double b1     = 0.0; // sum of v_yi
+  double b2     = 0.0; // sum of (x_i * v_yi - y_i * v_xi)
+
+  for(std::size_t i = 0; i < kNumWheels; ++i) {
+    const double x    = wheel_positions_[i][0];
+    const double y    = wheel_positions_[i][1];
+    const double v    = wheels.drive_velocities[i] * wheel_radius_;
+    const double v_xi = v * std::cos(wheels.steering_angles[i]);
+    const double v_yi = v * std::sin(wheels.steering_angles[i]);
+
+    sum_x += x;
+    sum_y += y;
+    sum_r2 += x * x + y * y;
+    b0 += v_xi;
+    b1 += v_yi;
+    b2 += x * v_yi - y * v_xi;
+  }
+
+  // Normal-equation matrix M = A^T A (symmetric):
+  //   [ N     0    -sum_y ]
+  //   [ 0     N     sum_x ]
+  //   [-sum_y sum_x sum_r2]
+  const double n = static_cast<double>(kNumWheels);
+
+  // Closed-form solve via Cramer's rule on the 3x3 symmetric system.
+  const double det = n * (n * sum_r2 - sum_x * sum_x - sum_y * sum_y);
+  if(std::abs(det) < 1e-12) {
+    // Degenerate geometry (all wheels at the origin); cannot happen with a
+    // validated RobotGeometry but guard the division regardless.
+    return BodyVelocity{};
+  }
+
+  // Solve q = M^{-1} (A^T b) through the (symmetric) adjugate of
+  // M = [[n, 0, -sy], [0, n, sx], [-sy, sx, srr]]:
+  const double sx  = sum_x;
+  const double sy  = sum_y;
+  const double srr = sum_r2;
+
+  const double c00 = n * srr - sx * sx;
+  const double c01 = -sx * sy;
+  const double c02 = n * sy;
+  const double c11 = n * srr - sy * sy;
+  const double c12 = -n * sx;
+  const double c22 = n * n;
+  BodyVelocity body;
+  body.vx    = (c00 * b0 + c01 * b1 + c02 * b2) / det;
+  body.vy    = (c01 * b0 + c11 * b1 + c12 * b2) / det;
+  body.omega = (c02 * b0 + c12 * b1 + c22 * b2) / det;
+  return body;
+}
+
 } // namespace suspension_driver
