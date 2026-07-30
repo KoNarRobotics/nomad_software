@@ -1,0 +1,16 @@
+suspension_driver:
+  ros__parameters:
+    # --- Drive base geometry ------------------------------------------------
+    wheel_radius: 0.1        # Drive wheel radius [m]
+    wheel_base: 0.5          # Front <-> rear axle distance [m]
+    track_width: 0.5         # Left <-> right wheel distance [m]
+
+    # --- Control ---------------------------------------------------------------
+    control_rate: 50.0       # Command publishing rate [Hz]
+    max_drive_velocity: 0.0  # Per-wheel speed limit [rad/s]; 0.0 disables
+    cmd_vel_timeout: 0.5     # Stop the base if /cmd_vel is older than this [s]
+
+    # --- Odometry ----------------------------------------------------------------
+    publish_tf: true         # Broadcast odom -> base TF
+    odom_frame_id: odom
+    base_frame_id: base_link
