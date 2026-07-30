@@ -58,10 +58,83 @@ SuspensionDriverNode::SuspensionDriverNode(const rclcpp::NodeOptions &options)
                                                         std::bind(&SuspensionDriverNode::steering_position_callback,
                                                                   this, _1));
 
+  // --- Publishers ------------------------------------------------------------
+  drive_cmd_pub_ = create_publisher<std_msgs::msg::Float64MultiArray>("/drive_velocity_cmd", rclcpp::QoS(1));
+  steering_cmd_pub_ = create_publisher<std_msgs::msg::Float64MultiArray>("/steering_position_cmd", rclcpp::QoS(1));
+
+  // --- Control loop ------------------------------------------------------------
+  const auto control_period = std::chrono::duration<double>(1.0 / std::max(control_rate_hz, 1.0));
+  control_timer_ = create_wall_timer(std::chrono::duration_cast<std::chrono::nanoseconds>(control_period),
+                                     std::bind(&SuspensionDriverNode::control_loop, this));
+
   RCLCPP_INFO(get_logger(),
               "suspension_driver up: wheel_radius=%.3f m, wheel_base=%.3f m, track_width=%.3f m, "
               "control_rate=%.1f Hz",
               geometry.wheel_radius, geometry.wheel_base, geometry.track_width, control_rate_hz);
+}
+
+void SuspensionDriverNode::control_loop() {
+  BodyVelocity target;
+  std::array<double, kNumWheels> current_steering{};
+  bool have_command = false;
+
+  {
+    const std::lock_guard<std::mutex> lock(mutex_);
+    // Watchdog: only forward commands while /cmd_vel is fresh. A navigation
+    // stack crash or Wi-Fi drop must never leave the base driving blind.
+    have_command = last_cmd_time_.has_value() && (now() - *last_cmd_time_).seconds() <= cmd_vel_timeout_s_;
+    target       = target_twist_;
+    current_steering = wheel_states_.steering_angles;
+  }
+
+  if(!have_command) {
+    publish_stop_command();
+    return;
+  }
+
+  WheelCommands commands = kinematics_->inverse(target, current_steering);
+
+  // Optional per-wheel speed limit. Scale the whole command set uniformly so
+  // the base follows the commanded direction, just slower (never distorts
+  // the intended motion the way per-wheel clamping would).
+  if(max_drive_velocity_ > 0.0) {
+    double max_requested = 0.0;
+    for(const double v : commands.drive_velocities) {
+      max_requested = std::max(max_requested, std::abs(v));
+    }
+    if(max_requested > max_drive_velocity_) {
+      const double scale = max_drive_velocity_ / max_requested;
+      for(double &v : commands.drive_velocities) {
+        v *= scale;
+      }
+    }
+  }
+
+  std_msgs::msg::Float64MultiArray drive_msg;
+  drive_msg.data.assign(commands.drive_velocities.begin(), commands.drive_velocities.end());
+  drive_cmd_pub_->publish(drive_msg);
+
+  std_msgs::msg::Float64MultiArray steering_msg;
+  steering_msg.data.assign(commands.steering_angles.begin(), commands.steering_angles.end());
+  steering_cmd_pub_->publish(steering_msg);
+}
+
+void SuspensionDriverNode::publish_stop_command() {
+  std::array<double, kNumWheels> current_steering{};
+  {
+    const std::lock_guard<std::mutex> lock(mutex_);
+    current_steering = wheel_states_.steering_angles;
+  }
+
+  // Zero drive velocity, hold current steering: the safest reachable state
+  // for a swerve base (no wheel fighting, no unexpected module rotation).
+  std_msgs::msg::Float64MultiArray drive_msg;
+  drive_msg.data.assign(kNumWheels, 0.0);
+  drive_cmd_pub_->publish(drive_msg);
+
+  std_msgs::msg::Float64MultiArray steering_msg;
+  steering_msg.data.assign(current_steering.begin(), current_steering.end());
+  steering_cmd_pub_->publish(steering_msg);
 }
 
 std::optional<std::array<double, kNumWheels>>
