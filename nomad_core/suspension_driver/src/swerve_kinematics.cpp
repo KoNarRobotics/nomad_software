@@ -163,4 +163,31 @@ BodyVelocity SwerveKinematics::forward(const WheelStates &wheels) const {
   return body;
 }
 
+void SwerveKinematics::integrate(Pose2D &pose, const BodyVelocity &body, double dt) {
+  if(dt <= 0.0) {
+    return;
+  }
+
+  const double yaw_next = pose.yaw + body.omega * dt;
+
+  if(std::abs(body.omega) < kOmegaEpsilon) {
+    // Straight-line motion: rotate the body twist into the odom frame and
+    // integrate linearly.
+    const double cos_yaw = std::cos(pose.yaw);
+    const double sin_yaw = std::sin(pose.yaw);
+    pose.x += (body.vx * cos_yaw - body.vy * sin_yaw) * dt;
+    pose.y += (body.vx * sin_yaw + body.vy * cos_yaw) * dt;
+  } else {
+    // Exact integration of a constant twist: the base travels along a
+    // circular arc. This is more accurate than Euler/Runge-Kutta at the
+    // typical feedback rates of a mobile base.
+    const double dsin = std::sin(yaw_next) - std::sin(pose.yaw);
+    const double dcos = std::cos(yaw_next) - std::cos(pose.yaw);
+    pose.x += (body.vx * dsin + body.vy * dcos) / body.omega;
+    pose.y += (body.vx * -dcos + body.vy * dsin) / body.omega;
+  }
+
+  pose.yaw = normalize_angle(yaw_next);
+}
+
 } // namespace suspension_driver
