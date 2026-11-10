@@ -1,0 +1,52 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "URDF USD Converter v0.1.3"
+    }
+    defaultPrim = "nomad_robot"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpuqj8h5wh/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/usdex_nomad_complete/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/temp_nomad_complete/nomad_complete.usd
+
+
+Generated from Composed Stage of root layer /home/lemonx/it/nomad_software/nomad_simulation/nomad_complete/payloads/base.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "nomad_robot" (
+    prepend references = @./payloads/base.usda@
+    variants = {
+        string Physics = "physx"
+    }
+    append variantSets = "Physics"
+)
+{
+    variantSet "Physics" = {
+        "mujoco" (
+            prepend payload = @./payloads/Physics/mujoco.usda@
+        ) {
+
+        }
+        "none" {
+
+        }
+        "physics" (
+            prepend payload = @./payloads/Physics/physics.usda@
+        ) {
+
+        }
+        "physx" (
+            prepend payload = @./payloads/Physics/physx.usda@
+        ) {
+
+        }
+    }
+}
+

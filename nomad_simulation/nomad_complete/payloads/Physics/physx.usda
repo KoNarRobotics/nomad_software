@@ -1,0 +1,91 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "URDF USD Converter v0.1.3"
+    }
+    defaultPrim = "nomad_robot"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpuqj8h5wh/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/usdex_nomad_complete/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/temp_nomad_complete/nomad_complete.usd
+
+
+Generated from Composed Stage of root layer /home/lemonx/it/nomad_software/nomad_simulation/nomad_complete/payloads/base.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    subLayers = [
+        @./physics.usda@
+    ]
+    upAxis = "Z"
+)
+
+over "nomad_robot"
+{
+    over "Physics"
+    {
+        over "revolute_arm_6" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_5" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_4" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_3" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_2" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_1" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "left_wheel_joint" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "left_wheel_joint_2" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "right_wheel_joint" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+
+        over "right_wheel_joint_2" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+        }
+    }
+}
+

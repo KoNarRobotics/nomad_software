@@ -1,0 +1,218 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "URDF USD Converter v0.1.3"
+    }
+    defaultPrim = "nomad_robot"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpuqj8h5wh/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/usdex_nomad_complete/nomad_robot.usdc
+
+
+Generated from Composed Stage of root layer /tmp/urdf_import_nomad_complete_9h6kn819/temp_nomad_complete/nomad_complete.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+over "nomad_robot" (
+    prepend apiSchemas = ["IsaacRobotAPI"]
+)
+{
+    prepend rel isaac:physics:robotJoints = [
+        </nomad_robot/Physics/revolute_arm_1>,
+        </nomad_robot/Physics/robot_joint>,
+        </nomad_robot/Physics/left_wheel_joint>,
+        </nomad_robot/Physics/left_wheel_joint_2>,
+        </nomad_robot/Physics/right_wheel_joint>,
+        </nomad_robot/Physics/right_wheel_joint_2>,
+        </nomad_robot/Physics/imu_joint>,
+        </nomad_robot/Physics/gps_joint>,
+        </nomad_robot/Physics/revolute_arm_2>,
+        </nomad_robot/Physics/revolute_arm_3>,
+        </nomad_robot/Physics/revolute_arm_4>,
+        </nomad_robot/Physics/revolute_arm_5>,
+        </nomad_robot/Physics/revolute_arm_6>,
+    ]
+    prepend rel isaac:physics:robotLinks = [
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1/axis2_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1/axis2_1/axis3_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1/axis2_1/axis3_1/axis4_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1/axis2_1/axis3_1/axis4_1/axis5_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/axis1_1/axis2_1/axis3_1/axis4_1/axis5_1/axis6_1>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/left_joint_link>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/left_joint_link_2>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/right_joint_link>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/right_joint_link_2>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/imu_link>,
+        </nomad_robot/Geometry/base_link/base_reasonable_link/robot_link/gps>,
+    ]
+    token isaac:robotType = "Default"
+
+    over "Geometry"
+    {
+        over "base_link"
+        {
+            over "base_reasonable_link"
+            {
+                over "robot_link" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "axis1_1" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                        over "axis2_1" (
+                            prepend apiSchemas = ["IsaacLinkAPI"]
+                        )
+                        {
+                            over "axis3_1" (
+                                prepend apiSchemas = ["IsaacLinkAPI"]
+                            )
+                            {
+                                over "axis4_1" (
+                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                )
+                                {
+                                    over "axis5_1" (
+                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                    )
+                                    {
+                                        over "axis6_1" (
+                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                        )
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    over "left_joint_link" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+
+                    over "left_joint_link_2" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+
+                    over "right_joint_link" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+
+                    over "right_joint_link_2" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+
+                    over "imu_link" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+
+                    over "gps" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                    }
+                }
+            }
+        }
+    }
+
+    over "Physics"
+    {
+        over "revolute_arm_6" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_5" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_4" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_3" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_2" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "revolute_arm_1" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "robot_joint" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "left_wheel_joint" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "left_wheel_joint_2" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "right_wheel_joint" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "right_wheel_joint_2" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "imu_joint" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+
+        over "gps_joint" (
+            prepend apiSchemas = ["IsaacJointAPI"]
+        )
+        {
+        }
+    }
+}
+
